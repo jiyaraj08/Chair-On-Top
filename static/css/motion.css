@@ -1,0 +1,560 @@
+/* Chair on Top - motion.css
+   The motion layer. It loads after style.css.
+   To switch ALL motion off, delete the motion.css <link> in base.html.
+
+   Interaction language (used everywhere):
+   - hover: lift 2px, arrows move 4px
+   - press: scale down slightly (already in style.css)
+   - timing: 0.25s for small things, 0.7s to 1.1s for reveals
+   - easing: one smooth ease-out curve */
+
+:root {
+  --m-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --m-fast: 0.25s;
+  --m-reveal-y: 28px;
+  --m-arrow: 4px;
+}
+
+/* =========================================================
+   1. BUTTONS, CARDS AND OTHER MICRO-INTERACTIONS
+   (these work with or without the motion layer switched on)
+   ========================================================= */
+.hero-actions .btn::after,
+.quiz-copy .btn::after,
+.view-btn::after {
+  content: "\2192";
+  display: inline-block;
+  transition: translate var(--m-fast) var(--m-ease);
+}
+
+.hero-actions .btn:hover::after,
+.hero-actions .btn:focus-visible::after,
+.quiz-copy .btn:hover::after,
+.quiz-copy .btn:focus-visible::after,
+.view-btn:hover::after,
+.view-btn:focus-visible::after {
+  translate: var(--m-arrow) 0;
+}
+
+.style-card:hover .view-btn::after {
+  translate: 3px 0;
+}
+
+.card-title {
+  align-self: flex-start;
+  display: inline-block;
+  padding-bottom: 0.12em;
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  transition: background-size 0.5s var(--m-ease);
+}
+
+.style-card:hover .card-title,
+.style-card:focus-within .card-title {
+  background-size: 100% 1px;
+}
+
+.save-btn[aria-pressed="true"] {
+  animation: m-pop 0.4s var(--m-ease);
+}
+
+.brand-mark {
+  transition: scale var(--m-fast) var(--m-ease);
+}
+
+.brand:hover .brand-mark {
+  scale: 1.18;
+}
+
+.hero-title .line-accent {
+  position: relative;
+  width: fit-content;
+}
+
+.hero-title .line-accent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.04em;
+  height: max(2px, 0.035em);
+  border-radius: 2px;
+  background: var(--gold);
+  transform-origin: left center;
+}
+
+/* If a real photograph is added later, it sits ON TOP of the placeholder.
+   If the file is missing, motion.js marks the box and the placeholder shows. */
+.hero-media > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.img-missing > img {
+  display: none;
+}
+
+/* =========================================================
+   2. NAVIGATION
+   ========================================================= */
+.pill-nav {
+  transition: background-color 0.4s var(--m-ease), box-shadow 0.4s var(--m-ease);
+}
+
+.site-header.is-scrolled .pill-nav {
+  background: rgba(34, 30, 26, 0.9);
+  box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.55);
+}
+
+.nav-links {
+  position: relative;
+}
+
+.nav-links > li > a {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 0;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--ivory);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.45s var(--m-ease), width 0.45s var(--m-ease), opacity 0.3s ease;
+}
+
+.scroll-sentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 48px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 861px) {
+  .nav-has-indicator .nav-links a[aria-current] {
+    background: transparent;
+    color: var(--charcoal);
+  }
+}
+
+@media (max-width: 860px) {
+  .nav-indicator {
+    display: none;
+  }
+
+  /* Smooth open and close for the mobile menu. */
+  html.motion-on.js .nav-links {
+    display: flex;
+    visibility: hidden;
+    opacity: 0;
+    translate: 0 -10px;
+    scale: 0.98;
+    transform-origin: top right;
+    pointer-events: none;
+    transition: opacity 0.28s var(--m-ease), translate 0.38s var(--m-ease), scale 0.38s var(--m-ease), visibility 0s linear 0.38s;
+  }
+
+  html.motion-on.js .nav-links.is-open {
+    visibility: visible;
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+}
+
+/* =========================================================
+   3. OPENING SEQUENCE (CSS only, starts at first paint)
+   "backwards" means the element returns to its normal look when the
+   animation ends, so nothing can get stuck hidden.
+   ========================================================= */
+.motion-on .pill-nav {
+  animation: m-nav-in 0.8s var(--m-ease) backwards;
+}
+
+.motion-on .brand-mark {
+  animation: m-mark 0.9s var(--m-ease) 0.25s backwards;
+}
+
+.motion-on .brand-name {
+  animation: m-fade-x 0.7s var(--m-ease) 0.4s backwards;
+}
+
+.motion-on .hero-media {
+  animation: m-hero-clip 1.2s var(--m-ease) 0.1s backwards;
+}
+
+.motion-on .hero-media > svg,
+.motion-on .hero-media > img {
+  animation: m-settle 1.8s var(--m-ease) 0.1s backwards;
+}
+
+.motion-on .hero-content > * {
+  animation: none;
+}
+
+.motion-on .hero-content > .kicker {
+  animation: m-fade-lift 0.8s var(--m-ease) 0.55s backwards;
+}
+
+.motion-on .hero-title .line {
+  animation: m-line 0.95s var(--m-ease) backwards;
+}
+
+.motion-on .hero-title .line:nth-child(1) { animation-delay: 0.7s; }
+.motion-on .hero-title .line:nth-child(2) { animation-delay: 0.85s; }
+.motion-on .hero-title .line:nth-child(3) { animation-delay: 1s; }
+
+.motion-on .hero-title .line-accent::after {
+  animation: m-underline 1s var(--m-ease) 1.55s backwards;
+}
+
+.motion-on .hero-content > .hero-copy {
+  animation: m-fade-lift 0.8s var(--m-ease) 1.3s backwards;
+}
+
+.motion-on .hero-content .hero-actions .btn {
+  animation: m-fade-lift 0.8s var(--m-ease) backwards;
+}
+
+.motion-on .hero-content .hero-actions .btn:nth-child(1) { animation-delay: 1.45s; }
+.motion-on .hero-content .hero-actions .btn:nth-child(2) { animation-delay: 1.55s; }
+
+.motion-on .hero-content > .hero-status {
+  animation: m-fade-lift 0.8s var(--m-ease) 1.75s backwards;
+}
+
+/* =========================================================
+   4. THE MOTIF: a sun moving across an arched window
+   motion.js builds it inside .hero-media.
+   ========================================================= */
+.motif {
+  position: absolute;
+  right: 1rem;
+  bottom: 3.1rem;
+  z-index: 3;
+  padding: 0.5rem 0.55rem 0.45rem;
+  border: 1px solid rgba(233, 196, 142, 0.35);
+  border-radius: 1.2rem;
+  background: rgba(34, 30, 26, 0.5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  text-align: center;
+  transition: background-color var(--m-fast), border-color var(--m-fast);
+}
+
+.motif:hover {
+  background: rgba(34, 30, 26, 0.66);
+  border-color: rgba(233, 196, 142, 0.6);
+}
+
+.motif-btn {
+  display: block;
+  width: 6.6rem;
+  padding: 0;
+  border: 0;
+  border-radius: 1rem 1rem 0.4rem 0.4rem;
+  background: none;
+  cursor: pointer;
+  color: var(--gold);
+  transition: transform var(--m-fast) var(--m-ease);
+}
+
+.motif-btn:active {
+  transform: scale(0.97);
+}
+
+.hero-media .motif-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: none;
+  overflow: visible;
+}
+
+.motif-fill {
+  fill: rgba(34, 30, 26, 0.35);
+}
+
+.motif-frame {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2;
+}
+
+.motif-pane {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1;
+  opacity: 0.45;
+}
+
+.motif-floor {
+  stroke: var(--gold);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.motif-patch {
+  fill: var(--sun, #f6d9a0);
+  opacity: 0.3;
+  transition: transform 0.9s var(--m-ease), fill 0.6s ease;
+}
+
+.motif-sun {
+  transition: transform 0.9s var(--m-ease);
+}
+
+.motif-disc {
+  fill: var(--sun, #f6d9a0);
+  transition: fill 0.6s ease;
+}
+
+.motif-halo {
+  fill: var(--sun, #f6d9a0);
+  opacity: 0.28;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.motif-caption {
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  color: var(--text-on-dark-soft);
+}
+
+.motion-on .motif {
+  animation: m-motif-in 1.1s var(--m-ease) 1.2s backwards;
+}
+
+.motion-on .motif-frame {
+  animation: m-draw 1.4s var(--m-ease) 1.3s backwards;
+}
+
+/* A gentle two-pulse hint, only until the first click. */
+.motion-on .motif.is-fresh .motif-halo {
+  animation: m-hint 2.6s ease-out 2.8s 2;
+}
+
+@media (max-width: 900px) {
+  .motif {
+    right: 0.75rem;
+    bottom: 2.7rem;
+  }
+
+  .motif-btn {
+    width: 5.2rem;
+  }
+}
+
+/* =========================================================
+   5. SCROLL REVEALS
+   motion.js adds .is-in once, when the element scrolls into view.
+   ========================================================= */
+
+/* Stop the old Phase 1 reveal from competing with this one. */
+html.reveal-ready .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+/* Pattern 1: fade and lift */
+.motion-on .section-head > *,
+.motion-on .step,
+.motion-on .style-card,
+.motion-on .quiz-copy > *,
+.motion-on .budget-copy > *,
+.motion-on .cta-plate > * {
+  opacity: 0;
+  translate: 0 var(--m-reveal-y);
+  transition: opacity 0.8s var(--m-ease) var(--d, 0s), translate 0.8s var(--m-ease) var(--d, 0s);
+}
+
+/* Pattern 2: slide in from the side */
+.motion-on .quiz-sample,
+.motion-on .plan-card {
+  opacity: 0;
+  translate: 48px 0;
+  transition: opacity 0.9s var(--m-ease) var(--d, 0s), translate 0.9s var(--m-ease) var(--d, 0s);
+}
+
+/* These keep their own hover transitions as well. */
+.motion-on .style-card {
+  transition: opacity 0.8s var(--m-ease) var(--d, 0s), translate 0.8s var(--m-ease) var(--d, 0s), transform 0.45s var(--m-ease), box-shadow 0.45s var(--m-ease);
+}
+
+.motion-on .quiz-copy > .btn {
+  transition: opacity 0.8s var(--m-ease) var(--d, 0s), translate 0.8s var(--m-ease) var(--d, 0s), transform var(--m-fast) var(--m-ease), background-color var(--m-fast), color var(--m-fast), border-color var(--m-fast);
+}
+
+/* Pattern 3: image mask reveal (cards now, editorial images later) */
+.motion-on .style-card .card-media,
+.motion-on .img-reveal {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1.1s var(--m-ease) var(--d, 0s);
+}
+
+.motion-on .style-card .card-visual,
+.motion-on .style-card .card-img {
+  transition: transform var(--t-slow) var(--ease), scale 1.4s var(--m-ease) var(--d, 0s);
+}
+
+.motion-on .style-card:not(.is-in) .card-visual,
+.motion-on .style-card:not(.is-in) .card-img {
+  scale: 1.12;
+}
+
+.motion-on .img-reveal > img {
+  scale: 1.06;
+  transition: scale 1.4s var(--m-ease);
+}
+
+/* Budget bar fills from the left */
+.motion-on .plan-bar {
+  clip-path: inset(0 100% 0 0 round 999px);
+  transition: clip-path 1.2s var(--m-ease) 0.35s;
+}
+
+/* The "revealed" states. These must stay AFTER the rules above. */
+.motion-on .is-in {
+  opacity: 1;
+  translate: none;
+}
+
+.motion-on .style-card.is-in .card-media,
+.motion-on .img-reveal.is-in {
+  clip-path: inset(0 0 0 0);
+}
+
+.motion-on .img-reveal.is-in > img {
+  scale: 1;
+}
+
+.motion-on .plan-card.is-in .plan-bar {
+  clip-path: inset(0 0 0 0 round 999px);
+}
+
+/* =========================================================
+   6. HERO PARALLAX (only added by motion.js on large mouse screens)
+   ========================================================= */
+html.m-parallax .hero-media {
+  overflow: hidden;
+}
+
+html.m-parallax .hero-media > svg {
+  height: calc(100% + 80px);
+  margin-top: -40px;
+}
+
+html.m-parallax .hero-media > img {
+  top: -40px;
+  bottom: auto;
+  height: calc(100% + 80px);
+}
+
+html.m-parallax .hero-media > svg,
+html.m-parallax .hero-media > img {
+  translate: 0 calc(var(--py, 0) * 1px);
+}
+
+/* =========================================================
+   7. DIALOG
+   ========================================================= */
+.motion-on .style-dialog[open] {
+  animation: m-dialog 0.4s var(--m-ease);
+}
+
+.motion-on .style-dialog[open]::backdrop {
+  animation: m-fade 0.4s ease;
+}
+
+/* =========================================================
+   8. KEYFRAMES
+   ========================================================= */
+@keyframes m-fade-lift {
+  from { opacity: 0; translate: 0 24px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@keyframes m-fade-x {
+  from { opacity: 0; translate: -10px 0; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@keyframes m-nav-in {
+  from { opacity: 0; translate: 0 -18px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@keyframes m-mark {
+  0%   { opacity: 0; scale: 0; }
+  60%  { opacity: 1; scale: 1.18; }
+  100% { opacity: 1; scale: 1; }
+}
+
+@keyframes m-line {
+  from { opacity: 0; translate: 0 0.5em; clip-path: inset(0 0 100% 0); }
+  to   { opacity: 1; translate: 0 0; clip-path: inset(-20% -5% -20% -5%); }
+}
+
+@keyframes m-hero-clip {
+  from { clip-path: inset(7% 5% 7% 5% round 24px); }
+  to   { clip-path: inset(0 0 0 0 round 0); }
+}
+
+@keyframes m-settle {
+  from { scale: 1.05; }
+  to   { scale: 1; }
+}
+
+@keyframes m-underline {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes m-motif-in {
+  from { opacity: 0; translate: 0 30px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@keyframes m-draw {
+  from { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  to   { stroke-dasharray: 1; stroke-dashoffset: 0; }
+}
+
+@keyframes m-hint {
+  0%   { transform: scale(1); opacity: 0.28; }
+  70%  { transform: scale(1.7); opacity: 0; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+@keyframes m-pop {
+  0%   { transform: scale(0.92); }
+  60%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes m-dialog {
+  from { opacity: 0; translate: 0 16px; scale: 0.98; }
+  to   { opacity: 1; translate: 0 0; scale: 1; }
+}
+
+@keyframes m-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

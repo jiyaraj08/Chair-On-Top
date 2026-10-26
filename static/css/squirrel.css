@@ -1,0 +1,313 @@
+/* Chair on Top - squirrel.css
+   A small squirrel on a wall shelf in the hero. squirrel.js builds it.
+   To remove it completely: delete the squirrel.css <link> and the
+   squirrel.js <script> in base.html.
+   To move or resize it, change --sq-top, --sq-right and --sq-size below. */
+
+/* =========================================================
+   1. PLACEMENT (desktop first)
+   ========================================================= */
+.sq {
+  --sq-size: clamp(7.5rem, 9.5vw, 9.5rem);
+  --sq-top: clamp(6.5rem, 16vh, 9rem);
+  --sq-right: clamp(1rem, 13vw, 13rem);
+
+  position: absolute;
+  top: var(--sq-top);
+  right: var(--sq-right);
+  z-index: 4;
+  width: var(--sq-size);
+  pointer-events: none; /* only the squirrel and bubble catch clicks */
+}
+
+/* On narrower desktops, tuck it against the right edge, away from the text. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .sq {
+    --sq-right: 1rem;
+  }
+}
+
+/* Phones and tablets: bottom-left of the hero picture. */
+@media (max-width: 900px) {
+  .sq {
+    --media-h: clamp(18rem, 46vh, 28rem);
+    --sq-size: 6.2rem;
+    top: calc(var(--media-h) - var(--sq-size) * 0.93 - 1rem);
+    right: auto;
+    left: 0.75rem;
+  }
+}
+
+@supports (height: 1svh) {
+  @media (max-width: 900px) {
+    .sq {
+      --media-h: clamp(18rem, 46svh, 28rem);
+    }
+  }
+}
+
+/* Very short windows (for example a phone on its side): hide it. */
+@media (max-height: 480px) {
+  .sq {
+    display: none;
+  }
+}
+
+/* =========================================================
+   2. THE BUTTON AND THE DRAWING
+   ========================================================= */
+.sq-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sq-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.sq-actor,
+.sq-breath,
+.sq-tail,
+.sq-tail-react,
+.sq-head,
+.sq-eye,
+.sq-eye-look {
+  transform-box: fill-box;
+}
+
+.sq-actor,
+.sq-breath {
+  transform-origin: 50% 100%;
+}
+
+.sq-tail,
+.sq-tail-react {
+  transform-origin: 10% 96%;
+}
+
+.sq-eye {
+  transform-origin: 50% 50%;
+}
+
+/* Head and eyes are moved by squirrel.js through these variables. */
+.sq-head {
+  transform-origin: 68% 92%;
+  transform: translate(var(--hx, 0px), 0px) rotate(var(--tilt, 0deg));
+  transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.sq-eye-look {
+  transform: translate(var(--ex, 0px), var(--ey, 0px));
+  transition: transform 0.5s ease;
+}
+
+/* =========================================================
+   3. IDLE MOTION (only when .sq-anim is set, i.e. not reduced motion)
+   Slow, small and out of step with each other.
+   ========================================================= */
+.sq-anim .sq-breath {
+  animation: sq-breath 4.6s ease-in-out infinite alternate;
+}
+
+.sq-anim .sq-tail {
+  animation: sq-sway 5.2s ease-in-out infinite alternate;
+}
+
+.sq-anim .sq-eye {
+  animation: sq-blink 7s infinite;
+}
+
+/* Pause everything when the hero is not on screen. */
+.sq-anim:not(.is-live) .sq-breath,
+.sq-anim:not(.is-live) .sq-tail,
+.sq-anim:not(.is-live) .sq-eye {
+  animation-play-state: paused;
+}
+
+/* =========================================================
+   4. ARRIVAL AND REACTION
+   ========================================================= */
+.sq-anim .sq-furniture {
+  animation: sq-fade 0.9s ease 1.4s backwards;
+}
+
+.sq-pre .sq-actor {
+  opacity: 0;
+}
+
+.sq-arrive .sq-actor {
+  animation: sq-arrive 1.15s cubic-bezier(0.3, 0.7, 0.35, 1) both;
+}
+
+.sq-hop .sq-actor {
+  animation: sq-hop 0.6s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.sq-flick .sq-tail-react {
+  animation: sq-flick 0.8s ease-in-out;
+}
+
+/* =========================================================
+   5. SPEECH BUBBLE
+   ========================================================= */
+.sq-bubble {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  width: min(12rem, 70vw);
+  padding: 0.75rem 2.1rem 0.8rem 0.95rem;
+  border-radius: 1rem;
+  background: var(--ivory);
+  color: var(--charcoal);
+  box-shadow: var(--shadow-lift);
+  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 -6px;
+  transition: opacity 0.3s ease, translate 0.35s var(--ease), visibility 0s linear 0.35s;
+}
+
+.sq-bubble.is-open {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition-delay: 0s;
+}
+
+.sq-bubble::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 2.4rem;
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  background: var(--ivory);
+  rotate: 45deg;
+}
+
+.sq-bubble-text {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.sq-bubble-link {
+  position: relative;
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--wood);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sq-bubble-link:hover {
+  color: var(--charcoal);
+}
+
+.sq-bubble-close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  z-index: 1;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sq-bubble-close:hover {
+  background: var(--sand);
+}
+
+/* The hero uses a gold focus ring, which is too pale on the ivory bubble. */
+.sq-bubble :focus-visible {
+  outline-color: var(--focus);
+}
+
+/* On phones the bubble opens upward, inside the picture. */
+@media (max-width: 900px) {
+  .sq-bubble {
+    top: auto;
+    bottom: calc(100% + 0.35rem);
+    right: auto;
+    left: 0;
+    translate: 0 6px;
+  }
+
+  .sq-bubble.is-open {
+    translate: 0 0;
+  }
+
+  .sq-bubble::before {
+    top: auto;
+    bottom: -6px;
+    right: auto;
+    left: 2rem;
+  }
+}
+
+/* =========================================================
+   6. KEYFRAMES
+   ========================================================= */
+@keyframes sq-breath {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(1.02); }
+}
+
+@keyframes sq-sway {
+  from { transform: rotate(-2.4deg); }
+  to   { transform: rotate(2.4deg); }
+}
+
+@keyframes sq-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.08); }
+}
+
+@keyframes sq-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes sq-arrive {
+  0%   { opacity: 0; transform: translate(-62px, 10px) rotate(-8deg); }
+  15%  { opacity: 1; }
+  50%  { transform: translate(-30px, -34px) rotate(-3deg); }
+  82%  { transform: translate(0, 1px) scale(1.05, 0.93); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes sq-hop {
+  0%   { transform: none; }
+  40%  { transform: translateY(-14px) scale(0.98, 1.04); }
+  70%  { transform: translateY(0) scale(1.04, 0.94); }
+  100% { transform: none; }
+}
+
+@keyframes sq-flick {
+  0%   { transform: rotate(0deg); }
+  30%  { transform: rotate(-18deg); }
+  60%  { transform: rotate(8deg); }
+  80%  { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
+}

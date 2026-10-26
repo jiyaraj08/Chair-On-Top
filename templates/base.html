@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#221e1a">
+  <title>{% block title %}Chair on Top{% endblock %}</title>
+  <meta name="description" content="Discover an interior-design aesthetic you love and map out how to achieve it within your budget.">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/motion.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/squirrel.css') }}">
+  <script>
+    /* Switches the motion layer on before the first paint.
+       It stays off for reduced motion or very old browsers. */
+    (function () {
+      var root = document.documentElement;
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce || !("IntersectionObserver" in window)) {
+        return;
+      }
+      root.classList.add("motion-on");
+      /* Safety net: if motion.js never starts, show the page normally. */
+      window.setTimeout(function () {
+        if (!root.classList.contains("motion-ready")) {
+          root.classList.remove("motion-on");
+        }
+      }, 3000);
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  {% block body %}{% endblock %}
+
+  <script src="{{ url_for('static', path='js/script.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/motion.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/squirrel.js') }}" defer></script>
+</body>
+</html>

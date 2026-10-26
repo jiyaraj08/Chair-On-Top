@@ -1,0 +1,456 @@
+{% extends "base.html" %}
+
+{% block title %}Chair on Top - Find the interior style that feels like you{% endblock %}
+
+{% block body %}
+{# ------------------------------------------------------------------
+   TEMPORARY CONTENT. Phase 2 moves these lists into data/aesthetics.json.
+   Palette order is: wall, main furniture colour, floor, light.
+   ------------------------------------------------------------------ #}
+{% set styles = [
+  {
+    "slug": "minimalist",
+    "name": "Minimalist",
+    "mood": "Calm, clear and uncluttered. Every object earns its place.",
+    "summary": "Minimalist rooms rely on open space, simple shapes and a few well-chosen pieces. The result feels quiet and is easy to keep tidy.",
+    "materials": "Matte paint, light wood, linen, simple metal",
+    "budget": 1,
+    "budget_label": "Lower",
+    "palette": [
+      {"name": "Soft white", "hex": "#e9e5dd"},
+      {"name": "Stone grey", "hex": "#7c7770"},
+      {"name": "Pale oak", "hex": "#c9bfae"},
+      {"name": "Warm white", "hex": "#faf8f3"}
+    ]
+  },
+  {
+    "slug": "japandi",
+    "name": "Japandi",
+    "mood": "Quiet warmth: Japanese simplicity with Scandinavian comfort.",
+    "summary": "Japandi mixes the calm order of Japanese design with the cosiness of Nordic homes. Expect low furniture, natural wood and earthy, muted colours.",
+    "materials": "Oak and ash wood, paper lanterns, wool, clay",
+    "budget": 2,
+    "budget_label": "Mid-range",
+    "palette": [
+      {"name": "Warm sand", "hex": "#ddd0bc"},
+      {"name": "Muted olive", "hex": "#5e6444"},
+      {"name": "Natural oak", "hex": "#8b6a47"},
+      {"name": "Soft cream", "hex": "#f1e6d2"}
+    ]
+  },
+  {
+    "slug": "industrial",
+    "name": "Industrial",
+    "mood": "Raw and confident: metal, brick and honest materials.",
+    "summary": "Industrial rooms borrow from lofts and workshops. Rough surfaces, dark metal and warm bulbs keep the look bold without feeling cold.",
+    "materials": "Exposed brick, dark metal, aged wood, concrete",
+    "budget": 2,
+    "budget_label": "Mid-range",
+    "palette": [
+      {"name": "Concrete grey", "hex": "#8d8a85"},
+      {"name": "Charcoal", "hex": "#2e2b28"},
+      {"name": "Aged wood", "hex": "#5a4636"},
+      {"name": "Warm bulb", "hex": "#d9a66a"}
+    ]
+  },
+  {
+    "slug": "bohemian",
+    "name": "Bohemian",
+    "mood": "Layered, collected and personal, full of texture and colour.",
+    "summary": "Bohemian rooms feel gathered over time. Mixed patterns, plants and handmade pieces make the space relaxed and full of character.",
+    "materials": "Cane, rattan, cotton, jute, layered textiles",
+    "budget": 1,
+    "budget_label": "Lower",
+    "palette": [
+      {"name": "Warm sand", "hex": "#e3c9a6"},
+      {"name": "Terracotta", "hex": "#b5603a"},
+      {"name": "Walnut", "hex": "#7a5538"},
+      {"name": "Mustard", "hex": "#e7b24c"}
+    ]
+  },
+  {
+    "slug": "scandinavian",
+    "name": "Scandinavian",
+    "mood": "Bright, soft and practical, made for cosy daily life.",
+    "summary": "Scandinavian rooms use pale colours and natural light to feel open and welcoming. Furniture is simple, comfortable and built for everyday use.",
+    "materials": "Pale wood, wool, cotton, soft white paint",
+    "budget": 2,
+    "budget_label": "Mid-range",
+    "palette": [
+      {"name": "Snow white", "hex": "#f1eee8"},
+      {"name": "Soft blue-grey", "hex": "#a9b5bd"},
+      {"name": "Birch", "hex": "#d8bf98"},
+      {"name": "Candle cream", "hex": "#fbf1d9"}
+    ]
+  },
+  {
+    "slug": "modern-luxury",
+    "name": "Modern Luxury",
+    "mood": "Rich, polished and dramatic, with a few statement pieces.",
+    "summary": "Modern Luxury favours deep colours, soft lighting and fine finishes. A small number of standout pieces matter more than filling the room.",
+    "materials": "Brass, velvet, stone, smoked glass, dark wood",
+    "budget": 3,
+    "budget_label": "Higher",
+    "palette": [
+      {"name": "Deep charcoal", "hex": "#2f2b27"},
+      {"name": "Brushed brass", "hex": "#b88b4a"},
+      {"name": "Espresso", "hex": "#1e1b18"},
+      {"name": "Champagne light", "hex": "#e8cf9c"}
+    ]
+  }
+] %}
+
+{# Illustrative budget example. These numbers are invented, not real prices. #}
+{% set essentials = [
+  {"name": "Seating", "amount": 18000},
+  {"name": "Storage", "amount": 9000},
+  {"name": "Lighting", "amount": 5000},
+  {"name": "Paint and walls", "amount": 8000}
+] %}
+{% set upgrades = [
+  {"name": "Rug", "amount": 6000},
+  {"name": "Wall art", "amount": 4000},
+  {"name": "Plants and decor", "amount": 3000}
+] %}
+{% set total = 60000 %}
+{% set ess_sum = essentials | sum(attribute="amount") %}
+{% set upg_sum = upgrades | sum(attribute="amount") %}
+{% set left_sum = total - ess_sum - upg_sum %}
+
+<header class="site-header">
+  <nav class="pill-nav" aria-label="Main">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Chair on Top</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+      <span class="nav-toggle-bars" aria-hidden="true"></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#styles">Explore</a></li>
+      <li><a href="#quiz">Find My Aesthetic</a></li>
+      <li><a href="#budget">Budget Planner</a></li>
+      <li><a href="#how">How it works</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="hero-media">
+      <!--
+        PLACEHOLDER SCENE. Later, replace this whole <svg> with your photograph:
+        <img class="hero-img" src="..." alt="Describe the room here">
+        The container already crops images to fill the space.
+      -->
+      <svg class="hero-art" viewBox="0 0 1200 800" preserveAspectRatio="xMaxYMid slice" role="img" aria-label="Placeholder illustration of a warm living room corner with an olive armchair, a floor lamp and a potted plant.">
+        <defs>
+          <linearGradient id="hero-wall" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e4d4ba"/>
+            <stop offset="1" stop-color="#d2bd9b"/>
+          </linearGradient>
+          <linearGradient id="hero-floor" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#9b7249"/>
+            <stop offset="1" stop-color="#76532f"/>
+          </linearGradient>
+          <linearGradient id="hero-beam" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff3d6" stop-opacity="0.45"/>
+            <stop offset="1" stop-color="#fff3d6" stop-opacity="0"/>
+          </linearGradient>
+          <radialGradient id="hero-glow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#ffe2a0" stop-opacity="0.6"/>
+            <stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <rect width="1200" height="800" fill="url(#hero-wall)"/>
+
+        <rect x="210" y="190" width="170" height="230" fill="#f6efe2"/>
+        <rect x="226" y="206" width="138" height="198" fill="#a07a50"/>
+        <circle cx="295" cy="270" r="40" fill="#e8d3a8"/>
+
+        <rect x="690" y="70" width="270" height="340" rx="6" fill="#f6efe2"/>
+        <rect x="706" y="86" width="116" height="150" fill="#fff6df"/>
+        <rect x="828" y="86" width="116" height="150" fill="#fff6df"/>
+        <rect x="706" y="244" width="116" height="150" fill="#fff6df"/>
+        <rect x="828" y="244" width="116" height="150" fill="#fff6df"/>
+
+        <rect y="600" width="1200" height="200" fill="url(#hero-floor)"/>
+        <rect y="590" width="1200" height="14" fill="#efe6d6"/>
+        <g stroke="#5f3f22" stroke-opacity="0.28" stroke-width="2">
+          <line x1="0" y1="665" x2="1200" y2="665"/>
+          <line x1="0" y1="730" x2="1200" y2="730"/>
+        </g>
+
+        <polygon points="690,410 960,410 1100,800 600,800" fill="url(#hero-beam)"/>
+
+        <ellipse cx="880" cy="705" rx="300" ry="52" fill="#d4c09b"/>
+        <ellipse cx="880" cy="705" rx="250" ry="40" fill="#c8b389"/>
+
+        <polygon points="600,630 660,630 652,695 608,695" fill="#b5603a"/>
+        <g fill="#6b7a45">
+          <ellipse cx="632" cy="570" rx="20" ry="64" transform="rotate(-22 632 570)"/>
+          <ellipse cx="632" cy="565" rx="20" ry="70"/>
+          <ellipse cx="632" cy="570" rx="20" ry="64" transform="rotate(22 632 570)"/>
+        </g>
+
+        <ellipse cx="880" cy="690" rx="150" ry="16" fill="#221e1a" fill-opacity="0.25"/>
+        <rect x="790" y="618" width="14" height="70" rx="4" fill="#4a3320"/>
+        <rect x="956" y="618" width="14" height="70" rx="4" fill="#4a3320"/>
+        <rect x="780" y="410" width="200" height="220" rx="70" fill="#5f6743"/>
+        <rect x="740" y="470" width="56" height="150" rx="26" fill="#566040"/>
+        <rect x="964" y="470" width="56" height="150" rx="26" fill="#566040"/>
+        <rect x="770" y="540" width="220" height="86" rx="30" fill="#6f7a4d"/>
+        <rect x="800" y="552" width="160" height="40" rx="18" fill="#7c8758"/>
+
+        <circle cx="1100" cy="300" r="170" fill="url(#hero-glow)"/>
+        <rect x="1097" y="330" width="6" height="360" fill="#221e1a"/>
+        <ellipse cx="1100" cy="690" rx="46" ry="9" fill="#221e1a"/>
+        <polygon points="1050,330 1150,330 1128,250 1072,250" fill="#f3e2bb"/>
+      </svg>
+      <span class="media-note">Placeholder scene &mdash; your photograph goes here</span>
+    </div>
+
+    <div class="hero-content">
+      <p class="kicker">Interior design, planned around your budget</p>
+      <h1 class="hero-title" id="hero-title">
+        <span class="line">Your space.</span>
+        <span class="line">Your story.</span>
+        <span class="line line-accent">Your aesthetic.</span>
+      </h1>
+      <p class="hero-copy">
+        Discover the interiors you love, find a style that feels like you, and plan your next room transformation around your budget.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#quiz">Find My Aesthetic</a>
+        <a class="btn btn-ghost" href="#styles">Explore Aesthetics</a>
+      </div>
+      <p class="hero-status">Six style previews are live. The quiz and budget planner are coming soon.</p>
+    </div>
+  </section>
+
+  <!-- ============ STYLES ============ -->
+  <section class="section" id="styles" aria-labelledby="styles-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="kicker">Explore</p>
+        <h2 class="section-title" id="styles-title">Six ways to make a room feel like yours</h2>
+        <p class="section-lead">
+          Preview each style's mood, palette and materials. Cards show colour placeholders until your photographs are added. The budget feel is a rough guide, not a price.
+        </p>
+      </div>
+
+      <p class="swipe-hint">Swipe sideways to see all six styles</p>
+
+      <div class="style-scroller" role="region" aria-label="Interior styles, scrolls sideways on small screens" tabindex="0">
+        <ul class="style-grid" id="style-cards">
+          {% for s in styles %}
+          <li class="style-card" data-name="{{ s.name }}">
+            <!-- PLACEHOLDER IMAGE. Later, replace .card-visual with: <img class="card-img" src="..." alt="..."> -->
+            <div class="card-media" aria-hidden="true">
+              <div class="card-visual" style="--c1: {{ s.palette[0].hex }}; --c2: {{ s.palette[1].hex }}; --c3: {{ s.palette[2].hex }}; --c4: {{ s.palette[3].hex }};">
+                <span class="card-lamp"></span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">{{ s.name }}</h3>
+              <p class="card-mood">{{ s.mood }}</p>
+              <p class="card-budget">
+                <span class="budget-dots" aria-hidden="true">{% for i in range(1, 4) %}<span class="dot{% if i <= s.budget %} is-on{% endif %}"></span>{% endfor %}</span>
+                <span>Budget feel: {{ s.budget_label }}</span>
+              </p>
+              <div class="card-actions">
+                <button class="btn btn-dark btn-sm view-btn" type="button" aria-haspopup="dialog">View style<span class="visually-hidden">: {{ s.name }}</span></button>
+                <button class="btn btn-outline btn-sm save-btn" type="button" aria-pressed="false" aria-label="Save {{ s.name }} to shortlist" data-name="{{ s.name }}"><span class="save-label">Save</span></button>
+              </div>
+              <div class="style-detail" hidden>
+                <h3 class="detail-title">{{ s.name }}</h3>
+                <p class="detail-summary">{{ s.summary }}</p>
+                <h4 class="detail-sub">Colour palette</h4>
+                <ul class="swatches">
+                  {% for c in s.palette %}
+                  <li><span class="swatch" style="background: {{ c.hex }};"></span>{{ c.name }}</li>
+                  {% endfor %}
+                </ul>
+                <h4 class="detail-sub">Materials</h4>
+                <p>{{ s.materials }}</p>
+                <p class="detail-note">The full style guide, with photos, furniture and lighting ideas, is coming soon.</p>
+                <a class="btn btn-dark btn-sm" href="#quiz">About the style quiz</a>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="shortlist js-only">
+        <p id="shortlist-status" aria-live="polite">Your shortlist is empty. Press Save on a style to keep it here.</p>
+        <p class="shortlist-note">This shortlist is temporary. It lives only in this browser tab and disappears when you reload. Saving to an account is a future feature.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="section section-sand" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="kicker">How it works</p>
+        <h2 class="section-title" id="how-title">From a feeling to a plan in three steps</h2>
+      </div>
+      <ol class="steps reveal">
+        <li class="step step-live">
+          <span class="step-num">01</span>
+          <h3>Explore</h3>
+          <p>Browse interior aesthetics and see how each one uses colour, materials and light.</p>
+          <span class="chip chip-live">Preview available</span>
+        </li>
+        <li class="step">
+          <span class="step-num">02</span>
+          <h3>Discover</h3>
+          <p>Answer a few questions about your room, mood and habits to find styles that suit you.</p>
+          <span class="chip chip-soon">Coming soon</span>
+        </li>
+        <li class="step">
+          <span class="step-num">03</span>
+          <h3>Plan</h3>
+          <p>Turn a style into a practical plan, split into essentials and optional upgrades.</p>
+          <span class="chip chip-soon">Coming soon</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ PROMO ============ -->
+  <section class="section" id="quiz" aria-labelledby="quiz-title">
+    <div class="wrap">
+      <div class="quiz-plate on-dark reveal">
+        <div class="quiz-copy">
+          <p class="kicker">Find my aesthetic</p>
+          <h2 class="section-title" id="quiz-title">Not sure what your style is? A few questions will point the way.</h2>
+          <p class="quiz-text">
+            The quiz will ask about your room, budget, favourite colours, the mood you want, the furniture you already own, your storage needs, and whether you can make permanent changes.
+          </p>
+          <p class="quiz-status"><span class="chip chip-gold">Coming soon</span> The quiz is not open yet, and nothing on this page is scored.</p>
+          <a class="btn btn-primary" href="#styles">Explore styles while you wait</a>
+        </div>
+        <div class="quiz-sample">
+          <p class="sample-label">Sample question &middot; format preview only</p>
+          <p class="sample-question">What mood do you want the room to have?</p>
+          <ul class="sample-options">
+            <li>Calm and quiet</li>
+            <li>Warm and cosy</li>
+            <li>Bold and dramatic</li>
+            <li>Bright and fresh</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUDGET PREVIEW ============ -->
+  <section class="section" id="budget" aria-labelledby="budget-title">
+    <div class="wrap budget-layout">
+      <div class="budget-copy reveal">
+        <p class="kicker">Budget planner</p>
+        <h2 class="section-title" id="budget-title">See where every rupee goes</h2>
+        <p class="section-lead">
+          The planner will help you spread a total budget across the things a room really needs, then the nice extras.
+        </p>
+        <ul class="budget-points">
+          <li>Enter a total budget in rupees</li>
+          <li>See essentials and optional upgrades separately</li>
+          <li>Check what is left, or get a warning if the plan does not fit</li>
+        </ul>
+        <p class="quiz-status"><span class="chip chip-soon">Coming soon</span> The planner is not open yet.</p>
+      </div>
+
+      <div class="plan-card reveal" aria-labelledby="plan-title">
+        <p class="plan-flag"><span class="chip chip-soon">Example only</span></p>
+        <h3 class="plan-title" id="plan-title">Living room &middot; total budget &#8377;{{ "{:,}".format(total) }}</h3>
+
+        <div class="plan-bar" role="img" aria-label="Example split: essentials {{ '{:,}'.format(ess_sum) }} rupees, optional upgrades {{ '{:,}'.format(upg_sum) }} rupees, left over {{ '{:,}'.format(left_sum) }} rupees.">
+          <span class="seg seg-ess" style="width: {{ (ess_sum * 100 / total) | round(1) }}%;"></span>
+          <span class="seg seg-upg" style="width: {{ (upg_sum * 100 / total) | round(1) }}%;"></span>
+          <span class="seg seg-left" style="width: {{ (left_sum * 100 / total) | round(1) }}%;"></span>
+        </div>
+
+        <div class="plan-group">
+          <h4><span class="legend-dot dot-ess"></span>Essentials <span class="group-total">&#8377;{{ "{:,}".format(ess_sum) }}</span></h4>
+          <ul>
+            {% for item in essentials %}
+            <li><span>{{ item.name }}</span><span>&#8377;{{ "{:,}".format(item.amount) }}</span></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="plan-group">
+          <h4><span class="legend-dot dot-upg"></span>Optional upgrades <span class="group-total">&#8377;{{ "{:,}".format(upg_sum) }}</span></h4>
+          <ul>
+            {% for item in upgrades %}
+            <li><span>{{ item.name }}</span><span>&#8377;{{ "{:,}".format(item.amount) }}</span></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="plan-group plan-left">
+          <h4><span class="legend-dot dot-left"></span>Left over <span class="group-total">&#8377;{{ "{:,}".format(left_sum) }}</span></h4>
+        </div>
+
+        <p class="plan-disclaimer">
+          Illustrative example. These numbers are made up to show the layout, not real prices. Real costs vary by city, materials, quality and labour.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="section section-tight" aria-labelledby="cta-title">
+    <div class="wrap">
+      <div class="cta-plate on-dark reveal">
+        <h2 class="section-title" id="cta-title">Start with the feeling. The plan comes next.</h2>
+        <p class="cta-text">Browse six styles today. The quiz and budget planner are on their way.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#styles">Explore Aesthetics</a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ STYLE PREVIEW DIALOG (opened by JavaScript) ============ -->
+<dialog class="style-dialog" id="style-dialog" aria-label="Style preview">
+  <div class="dialog-inner">
+    <form method="dialog" class="dialog-close-row">
+      <button class="btn btn-outline btn-sm" type="submit">Close</button>
+    </form>
+    <div id="style-dialog-body"></div>
+  </div>
+</dialog>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer on-dark">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <p class="footer-name">Chair on Top</p>
+      <p class="footer-tag">Discover an aesthetic you love and map out how to achieve it within your budget.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <ul>
+        <li><a href="#styles">Explore</a></li>
+        <li><a href="#quiz">Find My Aesthetic</a></li>
+        <li><a href="#budget">Budget Planner</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap footer-bottom">
+    <p>A college project. Budget figures on this site are illustrative examples.</p>
+    <p class="dev-check" id="dev-check" data-state="off">Dev check: JavaScript not running</p>
+  </div>
+</footer>
+{% endblock %}
