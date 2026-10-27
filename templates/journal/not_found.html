@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Article not found - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/journal.css') }}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+  <section class="jn-hero" aria-labelledby="jn-nf-title">
+    <div class="wrap jn-notfound">
+      <p class="kicker">Error 404</p>
+      <h1 id="jn-nf-title">We could not find that page.</h1>
+      <p class="jn-hero-text">The article may have moved, or the address may have a typo.</p>
+      <div class="jn-hero-actions">
+        <a class="btn btn-dark" href="/journal">Go to the Journal</a>
+        <a class="btn btn-outline" href="/">Back to the homepage</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}

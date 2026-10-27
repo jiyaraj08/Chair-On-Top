@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% from "journal/_macros.html" import article_card, featured_card, chips, video_card, podcast_card with context %}
+
+{% block title %}The Journal - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/journal.css') }}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+
+  <!-- ============ JOURNAL HERO ============ -->
+  <section class="jn-hero" aria-labelledby="jn-hero-title">
+    <div class="wrap jn-hero-grid">
+      <div class="jn-hero-copy">
+        <p class="kicker">The Chair on Top Journal</p>
+        <h1 id="jn-hero-title">Ideas for living beautifully.</h1>
+        <p class="jn-hero-text">Thoughtful interiors, considered details, and fresh perspectives on making a space your own.</p>
+        <div class="jn-hero-actions">
+          <a class="btn btn-dark" href="#journal-articles">Explore the Journal</a>
+          <a class="btn btn-outline" href="#design-stories">Watch &amp; listen</a>
+        </div>
+      </div>
+      <div class="jn-hero-art" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- ============ SEARCH AND SECTION LINKS ============ -->
+  <section class="jn-toolbar" aria-label="Search and sections">
+    <div class="wrap">
+      <div class="jn-toolbar-inner">
+        <div class="jn-search js-only" role="search">
+          <label class="visually-hidden" for="jn-search">Search articles, videos and podcasts</label>
+          <svg class="jn-search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M10.5 3a7.5 7.5 0 1 0 4.6 13.4l4.2 4.2 1.4-1.4-4.2-4.2A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z" fill="currentColor"/></svg>
+          <input id="jn-search" type="search" placeholder="Search articles, videos and podcasts" autocomplete="off" spellcheck="false">
+        </div>
+        <nav class="jn-jump" aria-label="Journal sections">
+          <ul>
+            <li><a href="#journal-articles">Articles</a></li>
+            <li><a href="#design-stories">Design Stories</a></li>
+            <li><a href="#listening-room">Listening Room</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="jn-statusrow js-only">
+        <p class="jn-status" id="jn-status" role="status" aria-live="polite"></p>
+        <button class="jn-reset" id="jn-reset" type="button" hidden>Clear search and filters</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ARTICLES ============ -->
+  <section class="section jn-section" id="journal-articles" aria-labelledby="jn-articles-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">The Journal</p>
+        <h2 class="section-title" id="jn-articles-title">Practical guides for real rooms</h2>
+        <p class="section-lead">Original, plain-language guides to small spaces, colour, lighting and getting the look on a budget.</p>
+      </div>
+
+      {% if featured %}
+        {% if article_categories|length > 1 %}
+          {{ chips("articles", article_categories, "Filter articles by category") }}
+        {% endif %}
+
+        {{ featured_card(featured) }}
+
+        {% if articles %}
+        <ul class="jn-grid" id="jn-article-list">
+          {% for a in articles %}{{ article_card(a) }}{% endfor %}
+        </ul>
+        {% endif %}
+
+        <div class="jn-empty" data-jn-empty="articles" hidden>
+          <p class="jn-empty-title">No articles match that search.</p>
+          <p>Try a different word, or choose another category.</p>
+          <button class="btn btn-outline btn-sm" type="button" data-jn-reset>Clear search and filters</button>
+        </div>
+      {% else %}
+        <div class="jn-pending">
+          <p class="jn-pending-title">Articles are on their way.</p>
+          <p>The first guides will appear here soon.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- ============ DESIGN STORIES (VIDEOS) ============ -->
+  <section class="section section-sand jn-section" id="design-stories" aria-labelledby="jn-videos-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Design Stories</p>
+        <h2 class="section-title" id="jn-videos-title">Rooms worth watching</h2>
+        <p class="section-lead">Interior and architecture videos from their original creators. Videos load only when you press play, and they never start by themselves.</p>
+      </div>
+
+      {% if videos %}
+        {% if video_categories|length > 1 %}
+          {{ chips("videos", video_categories, "Filter videos by category") }}
+        {% endif %}
+        <ul class="jn-media-grid">
+          {% for v in videos %}{{ video_card(v) }}{% endfor %}
+        </ul>
+        <div class="jn-empty" data-jn-empty="videos" hidden>
+          <p class="jn-empty-title">No videos match that search.</p>
+          <p>Try a different word, or choose another category.</p>
+          <button class="btn btn-outline btn-sm" type="button" data-jn-reset>Clear search and filters</button>
+        </div>
+      {% else %}
+        <div class="jn-pending">
+          <p class="jn-pending-title">Design Stories are being curated.</p>
+          <p>Hand-picked interior and architecture videos will appear here once each one has been checked. Nothing is shown until then.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- ============ THE LISTENING ROOM (PODCASTS) ============ -->
+  <section class="section jn-section" id="listening-room" aria-labelledby="jn-podcasts-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">The Listening Room</p>
+        <h2 class="section-title" id="jn-podcasts-title">Good design is worth listening to.</h2>
+        <p class="section-lead">Conversations about spaces, materials, creativity, and the way we live. Each show opens on its publisher's own page.</p>
+      </div>
+
+      {% if podcasts %}
+        {% if podcast_categories|length > 1 %}
+          {{ chips("podcasts", podcast_categories, "Filter podcasts by category") }}
+        {% endif %}
+        <ul class="jn-media-grid jn-pod-grid">
+          {% for p in podcasts %}{{ podcast_card(p) }}{% endfor %}
+        </ul>
+        <div class="jn-empty" data-jn-empty="podcasts" hidden>
+          <p class="jn-empty-title">No podcasts match that search.</p>
+          <p>Try a different word, or choose another category.</p>
+          <button class="btn btn-outline btn-sm" type="button" data-jn-reset>Clear search and filters</button>
+        </div>
+      {% else %}
+        <div class="jn-pending">
+          <p class="jn-pending-title">The Listening Room is being set up.</p>
+          <p>Shows and episodes will appear here once their links have been checked.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- ============ KEEP EXPLORING ============ -->
+  <section class="section section-sand jn-section" id="keep-exploring" aria-labelledby="jn-explore-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Keep exploring</p>
+        <h2 class="section-title" id="jn-explore-title">From reading to planning</h2>
+      </div>
+      <ul class="jn-links">
+        <li class="jn-link-card">
+          <h3><a href="/#styles">Browse the six styles</a></h3>
+          <p>Preview the mood, palette and materials of each aesthetic.</p>
+          <span class="chip chip-live">Available</span>
+        </li>
+        <li class="jn-link-card">
+          <h3><a href="/#quiz">Find your aesthetic</a></h3>
+          <p>A short quiz that will point you toward a style.</p>
+          <span class="chip chip-soon">Coming soon</span>
+        </li>
+        <li class="jn-link-card">
+          <h3><a href="/#budget">Plan within a budget</a></h3>
+          <p>Split a total budget between essentials and optional upgrades.</p>
+          <span class="chip chip-soon">Coming soon</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="section section-tight" aria-labelledby="jn-cta-title">
+    <div class="wrap">
+      <div class="cta-plate on-dark">
+        <h2 class="section-title" id="jn-cta-title">Found an idea you love? Find the style behind it.</h2>
+        <p class="cta-text">Preview six aesthetics, then keep reading whenever you want more ideas.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/#styles">Explore Aesthetics</a>
+          <a class="btn btn-ghost" href="#journal-articles">Back to the Journal</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/journal.js') }}" defer></script>
+{% endblock %}

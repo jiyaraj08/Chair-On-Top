@@ -9,6 +9,14 @@
   <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/motion.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/squirrel.css') }}">
+  <style>
+    /* The nav now has five links. Between 861px and 1060px, tighten them a
+       little so the pill stays on one line. Applies to every page. */
+    @media (min-width: 861px) and (max-width: 1060px) {
+      .nav-links a { padding: 0.55rem 0.7rem; font-size: 0.9rem; }
+    }
+  </style>
+  {% block head_extra %}{% endblock %}
   <script>
     /* Switches the motion layer on before the first paint.
        It stays off for reduced motion or very old browsers. */
@@ -36,5 +44,6 @@
   <script src="{{ url_for('static', path='js/script.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/motion.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/squirrel.js') }}" defer></script>
+  {% block scripts_extra %}{% endblock %}
 </body>
-</html>
+</html>

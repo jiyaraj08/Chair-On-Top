@@ -1,0 +1,22 @@
+{# Shared site header (used by the homepage and the Journal pages).
+   on_home = true      -> links stay in-page (#styles) on the homepage.
+   current_nav = "journal" -> marks the Journal & Listen link as the current page. #}
+{% set _h = "" if on_home else "/" %}
+<header class="site-header">
+  <nav class="pill-nav" aria-label="Main">
+    <a class="brand" href="{{ '#top' if on_home else '/' }}">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Chair on Top</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+      <span class="nav-toggle-bars" aria-hidden="true"></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="{{ _h }}#styles">Explore</a></li>
+      <li><a href="{{ _h }}#quiz">Find My Aesthetic</a></li>
+      <li><a href="{{ _h }}#budget">Budget Planner</a></li>
+      <li><a href="{{ _h }}#how">How it works</a></li>
+      <li><a href="/journal"{% if current_nav == "journal" %} aria-current="page"{% endif %}>Journal &amp; Listen</a></li>
+    </ul>
+  </nav>
+</header>

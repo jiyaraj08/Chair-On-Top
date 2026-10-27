@@ -117,23 +117,8 @@
 {% set upg_sum = upgrades | sum(attribute="amount") %}
 {% set left_sum = total - ess_sum - upg_sum %}
 
-<header class="site-header">
-  <nav class="pill-nav" aria-label="Main">
-    <a class="brand" href="#top">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-name">Chair on Top</span>
-    </a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
-      <span class="nav-toggle-bars" aria-hidden="true"></span>
-    </button>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="#styles">Explore</a></li>
-      <li><a href="#quiz">Find My Aesthetic</a></li>
-      <li><a href="#budget">Budget Planner</a></li>
-      <li><a href="#how">How it works</a></li>
-    </ul>
-  </nav>
-</header>
+{% set on_home = true %}
+{% include "partials/site_header.html" %}
 
 <main id="main">
 
@@ -432,25 +417,5 @@
 </dialog>
 
 <!-- ============ FOOTER ============ -->
-<footer class="site-footer on-dark">
-  <div class="wrap footer-grid">
-    <div class="footer-brand">
-      <p class="footer-name">Chair on Top</p>
-      <p class="footer-tag">Discover an aesthetic you love and map out how to achieve it within your budget.</p>
-    </div>
-    <nav class="footer-nav" aria-label="Footer">
-      <ul>
-        <li><a href="#styles">Explore</a></li>
-        <li><a href="#quiz">Find My Aesthetic</a></li>
-        <li><a href="#budget">Budget Planner</a></li>
-        <li><a href="#how">How it works</a></li>
-        <li><a href="#top">Back to top</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div class="wrap footer-bottom">
-    <p>A college project. Budget figures on this site are illustrative examples.</p>
-    <p class="dev-check" id="dev-check" data-state="off">Dev check: JavaScript not running</p>
-  </div>
-</footer>
-{% endblock %}
+{% include "partials/site_footer.html" %}
+{% endblock %}

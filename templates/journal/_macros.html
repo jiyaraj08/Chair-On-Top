@@ -1,0 +1,84 @@
+{# Small reusable pieces for the Journal pages.
+   Import them with:  {% from "journal/_macros.html" import article_card with context %} #}
+
+{% macro cover(a) %}
+<div class="jn-cover" style="--c1: {{ a.palette[0] }}; --c2: {{ a.palette[1] }}; --c3: {{ a.palette[2] }};">
+  {# Placeholder picture made from the article's palette. A real photo, when set, sits on top of it. #}
+  <span class="jn-cover-art" aria-hidden="true"></span>
+  {% if a.cover_image %}
+  <img src="{{ url_for('static', path=a.cover_image) }}" alt="{{ a.cover_alt }}" loading="lazy" decoding="async">
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro article_card(a) %}
+<li class="jn-card" data-jn-item data-collection="articles" data-category="{{ a.category_slug }}" data-search="{{ a.search_text }}">
+  <div class="jn-card-media">{{ cover(a) }}</div>
+  <div class="jn-card-body">
+    <p class="jn-meta"><span class="jn-cat">{{ a.category }}</span><span aria-hidden="true">&middot;</span><span>{{ a.reading_minutes }} min read</span></p>
+    <h3 class="jn-card-title"><a class="jn-card-link" href="/journal/{{ a.slug }}">{{ a.title }}</a></h3>
+    <p class="jn-card-desc">{{ a.description }}</p>
+  </div>
+</li>
+{% endmacro %}
+
+{% macro featured_card(a) %}
+<article class="jn-featured" data-jn-item data-collection="articles" data-category="{{ a.category_slug }}" data-search="{{ a.search_text }}">
+  <div class="jn-featured-media">{{ cover(a) }}</div>
+  <div class="jn-featured-body">
+    <p class="kicker">Featured</p>
+    <p class="jn-meta"><span class="jn-cat">{{ a.category }}</span><span aria-hidden="true">&middot;</span><span>{{ a.reading_minutes }} min read</span></p>
+    <h3 class="jn-featured-title"><a class="jn-feature-link" href="/journal/{{ a.slug }}">{{ a.title }}</a></h3>
+    <p class="jn-featured-desc">{{ a.description }}</p>
+    <a class="btn btn-dark" href="/journal/{{ a.slug }}">Read the article<span class="visually-hidden">: {{ a.title }}</span></a>
+  </div>
+</article>
+{% endmacro %}
+
+{% macro chips(group, categories, label) %}
+{# Category filter buttons. Only shown to visitors with JavaScript, because
+   filtering happens in the browser. #}
+<div class="jn-chips js-only" role="group" aria-label="{{ label }}" data-jn-filter="{{ group }}">
+  <button class="jn-chip" type="button" data-category="all" aria-pressed="true">All</button>
+  {% for c in categories %}
+  <button class="jn-chip" type="button" data-category="{{ c.slug }}" aria-pressed="false">{{ c.name }}</button>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro video_card(v) %}
+<li class="jn-media-card jn-video" data-jn-item data-collection="videos" data-category="{{ v.category_slug }}" data-search="{{ v.search_text }}">
+  <div class="jn-player" data-player>
+    <div class="jn-thumb"><img src="{{ v.thumb_url }}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div>
+    <button class="jn-play" type="button" data-embed="{{ v.embed_url }}" data-title="{{ v.title }}" data-kind="video" aria-label="Load video player: {{ v.title }}">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <div class="jn-media-body">
+    <p class="jn-meta"><span class="jn-cat">{{ v.category }}</span>{% if v.duration %}<span aria-hidden="true">&middot;</span><span>{{ v.duration }}</span>{% endif %}</p>
+    <h3 class="jn-media-title">{{ v.title }}</h3>
+    {% if v.creator %}<p class="jn-creator">By {{ v.creator }}</p>{% endif %}
+    <p class="jn-card-desc">{{ v.description }}</p>
+    <a class="jn-ext" href="{{ v.watch_url }}" target="_blank" rel="noopener noreferrer">Watch on YouTube<span class="visually-hidden"> (opens in a new tab)</span></a>
+  </div>
+</li>
+{% endmacro %}
+
+{% macro podcast_card(p) %}
+<li class="jn-media-card jn-pod" data-jn-item data-collection="podcasts" data-category="{{ p.category_slug }}" data-search="{{ p.search_text }}">
+  <div class="jn-pod-cover" aria-hidden="true"><span>{{ p.initials }}</span></div>
+  <div class="jn-media-body">
+    <p class="jn-meta"><span class="jn-cat">{{ p.category }}</span><span aria-hidden="true">&middot;</span><span>{{ p.kind }}</span>{% if p.duration %}<span aria-hidden="true">&middot;</span><span>{{ p.duration }}</span>{% endif %}</p>
+    <h3 class="jn-media-title">{{ p.title }}</h3>
+    {% if p.publisher %}<p class="jn-creator">By {{ p.publisher }}</p>{% endif %}
+    <p class="jn-card-desc">{{ p.description }}</p>
+    <div class="jn-pod-actions">
+      <a class="jn-ext" href="{{ p.listen_url }}" target="_blank" rel="noopener noreferrer">{{ p.listen_label }}<span class="visually-hidden">: {{ p.title }} (opens in a new tab)</span></a>
+      {% if p.embed_url %}
+      <button class="btn btn-outline btn-sm jn-load js-only" type="button" data-embed="{{ p.embed_url }}" data-title="{{ p.title }}" data-kind="audio">Load player<span class="visually-hidden">: {{ p.title }}</span></button>
+      {% endif %}
+    </div>
+  </div>
+  {% if p.embed_url %}<div class="jn-embed-slot" data-player></div>{% endif %}
+</li>
+{% endmacro %}

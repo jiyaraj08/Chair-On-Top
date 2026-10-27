@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% from "journal/_macros.html" import cover, article_card with context %}
+
+{% block title %}{{ article.title }} - The Journal - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/journal.css') }}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+  <article class="jn-article-page">
+
+    <header class="jn-article-head">
+      <nav class="jn-crumbs" aria-label="Breadcrumb">
+        <a href="/journal">The Journal</a>
+        <span aria-hidden="true">/</span>
+        <a href="/journal?category={{ article.category_slug }}#journal-articles">{{ article.category }}</a>
+      </nav>
+      <h1 class="jn-article-title">{{ article.title }}</h1>
+      <p class="jn-article-deck">{{ article.description }}</p>
+      <p class="jn-meta"><span class="jn-cat">{{ article.category }}</span><span aria-hidden="true">&middot;</span><span>{{ article.reading_minutes }} min read</span><span aria-hidden="true">&middot;</span><span>Published {{ article.date_display }}</span></p>
+    </header>
+
+    <div class="jn-article-cover">{{ cover(article) }}</div>
+
+    <div class="jn-article-layout">
+      {% if article.headings|length > 2 %}
+      <nav class="jn-toc" aria-label="In this article">
+        <p class="jn-toc-title">In this article</p>
+        <ol>
+          {% for h in article.headings %}
+          <li><a href="#{{ h.id }}">{{ h.text }}</a></li>
+          {% endfor %}
+        </ol>
+      </nav>
+      {% endif %}
+
+      <div class="jn-prose">
+        {% for block in article.body %}
+          {% if block.type == "p" %}
+            <p>{{ block.text }}</p>
+          {% elif block.type == "h2" %}
+            <h2 id="{{ block.id }}">{{ block.text }}</h2>
+          {% elif block.type == "ul" %}
+            <ul>{% for item in block["items"] %}<li>{{ item }}</li>{% endfor %}</ul>
+          {% elif block.type == "ol" %}
+            <ol>{% for item in block["items"] %}<li>{{ item }}</li>{% endfor %}</ol>
+          {% elif block.type == "callout" %}
+            <aside class="jn-callout">
+              <p class="jn-callout-title">{{ block.title }}</p>
+              <p>{{ block.text }}</p>
+            </aside>
+          {% endif %}
+        {% endfor %}
+
+        <p class="jn-article-end">Written for Chair on Top. Rules of thumb in this guide are general starting points, not fixed rules.</p>
+      </div>
+    </div>
+
+    <div class="jn-article-actions wrap">
+      <a class="btn btn-outline" href="/journal#journal-articles">Back to the Journal</a>
+      <a class="btn btn-dark" href="/#styles">Browse the six styles</a>
+    </div>
+  </article>
+
+  {% if related %}
+  <section class="section section-sand jn-section" aria-labelledby="jn-related-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Keep reading</p>
+        <h2 class="section-title" id="jn-related-title">More from the Journal</h2>
+      </div>
+      <ul class="jn-grid">
+        {% for a in related %}{{ article_card(a) }}{% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% endif %}
+</main>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/journal.js') }}" defer></script>
+{% endblock %}
