@@ -1,0 +1,893 @@
+/* Chair on Top - journal.css
+   Styles for the Journal & Listen pages (/journal and /journal/<article>).
+   Every class starts with jn- so nothing here can change the homepage.
+   It reuses the colour, font and spacing tokens defined in style.css.
+   It is only loaded by the Journal templates. */
+
+/* =========================================================
+   1. HERO
+   ========================================================= */
+.jn-hero {
+  padding: clamp(7rem, 14vw, 9.5rem) 0 clamp(2.5rem, 6vw, 4rem);
+}
+
+.jn-hero-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.jn-hero h1 {
+  margin-bottom: var(--space-5);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+}
+
+.jn-hero-text {
+  max-width: 34rem;
+  margin-bottom: var(--space-6);
+  font-size: var(--fs-lead);
+  color: var(--text-soft);
+}
+
+.jn-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Decorative picture: an arched window with a low sun. */
+.jn-hero-art {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(circle at 72% 26%, rgba(255, 243, 214, 0.9) 0 7%, rgba(255, 243, 214, 0) 8%),
+    linear-gradient(180deg, #e6d8c1 0%, #d9c7a8 100%);
+}
+
+.jn-hero-art::before {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: 14%;
+  width: 40%;
+  height: 52%;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(180deg, #f6efe2 0%, #efe3cc 100%);
+  box-shadow: 0 0 0 6px rgba(124, 86, 54, 0.35);
+}
+
+.jn-hero-art::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  background: linear-gradient(180deg, #9b7249 0%, #76532f 100%);
+}
+
+.jn-notfound {
+  max-width: 44rem;
+}
+
+@media (max-width: 860px) {
+  .jn-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jn-hero-art {
+    aspect-ratio: 16 / 9;
+    max-height: 14rem;
+  }
+}
+
+/* Same gentle entrance as the homepage, only when the motion layer is on. */
+.motion-on .jn-hero-copy > * {
+  animation: m-fade-lift 0.8s var(--m-ease) backwards;
+}
+
+.motion-on .jn-hero-copy > :nth-child(2) { animation-delay: 0.12s; }
+.motion-on .jn-hero-copy > :nth-child(3) { animation-delay: 0.24s; }
+.motion-on .jn-hero-copy > :nth-child(4) { animation-delay: 0.36s; }
+
+/* =========================================================
+   2. SEARCH BAR AND SECTION LINKS
+   ========================================================= */
+.jn-toolbar {
+  padding-bottom: var(--space-4);
+}
+
+.jn-toolbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.jn-search {
+  display: none;
+  position: relative;
+  flex: 1 1 18rem;
+  max-width: 30rem;
+}
+
+.js .jn-search {
+  display: block;
+}
+
+.jn-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 1.1rem;
+  translate: 0 -50%;
+  color: var(--text-soft);
+  pointer-events: none;
+}
+
+.jn-search input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.7rem 1.2rem 0.7rem 2.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font: inherit;
+  color: var(--text);
+  transition: border-color var(--m-fast, 0.25s) ease;
+}
+
+.jn-search input:hover {
+  border-color: var(--text-soft);
+}
+
+.jn-search input::placeholder {
+  color: var(--text-soft);
+}
+
+.jn-jump ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.jn-jump a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.jn-jump a:hover {
+  background: var(--charcoal);
+  border-color: var(--charcoal);
+  color: var(--text-on-dark);
+}
+
+.jn-statusrow {
+  display: none;
+  min-height: 2.25rem;
+  margin-top: var(--space-3);
+}
+
+.js .jn-statusrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.jn-status {
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.jn-reset {
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--charcoal);
+  border-radius: var(--r-pill);
+  background: transparent;
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.jn-reset:hover {
+  background: var(--charcoal);
+  color: var(--text-on-dark);
+}
+
+/* =========================================================
+   3. CATEGORY CHIPS
+   ========================================================= */
+.jn-chips {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.js .jn-chips {
+  display: flex;
+}
+
+.jn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: transparent;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+}
+
+.jn-chip:hover {
+  border-color: var(--text-soft);
+  transform: translateY(-1px);
+}
+
+.jn-chip:active {
+  transform: scale(0.97);
+}
+
+/* The selected chip is dark AND shows a tick, so colour is not the only signal. */
+.jn-chip[aria-pressed="true"] {
+  border-color: var(--charcoal);
+  background: var(--charcoal);
+  color: var(--text-on-dark);
+}
+
+.jn-chip[aria-pressed="true"]::before {
+  content: "\2713";
+  font-size: 0.8em;
+}
+
+/* =========================================================
+   4. COVERS (placeholder art that real photos can sit on top of)
+   ========================================================= */
+.jn-cover {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 28%, rgba(255, 255, 255, 0.4) 0 8%, rgba(255, 255, 255, 0) 9%),
+    var(--c1);
+}
+
+.jn-cover-art,
+.jn-cover > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: scale 0.9s var(--ease, ease);
+}
+
+.jn-cover > img {
+  object-fit: cover;
+}
+
+.jn-cover > img.is-broken {
+  display: none;
+}
+
+.jn-cover-art::before {
+  content: "";
+  position: absolute;
+  left: 14%;
+  top: 16%;
+  width: 24%;
+  height: 56%;
+  border-radius: 999px 999px 0 0;
+  background: var(--c2);
+  opacity: 0.92;
+}
+
+.jn-cover-art::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26%;
+  background: var(--c3);
+}
+
+/* =========================================================
+   5. ARTICLE CARDS
+   ========================================================= */
+.jn-featured {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(1.25rem, 4vw, 3rem);
+  align-items: center;
+  margin-bottom: var(--space-7);
+}
+
+.jn-featured-media {
+  overflow: hidden;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+}
+
+.jn-featured:hover .jn-cover-art,
+.jn-featured:hover .jn-cover > img {
+  scale: 1.04;
+}
+
+.jn-featured-title {
+  margin: var(--space-2) 0 var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  line-height: 1.12;
+}
+
+.jn-feature-link {
+  text-decoration: none;
+}
+
+.jn-feature-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.jn-featured-desc {
+  max-width: 34rem;
+  margin-bottom: var(--space-5);
+  font-size: var(--fs-lead);
+  color: var(--text-soft);
+}
+
+.jn-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+}
+
+.jn-cat {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wood);
+}
+
+.jn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: var(--space-5);
+}
+
+.jn-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.45s var(--ease, ease), box-shadow 0.45s var(--ease, ease);
+}
+
+.jn-card:hover,
+.jn-card:focus-within {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lift);
+}
+
+.jn-card:hover .jn-cover-art,
+.jn-card:hover .jn-cover > img {
+  scale: 1.05;
+}
+
+.jn-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.15rem 1.3rem 1.4rem;
+}
+
+.jn-card-title {
+  margin: var(--space-2) 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+/* The title link covers the whole card, so the card is one big tap target. */
+.jn-card-link {
+  text-decoration: none;
+}
+
+.jn-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.jn-card-link:focus-visible {
+  outline: none;
+}
+
+.jn-card:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.jn-card-desc {
+  color: var(--text-soft);
+}
+
+/* =========================================================
+   6. EMPTY AND "BEING CURATED" STATES
+   ========================================================= */
+.jn-empty,
+.jn-pending {
+  margin-top: var(--space-5);
+  padding: var(--space-6) var(--space-5);
+  border: 1px dashed var(--text-soft);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  text-align: center;
+  color: var(--text-soft);
+}
+
+.jn-empty-title,
+.jn-pending-title {
+  margin-bottom: var(--space-2);
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--text);
+}
+
+.jn-empty .btn {
+  margin-top: var(--space-4);
+}
+
+/* =========================================================
+   7. VIDEOS AND PODCASTS
+   ========================================================= */
+.jn-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: var(--space-5);
+}
+
+.jn-pod-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+}
+
+.jn-media-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.jn-media-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.15rem 1.3rem 1.4rem;
+}
+
+.jn-media-title {
+  margin: var(--space-2) 0 var(--space-1);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.jn-creator {
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.jn-ext {
+  display: inline-block;
+  margin-top: auto;
+  padding-top: var(--space-3);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--wood);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.jn-ext::after {
+  content: " \2197";
+  display: inline-block;
+  transition: translate 0.25s ease;
+}
+
+.jn-ext:hover {
+  color: var(--charcoal);
+}
+
+.jn-ext:hover::after {
+  translate: 2px -2px;
+}
+
+/* 16:9 box: picture first, real player only after the visitor asks for it. */
+.jn-player {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--charcoal);
+}
+
+.jn-thumb,
+.jn-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.jn-thumb img {
+  object-fit: cover;
+}
+
+.jn-thumb img.is-broken {
+  display: none;
+}
+
+.jn-play {
+  position: absolute;
+  inset: 0;
+  display: none;
+  width: 4.2rem;
+  height: 4.2rem;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(247, 242, 233, 0.94);
+  color: var(--charcoal);
+  cursor: pointer;
+  place-items: center;
+  transition: transform 0.25s var(--ease, ease), background-color 0.25s ease;
+}
+
+.js .jn-play {
+  display: grid;
+}
+
+.jn-play:hover {
+  background: #ffffff;
+  transform: scale(1.06);
+}
+
+.jn-play:active {
+  transform: scale(0.97);
+}
+
+.jn-play:focus-visible {
+  outline-color: var(--focus-on-dark);
+}
+
+.jn-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Podcasts */
+.jn-pod {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  align-items: start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.jn-pod-cover {
+  display: grid;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: var(--r-sm);
+  background: var(--charcoal);
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.02em;
+}
+
+.jn-pod .jn-media-body {
+  padding: 0;
+}
+
+.jn-pod-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+.jn-pod-actions .jn-ext {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.jn-embed-slot {
+  grid-column: 1 / -1;
+}
+
+.jn-embed-slot:empty {
+  display: none;
+}
+
+.jn-embed-slot .jn-iframe {
+  position: static;
+  display: block;
+  width: 100%;
+  height: 152px;
+  border-radius: 12px;
+}
+
+@media (max-width: 420px) {
+  .jn-pod {
+    grid-template-columns: 4.5rem 1fr;
+  }
+
+  .jn-pod-cover {
+    font-size: 1.4rem;
+  }
+}
+
+/* =========================================================
+   8. KEEP EXPLORING
+   ========================================================= */
+.jn-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-5);
+}
+
+.jn-link-card {
+  padding: var(--space-5);
+  border-top: 3px solid var(--charcoal);
+  background: var(--surface);
+  border-radius: 0 0 var(--r-md) var(--r-md);
+  box-shadow: var(--shadow-card);
+}
+
+.jn-link-card h3 {
+  margin-bottom: var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+}
+
+.jn-link-card p {
+  margin-bottom: var(--space-4);
+  color: var(--text-soft);
+}
+
+/* =========================================================
+   9. ARTICLE PAGE
+   ========================================================= */
+.jn-article-head {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: clamp(7rem, 13vw, 9rem) var(--page-pad) var(--space-6);
+}
+
+.jn-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: var(--space-5);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.jn-crumbs a {
+  color: var(--wood);
+  text-underline-offset: 3px;
+}
+
+.jn-crumbs a:hover {
+  color: var(--charcoal);
+}
+
+.jn-article-title {
+  margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  overflow-wrap: break-word;
+}
+
+.jn-article-deck {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-lead);
+  color: var(--text-soft);
+}
+
+.jn-article-cover {
+  width: 100%;
+  max-width: calc(var(--w-content) + 2 * var(--page-pad));
+  margin: 0 auto var(--space-7);
+  padding-inline: var(--page-pad);
+}
+
+.jn-article-cover .jn-cover {
+  aspect-ratio: 21 / 9;
+  border-radius: var(--r-md);
+}
+
+.jn-article-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  max-width: 64rem;
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
+}
+
+.jn-toc {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+}
+
+.jn-toc-title {
+  margin-bottom: var(--space-2);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wood);
+}
+
+.jn-toc ol {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.jn-toc a {
+  color: var(--text-soft);
+  text-underline-offset: 3px;
+}
+
+.jn-toc a:hover {
+  color: var(--charcoal);
+}
+
+@media (min-width: 960px) {
+  .jn-article-layout {
+    grid-template-columns: 13rem minmax(0, 40rem);
+    justify-content: center;
+    gap: var(--space-7);
+    align-items: start;
+  }
+
+  .jn-toc {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+.jn-prose > * + * {
+  margin-top: 1.25rem;
+}
+
+.jn-prose p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.jn-prose h2 {
+  margin-top: 2.6rem;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  line-height: 1.2;
+  scroll-margin-top: 6rem;
+}
+
+.jn-prose ul,
+.jn-prose ol {
+  padding-left: 1.4rem;
+  font-size: 1.1rem;
+  line-height: 1.75;
+}
+
+.jn-prose ul {
+  list-style: disc;
+}
+
+.jn-prose ol {
+  list-style: decimal;
+}
+
+.jn-prose li + li {
+  margin-top: 0.5rem;
+}
+
+.jn-prose li::marker {
+  color: var(--wood);
+}
+
+.jn-callout {
+  padding: var(--space-4) var(--space-5);
+  border-left: 4px solid var(--wood);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: var(--sand);
+}
+
+.jn-callout p {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.jn-callout-title {
+  margin-bottom: var(--space-1);
+  font-family: var(--font-display);
+  font-size: 1.2rem !important;
+}
+
+.jn-article-end {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-sm) !important;
+  color: var(--text-soft);
+}
+
+.jn-article-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+  padding-bottom: var(--space-7);
+}
+
+/* =========================================================
+   10. SMALL SCREENS
+   ========================================================= */
+@media (max-width: 860px) {
+  .jn-featured {
+    grid-template-columns: 1fr;
+  }
+}
