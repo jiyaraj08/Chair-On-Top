@@ -2,29 +2,19 @@
 
 {% block title %}Chair on Top - Find the interior style that feels like you{% endblock %}
 
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+{% endblock %}
+
 {% block body %}
 {# ------------------------------------------------------------------
-   TEMPORARY CONTENT. Phase 2 moves these lists into data/aesthetics.json.
+   TEMPORARY CONTENT. The four styles match the four gallery collections (Japandi, Mid-Century Modern, Scandinavian, Minimalism).
    Palette order is: wall, main furniture colour, floor, light.
    ------------------------------------------------------------------ #}
 {% set styles = [
   {
-    "slug": "minimalist",
-    "name": "Minimalist",
-    "mood": "Calm, clear and uncluttered. Every object earns its place.",
-    "summary": "Minimalist rooms rely on open space, simple shapes and a few well-chosen pieces. The result feels quiet and is easy to keep tidy.",
-    "materials": "Matte paint, light wood, linen, simple metal",
-    "budget": 1,
-    "budget_label": "Lower",
-    "palette": [
-      {"name": "Soft white", "hex": "#e9e5dd"},
-      {"name": "Stone grey", "hex": "#7c7770"},
-      {"name": "Pale oak", "hex": "#c9bfae"},
-      {"name": "Warm white", "hex": "#faf8f3"}
-    ]
-  },
-  {
     "slug": "japandi",
+    "gallery": "japandi",
     "name": "Japandi",
     "mood": "Quiet warmth: Japanese simplicity with Scandinavian comfort.",
     "summary": "Japandi mixes the calm order of Japanese design with the cosiness of Nordic homes. Expect low furniture, natural wood and earthy, muted colours.",
@@ -39,37 +29,24 @@
     ]
   },
   {
-    "slug": "industrial",
-    "name": "Industrial",
-    "mood": "Raw and confident: metal, brick and honest materials.",
-    "summary": "Industrial rooms borrow from lofts and workshops. Rough surfaces, dark metal and warm bulbs keep the look bold without feeling cold.",
-    "materials": "Exposed brick, dark metal, aged wood, concrete",
+    "slug": "mid-century-modern",
+    "gallery": "mid-century-modern",
+    "name": "Mid-Century Modern",
+    "mood": "Warm woods, sculptural lines and confident, timeless shapes.",
+    "summary": "Mid-Century Modern rooms pair warm wood with clean geometry and curved, sculptural furniture. A few bold accent colours keep the calm look lively.",
+    "materials": "Teak and walnut, leather, wool, brass",
     "budget": 2,
     "budget_label": "Mid-range",
     "palette": [
-      {"name": "Concrete grey", "hex": "#8d8a85"},
-      {"name": "Charcoal", "hex": "#2e2b28"},
-      {"name": "Aged wood", "hex": "#5a4636"},
-      {"name": "Warm bulb", "hex": "#d9a66a"}
-    ]
-  },
-  {
-    "slug": "bohemian",
-    "name": "Bohemian",
-    "mood": "Layered, collected and personal, full of texture and colour.",
-    "summary": "Bohemian rooms feel gathered over time. Mixed patterns, plants and handmade pieces make the space relaxed and full of character.",
-    "materials": "Cane, rattan, cotton, jute, layered textiles",
-    "budget": 1,
-    "budget_label": "Lower",
-    "palette": [
-      {"name": "Warm sand", "hex": "#e3c9a6"},
-      {"name": "Terracotta", "hex": "#b5603a"},
-      {"name": "Walnut", "hex": "#7a5538"},
-      {"name": "Mustard", "hex": "#e7b24c"}
+      {"name": "Warm cream", "hex": "#eadfc8"},
+      {"name": "Burnt orange", "hex": "#b5622e"},
+      {"name": "Teak", "hex": "#8a5a35"},
+      {"name": "Mustard glow", "hex": "#dcae4a"}
     ]
   },
   {
     "slug": "scandinavian",
+    "gallery": "scandinavian",
     "name": "Scandinavian",
     "mood": "Bright, soft and practical, made for cosy daily life.",
     "summary": "Scandinavian rooms use pale colours and natural light to feel open and welcoming. Furniture is simple, comfortable and built for everyday use.",
@@ -84,18 +61,19 @@
     ]
   },
   {
-    "slug": "modern-luxury",
-    "name": "Modern Luxury",
-    "mood": "Rich, polished and dramatic, with a few statement pieces.",
-    "summary": "Modern Luxury favours deep colours, soft lighting and fine finishes. A small number of standout pieces matter more than filling the room.",
-    "materials": "Brass, velvet, stone, smoked glass, dark wood",
-    "budget": 3,
-    "budget_label": "Higher",
+    "slug": "minimalism",
+    "gallery": "minimalism",
+    "name": "Minimalism",
+    "mood": "Calm, clear and uncluttered. Every object earns its place.",
+    "summary": "Minimalism relies on open space, simple shapes and a few well-chosen pieces. The result feels quiet and is easy to keep tidy.",
+    "materials": "Matte paint, light wood, linen, simple metal",
+    "budget": 1,
+    "budget_label": "Lower",
     "palette": [
-      {"name": "Deep charcoal", "hex": "#2f2b27"},
-      {"name": "Brushed brass", "hex": "#b88b4a"},
-      {"name": "Espresso", "hex": "#1e1b18"},
-      {"name": "Champagne light", "hex": "#e8cf9c"}
+      {"name": "Soft white", "hex": "#e9e5dd"},
+      {"name": "Stone grey", "hex": "#7c7770"},
+      {"name": "Pale oak", "hex": "#c9bfae"},
+      {"name": "Warm white", "hex": "#faf8f3"}
     ]
   }
 ] %}
@@ -212,7 +190,7 @@
         <a class="btn btn-primary" href="#quiz">Find My Aesthetic</a>
         <a class="btn btn-ghost" href="#styles">Explore Aesthetics</a>
       </div>
-      <p class="hero-status">Six style previews are live. The quiz and budget planner are coming soon.</p>
+      <p class="hero-status">Four style collections are live. The quiz and budget planner are coming soon.</p>
     </div>
   </section>
 
@@ -221,24 +199,33 @@
     <div class="wrap">
       <div class="section-head reveal">
         <p class="kicker">Explore</p>
-        <h2 class="section-title" id="styles-title">Six ways to make a room feel like yours</h2>
+        <h2 class="section-title" id="styles-title">Four ways to make a room feel like yours</h2>
         <p class="section-lead">
-          Preview each style's mood, palette and materials. Cards show colour placeholders until your photographs are added. The budget feel is a rough guide, not a price.
+          Preview each style's mood, palette and materials, then open its gallery to see the photographs. The budget feel is a rough guide, not a price.
         </p>
       </div>
 
-      <p class="swipe-hint">Swipe sideways to see all six styles</p>
+      <p class="swipe-hint">Swipe sideways to see all four styles</p>
 
       <div class="style-scroller" role="region" aria-label="Interior styles, scrolls sideways on small screens" tabindex="0">
         <ul class="style-grid" id="style-cards">
           {% for s in styles %}
           <li class="style-card" data-name="{{ s.name }}">
-            <!-- PLACEHOLDER IMAGE. Later, replace .card-visual with: <img class="card-img" src="..." alt="..."> -->
+            {# Real cover photograph from the gallery collection. The colour placeholder is only a fallback if no photo exists. #}
+            {% set cover = gallery_covers.get(s.gallery) if gallery_covers is defined and gallery_covers else none %}
+            {% if cover %}
+            <div class="card-media">
+              <img class="card-img" src="/static/{{ cover.path }}"
+                   {% if cover.width and cover.height %}width="{{ cover.width }}" height="{{ cover.height }}"{% endif %}
+                   alt="{{ s.name }} collection cover photograph" loading="lazy" decoding="async">
+            </div>
+            {% else %}
             <div class="card-media" aria-hidden="true">
               <div class="card-visual" style="--c1: {{ s.palette[0].hex }}; --c2: {{ s.palette[1].hex }}; --c3: {{ s.palette[2].hex }}; --c4: {{ s.palette[3].hex }};">
                 <span class="card-lamp"></span>
               </div>
             </div>
+            {% endif %}
             <div class="card-body">
               <h3 class="card-title">{{ s.name }}</h3>
               <p class="card-mood">{{ s.mood }}</p>
@@ -261,8 +248,9 @@
                 </ul>
                 <h4 class="detail-sub">Materials</h4>
                 <p>{{ s.materials }}</p>
-                <p class="detail-note">The full style guide, with photos, furniture and lighting ideas, is coming soon.</p>
-                <a class="btn btn-dark btn-sm" href="#quiz">About the style quiz</a>
+                <p class="detail-note">A full style guide with furniture and lighting ideas is coming soon.</p>
+                <a class="btn btn-dark btn-sm" href="/gallery/{{ s.gallery }}">View the {{ s.name }} gallery</a>
+                <a class="btn btn-outline btn-sm" href="#quiz">About the style quiz</a>
               </div>
             </div>
           </li>
@@ -273,6 +261,11 @@
       <div class="shortlist js-only">
         <p id="shortlist-status" aria-live="polite">Your shortlist is empty. Press Save on a style to keep it here.</p>
         <p class="shortlist-note">This shortlist is temporary. It lives only in this browser tab and disappears when you reload. Saving to an account is a future feature.</p>
+      </div>
+
+      <div class="gl-home-link">
+        <p>Want to see more than a cover photo?</p>
+        <a class="btn btn-dark" href="/gallery">View the gallery</a>
       </div>
     </div>
   </section>
@@ -395,7 +388,7 @@
     <div class="wrap">
       <div class="cta-plate on-dark reveal">
         <h2 class="section-title" id="cta-title">Start with the feeling. The plan comes next.</h2>
-        <p class="cta-text">Browse six styles today. The quiz and budget planner are on their way.</p>
+        <p class="cta-text">Browse four styles today. The quiz and budget planner are on their way.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#styles">Explore Aesthetics</a>
           <a class="btn btn-ghost" href="#how">See how it works</a>
@@ -418,4 +411,4 @@
 
 <!-- ============ FOOTER ============ -->
 {% include "partials/site_footer.html" %}
-{% endblock %}
+{% endblock %}
