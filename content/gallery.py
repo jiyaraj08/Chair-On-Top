@@ -66,6 +66,13 @@ COLLECTIONS = [
         "description": "Light-filled spaces, functional furniture, natural materials, and understated comfort.",
         "cover": "img1.jpg",
     },
+    {
+        "slug": "minimalism",
+        "name": "Minimalism",
+        "folder": "minimalism",
+        "description": "Open space, quiet surfaces, and only the pieces that earn their place.",
+        "cover": "img1.jpg",
+    },
 ]
 
 
