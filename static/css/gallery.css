@@ -1,0 +1,476 @@
+/* Chair on Top - gallery.css
+   Styles for the design gallery (/gallery and /gallery/<collection>) and the
+   small "View the gallery" link on the homepage.
+   Every class starts with gl- so nothing here can change other pages.
+   It reuses the colour, font and spacing tokens from style.css. */
+
+/* =========================================================
+   1. HERO AND PAGE HEAD
+   ========================================================= */
+.gl-hero,
+.gl-head {
+  padding: clamp(7rem, 13vw, 9.5rem) 0 clamp(2rem, 5vw, 3.5rem);
+}
+
+.gl-hero h1,
+.gl-head h1 {
+  max-width: 16ch;
+  margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+}
+
+.gl-head h1 {
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+}
+
+.gl-lead {
+  max-width: 36rem;
+  font-size: var(--fs-lead);
+  color: var(--text-soft);
+}
+
+.gl-meta {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wood);
+}
+
+.gl-head .gl-meta {
+  margin: var(--space-4) 0 var(--space-5);
+}
+
+.gl-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: var(--space-5);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.gl-crumbs a {
+  color: var(--wood);
+  text-underline-offset: 3px;
+}
+
+.gl-crumbs a:hover {
+  color: var(--charcoal);
+}
+
+.gl-back {
+  margin-top: var(--space-1);
+}
+
+.motion-on .gl-hero-copy > *,
+.motion-on .gl-head .wrap > * {
+  animation: m-fade-lift 0.8s var(--m-ease) backwards;
+}
+
+.motion-on .gl-hero-copy > :nth-child(2),
+.motion-on .gl-head .wrap > :nth-child(2) { animation-delay: 0.08s; }
+.motion-on .gl-hero-copy > :nth-child(3),
+.motion-on .gl-head .wrap > :nth-child(3) { animation-delay: 0.16s; }
+.motion-on .gl-hero-copy > :nth-child(4),
+.motion-on .gl-head .wrap > :nth-child(4) { animation-delay: 0.24s; }
+.motion-on .gl-head .wrap > :nth-child(5) { animation-delay: 0.32s; }
+.motion-on .gl-head .wrap > :nth-child(6) { animation-delay: 0.4s; }
+
+/* =========================================================
+   2. COLLECTION CARDS (/gallery)
+   ========================================================= */
+.gl-section {
+  padding-top: 0;
+}
+
+.section-sand.gl-section {
+  padding-top: var(--section-pad);
+}
+
+.gl-collections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: var(--space-5);
+}
+
+.gl-collection {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.45s var(--ease, ease), box-shadow 0.45s var(--ease, ease);
+}
+
+.gl-collection:hover,
+.gl-collection:focus-within {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lift);
+}
+
+.gl-collection:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.gl-collection-media {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.gl-collection-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.9s var(--ease, ease);
+}
+
+.gl-collection:hover .gl-collection-media img {
+  scale: 1.05;
+}
+
+.gl-collection-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.25rem 1.4rem 1.5rem;
+}
+
+.gl-collection-title {
+  margin: var(--space-1) 0 var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.7rem;
+  line-height: 1.15;
+}
+
+/* The title link stretches over the whole card: one big tap target. */
+.gl-collection-link {
+  text-decoration: none;
+}
+
+.gl-collection-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.gl-collection-link:focus-visible {
+  outline: none;
+}
+
+.gl-collection-desc {
+  color: var(--text-soft);
+}
+
+.gl-cta {
+  margin-top: auto;
+  padding-top: var(--space-4);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--wood);
+}
+
+.gl-cta::after {
+  content: " \2192";
+  display: inline-block;
+  transition: translate 0.25s ease;
+}
+
+.gl-collection:hover .gl-cta::after {
+  translate: 4px 0;
+}
+
+.gl-note {
+  margin-top: var(--space-5);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.gl-pending {
+  padding: var(--space-6) var(--space-5);
+  border: 1px dashed var(--text-soft);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  text-align: center;
+  color: var(--text-soft);
+}
+
+.gl-pending-title {
+  margin-bottom: var(--space-2);
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--text);
+}
+
+.gl-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) 0;
+  border-top: 1px solid var(--line);
+}
+
+.gl-more h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.gl-more-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* =========================================================
+   3. PICTURE GRID (/gallery/<collection>)
+   A light masonry: CSS columns, each picture keeps its own proportions.
+   The browser reserves the right space before a picture loads, so the page
+   does not jump around.
+   ========================================================= */
+.gl-gallery {
+  padding-bottom: var(--space-7);
+}
+
+.gl-grid {
+  column-count: 1;
+  column-gap: var(--space-4);
+}
+
+@media (min-width: 480px) {
+  .gl-grid {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 900px) {
+  .gl-grid {
+    column-count: 3;
+    column-gap: var(--space-5);
+  }
+}
+
+.gl-item {
+  margin-bottom: var(--space-4);
+  break-inside: avoid;
+}
+
+@media (min-width: 900px) {
+  .gl-item {
+    margin-bottom: var(--space-5);
+  }
+}
+
+.gl-thumb {
+  display: block;
+  position: relative;
+  aspect-ratio: var(--ratio, 4 / 3);
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  background: var(--sand);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.4s var(--ease, ease);
+}
+
+.gl-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.9s var(--ease, ease);
+}
+
+.gl-thumb:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+.gl-thumb:hover img {
+  scale: 1.04;
+}
+
+.gl-hint {
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.gl-other-title {
+  margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.gl-other {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* =========================================================
+   4. LIGHTBOX (native <dialog>)
+   ========================================================= */
+.gl-lock {
+  overflow: hidden;
+}
+
+.gl-lightbox {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-on-dark);
+}
+
+.gl-lightbox::backdrop {
+  background: rgba(24, 20, 17, 0.94);
+}
+
+.gl-lightbox[open] {
+  animation: gl-fade 0.25s ease;
+}
+
+.gl-lb-inner {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-4);
+}
+
+.gl-lb-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.gl-lb-count {
+  font-size: var(--fs-sm);
+  letter-spacing: 0.08em;
+  color: var(--text-on-dark-soft);
+}
+
+.gl-lb-figure {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  justify-items: center;
+  min-height: 0;
+  margin: 0;
+  padding: var(--space-3) 3.5rem var(--space-2);
+}
+
+.gl-lb-img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--r-sm);
+}
+
+.gl-lb-caption {
+  padding-top: var(--space-3);
+  font-size: var(--fs-sm);
+  text-align: center;
+  color: var(--text-on-dark-soft);
+}
+
+.gl-lb-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  padding: 0;
+  border: 1px solid rgba(247, 242, 233, 0.35);
+  border-radius: 50%;
+  background: rgba(34, 30, 26, 0.7);
+  color: var(--text-on-dark);
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.gl-lb-btn:hover {
+  background: rgba(247, 242, 233, 0.2);
+}
+
+.gl-lb-btn:active {
+  transform: scale(0.94);
+}
+
+.gl-lb-btn:focus-visible {
+  outline: 3px solid var(--focus-on-dark);
+  outline-offset: 3px;
+}
+
+.gl-lb-prev,
+.gl-lb-next {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.gl-lb-prev {
+  left: var(--space-3);
+}
+
+.gl-lb-next {
+  right: var(--space-3);
+}
+
+@media (max-width: 600px) {
+  .gl-lb-inner {
+    padding: var(--space-3);
+  }
+
+  .gl-lb-figure {
+    padding-inline: 0;
+  }
+
+  .gl-lb-prev,
+  .gl-lb-next {
+    top: auto;
+    bottom: 3.4rem;
+    translate: none;
+  }
+}
+
+/* =========================================================
+   5. HOMEPAGE LINK (below the six styles)
+   ========================================================= */
+.gl-home-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.gl-home-link p {
+  color: var(--text-soft);
+}
+
+@keyframes gl-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
