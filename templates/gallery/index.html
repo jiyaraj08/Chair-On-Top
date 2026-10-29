@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}The Design Gallery - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+
+  <section class="gl-hero" aria-labelledby="gl-title">
+    <div class="wrap gl-hero-copy">
+      <p class="kicker">The Design Gallery</p>
+      <h1 id="gl-title">Spaces worth lingering in.</h1>
+      <p class="gl-lead">Three collections of interior photography, each a different way of making a room feel calm, warm and lived in.</p>
+    </div>
+  </section>
+
+  <section class="section gl-section" aria-labelledby="gl-collections-title">
+    <div class="wrap">
+      <h2 class="visually-hidden" id="gl-collections-title">Collections</h2>
+
+      {% if collections %}
+      <ul class="gl-collections">
+        {% for c in collections %}
+        <li class="gl-collection">
+          <div class="gl-collection-media">
+            <img src="/static/{{ c.cover.path }}"
+                 {% if c.cover.width and c.cover.height %}width="{{ c.cover.width }}" height="{{ c.cover.height }}"{% endif %}
+                 alt="Cover photo for the {{ c.name }} collection"
+                 loading="{{ 'eager' if loop.first else 'lazy' }}" decoding="async">
+          </div>
+          <div class="gl-collection-body">
+            <p class="gl-meta">{{ c.count }} image{{ '' if c.count == 1 else 's' }}</p>
+            <h3 class="gl-collection-title"><a class="gl-collection-link" href="/gallery/{{ c.slug }}">{{ c.name }}<span class="visually-hidden"> collection, {{ c.count }} images</span></a></h3>
+            <p class="gl-collection-desc">{{ c.description }}</p>
+            <span class="gl-cta" aria-hidden="true">View collection</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="gl-note">Collection descriptions are editorial. They describe the spirit of each style, not every single photo.</p>
+      {% else %}
+      <div class="gl-pending">
+        <p class="gl-pending-title">The gallery is being set up.</p>
+        <p>No photos were found yet. Check back soon.</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="section section-tight" aria-labelledby="gl-more-title">
+    <div class="wrap">
+      <div class="gl-more">
+        <h2 id="gl-more-title">Want ideas to go with the pictures?</h2>
+        <div class="gl-more-actions">
+          <a class="btn btn-dark" href="/journal">Read the Journal</a>
+          <a class="btn btn-outline" href="/#styles">Browse the six styles</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}
+{# NOTE: picture addresses are written as /static/... on purpose. url_for() builds
+   full addresses (http://host/...), which browsers block as "mixed content" if a
+   hosting proxy makes the server think it is on plain http. #}

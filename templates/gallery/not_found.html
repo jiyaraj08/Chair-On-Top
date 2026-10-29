@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Collection not found - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+  <section class="gl-hero" aria-labelledby="gl-nf-title">
+    <div class="wrap gl-hero-copy">
+      <p class="kicker">Error 404</p>
+      <h1 id="gl-nf-title">We could not find that collection.</h1>
+      <p class="gl-lead">The address may have a typo, or the collection may have moved.</p>
+      <div class="gl-more-actions">
+        <a class="btn btn-dark" href="/gallery">Go to the gallery</a>
+        <a class="btn btn-outline" href="/">Back to the homepage</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}

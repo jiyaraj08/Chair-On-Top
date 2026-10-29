@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ collection.name }} - Design Gallery - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+
+  <section class="gl-head" aria-labelledby="gl-title">
+    <div class="wrap">
+      <nav class="gl-crumbs" aria-label="Breadcrumb">
+        <a href="/gallery">Gallery</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ collection.name }}</span>
+      </nav>
+      <p class="kicker">Collection</p>
+      <h1 id="gl-title">{{ collection.name }}</h1>
+      <p class="gl-lead">{{ collection.description }}</p>
+      <p class="gl-meta">{{ collection.count }} image{{ '' if collection.count == 1 else 's' }}</p>
+      <a class="btn btn-outline btn-sm gl-back" href="/gallery"><span aria-hidden="true">&larr;</span> Back to collections</a>
+    </div>
+  </section>
+
+  <section class="gl-gallery" aria-label="{{ collection.name }} images">
+    <div class="wrap">
+      <ul class="gl-grid" id="gl-grid" data-collection="{{ collection.name }}">
+        {% for img in collection.images %}
+        <li class="gl-item">
+          <a class="gl-thumb" href="/static/{{ img.path }}"
+             {% if img.width and img.height %}style="--ratio: {{ img.width }} / {{ img.height }};"{% endif %}>
+            <img src="/static/{{ img.path }}"
+                 {% if img.width and img.height %}width="{{ img.width }}" height="{{ img.height }}"{% endif %}
+                 alt="{{ img.alt }}"
+                 loading="{{ 'eager' if loop.index <= 4 else 'lazy' }}" decoding="async">
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="gl-hint js-only">Select a picture to see it larger. Use the arrow keys to move between pictures, and Escape to close.</p>
+    </div>
+  </section>
+
+  {% if others %}
+  <section class="section section-sand gl-section" aria-labelledby="gl-other-title">
+    <div class="wrap">
+      <h2 class="gl-other-title" id="gl-other-title">More collections</h2>
+      <ul class="gl-other">
+        {% for o in others %}
+        <li><a class="btn btn-outline" href="/gallery/{{ o.slug }}">{{ o.name }}<span class="visually-hidden"> collection</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% endif %}
+
+</main>
+
+<dialog class="gl-lightbox" id="gl-lightbox" aria-label="Image viewer">
+  <div class="gl-lb-inner">
+    <div class="gl-lb-bar">
+      <p class="gl-lb-count" id="gl-lb-count" aria-live="polite"></p>
+      <button class="gl-lb-btn gl-lb-close" id="gl-lb-close" type="button" aria-label="Close image viewer">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <figure class="gl-lb-figure">
+      <img class="gl-lb-img" id="gl-lb-img" alt="">
+      <figcaption class="gl-lb-caption" id="gl-lb-caption"></figcaption>
+    </figure>
+    <button class="gl-lb-btn gl-lb-prev" id="gl-lb-prev" type="button" aria-label="Previous image">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="gl-lb-btn gl-lb-next" id="gl-lb-next" type="button" aria-label="Next image">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</dialog>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/gallery.js') }}" defer></script>
+{% endblock %}
