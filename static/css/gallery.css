@@ -474,3 +474,14 @@
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
+/* =========================================================
+   6. HOMEPAGE STYLE CARDS: real cover photographs
+   ========================================================= */
+.style-card .card-media .card-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
