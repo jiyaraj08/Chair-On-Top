@@ -485,3 +485,180 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
+
+/* =========================================================
+   7. PHOTO ACTIONS (like, save, share, download), TOAST, SAVED PAGE
+   Buttons are about 44px for touch. A liked or saved photo gets a filled
+   icon, so the state is not shown by colour alone.
+   ========================================================= */
+.gl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.gl-act {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-soft);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.gl-act svg {
+  width: 1.3rem;
+  height: 1.3rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.gl-act:hover {
+  background: var(--sand);
+  color: var(--text);
+}
+
+.gl-act:active {
+  transform: scale(0.92);
+}
+
+.gl-act:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.gl-act[aria-pressed="true"] {
+  color: var(--wood);
+}
+
+.gl-act[aria-pressed="true"] svg {
+  fill: currentColor;
+}
+
+.gl-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.gl-item[hidden],
+.gl-grid[hidden],
+.gl-pending[hidden] {
+  display: none;
+}
+
+.gl-card-label {
+  margin-top: 0.6rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.gl-card-label span {
+  font-weight: 400;
+  color: var(--text-soft);
+}
+
+.gl-limit {
+  max-width: 36rem;
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.gl-pending .btn {
+  margin-top: var(--space-3);
+}
+
+/* Actions inside the image viewer */
+.gl-lb-figure {
+  grid-template-rows: minmax(0, 1fr) auto auto;
+}
+
+.gl-lb-actions {
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: var(--space-2);
+}
+
+.gl-lb-actions .gl-act {
+  border: 1px solid rgba(247, 242, 233, 0.35);
+  background: rgba(34, 30, 26, 0.7);
+  color: var(--text-on-dark);
+}
+
+.gl-lb-actions .gl-act:hover {
+  background: rgba(247, 242, 233, 0.2);
+  color: var(--text-on-dark);
+}
+
+.gl-lb-actions .gl-act:focus-visible {
+  outline-color: var(--focus-on-dark);
+}
+
+@media (max-width: 600px) {
+  /* Previous and next sit in the bottom corners, the actions just above them. */
+  .gl-lb-figure {
+    padding-bottom: 3.6rem;
+  }
+
+  .gl-lb-prev,
+  .gl-lb-next {
+    bottom: max(var(--space-3), env(safe-area-inset-bottom));
+  }
+}
+
+/* Small confirmation message */
+.cot-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 1000;
+  max-width: min(92vw, 26rem);
+  padding: 0.7rem 1rem;
+  border-radius: var(--r-sm);
+  background: var(--charcoal, #221e1a);
+  color: var(--text-on-dark, #f7f2e9);
+  font-size: var(--fs-sm, 0.9rem);
+  box-shadow: var(--shadow-lift);
+  opacity: 0;
+  visibility: hidden;
+  translate: -50% 0.5rem;
+  transition: opacity 0.25s ease, translate 0.25s ease, visibility 0.25s;
+}
+
+.cot-toast.is-visible {
+  opacity: 1;
+  visibility: visible;
+  translate: -50% 0;
+}
+
+.cot-toast a {
+  margin-left: 0.6rem;
+  font-weight: 600;
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+/* Inside the viewer the message sits at the top, clear of the controls. */
+.gl-lightbox .cot-toast {
+  top: calc(4.5rem + env(safe-area-inset-top));
+  bottom: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cot-toast,
+  .gl-act {
+    transition: none;
+  }
+}
