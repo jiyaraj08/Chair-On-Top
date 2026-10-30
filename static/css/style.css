@@ -795,6 +795,10 @@ a {
   }
 
   .style-scroller {
+    /* Makes the scroller the containing block for the cards' visually-hidden
+       labels. Without it those labels (position: absolute) escape the
+       scroller's clipping and stretch the whole page sideways. */
+    position: relative;
     margin-inline: calc(var(--page-pad) * -1);
     padding: var(--space-2) var(--page-pad) var(--space-5);
     overflow-x: auto;
@@ -890,6 +894,88 @@ a {
   margin: var(--space-5) 0;
   font-size: var(--fs-sm);
   color: var(--text-soft);
+}
+
+/* Buttons inside the preview need a little space between them. */
+#style-dialog-body .btn {
+  margin: 0 var(--space-2) var(--space-2) 0;
+}
+
+.style-dialog .swatches li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Phones (below 768px): the preview becomes a bottom sheet.
+   It is placed explicitly (bottom edge, full width) instead of relying on the
+   browser's automatic centring, and it scrolls inside itself. Tablets and
+   desktops keep the centred modal defined above. */
+@media (max-width: 767px) {
+  .style-dialog {
+    position: fixed;
+    inset: auto 0 0 0;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 90vh;
+    max-height: 90dvh;
+    margin: 0;
+    transform: none;
+    translate: none;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    overflow-wrap: anywhere;
+  }
+
+  .dialog-inner {
+    padding: 0;
+  }
+
+  /* The Close button stays at the top while the content scrolls. */
+  .dialog-close-row {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .dialog-close-row .btn {
+    min-height: 2.75rem;
+    min-width: 5.5rem;
+  }
+
+  #style-dialog-body {
+    padding: var(--space-4) 1.25rem calc(1.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .detail-title {
+    font-size: clamp(1.6rem, 7vw, 2rem);
+  }
+
+  .swatches {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  }
+
+  /* Stop the page behind from scrolling while the sheet is open. */
+  .dialog-lock {
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .style-dialog[open] {
+    animation: sheet-up 0.3s var(--ease);
+  }
+}
+
+@keyframes sheet-up {
+  from { translate: 0 100%; }
+  to   { translate: 0 0; }
 }
 
 /* =========================================================
