@@ -182,6 +182,9 @@
         if (detail) {
           dialogBody.innerHTML = detail.innerHTML;
           dialog.setAttribute("aria-label", card.getAttribute("data-name") + " style preview");
+          dialogBody.scrollTop = 0;
+          dialog.scrollTop = 0;
+          root.classList.add("dialog-lock");
           dialog.showModal();
         }
       }
@@ -194,6 +197,12 @@
       if (event.target === dialog || event.target.closest("a")) {
         dialog.close();
       }
+    });
+
+    // Runs for every way of closing (Close button, Escape, backdrop, link).
+    // Lets the page behind scroll again.
+    dialog.addEventListener("close", function () {
+      root.classList.remove("dialog-lock");
     });
   }
 })();
