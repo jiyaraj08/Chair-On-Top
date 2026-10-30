@@ -160,6 +160,13 @@ a {
   left: 0.75rem;
 }
 
+/* Panels that slide in from the side before they are revealed (motion.css)
+   must not make the page wider than the screen. "clip" does not create a
+   scroll area, so nothing else changes. */
+main {
+  overflow-x: clip;
+}
+
 /* Things that only make sense when JavaScript runs. */
 .js-only {
   display: none;
@@ -638,8 +645,15 @@ a {
 
 .style-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-5);
+}
+
+/* Four cards: a tidy 2 x 2 on mid-size screens (below 960px they scroll). */
+@media (min-width: 960px) and (max-width: 1099px) {
+  .style-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .style-card {
