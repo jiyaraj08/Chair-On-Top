@@ -2,6 +2,7 @@
 
 /gallery           Overview with one card per collection
 /gallery/<slug>    One collection (for example /gallery/japandi)
+/saved             Photographs saved in this browser
 
 The collections and their pictures are described in content/gallery.py.
 """
@@ -37,6 +38,17 @@ def gallery_home(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="gallery/index.html",
+        context={"collections": gallery_store.get_collections()},
+    )
+
+
+@router.get("/saved", response_class=HTMLResponse)
+def saved_page(request: Request):
+    # Which photographs are saved lives in the visitor's browser. The server
+    # only supplies the list of real photographs; saved.js shows the saved ones.
+    return templates.TemplateResponse(
+        request=request,
+        name="gallery/saved.html",
         context={"collections": gallery_store.get_collections()},
     )
 
