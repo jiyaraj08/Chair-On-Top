@@ -216,6 +216,9 @@ def _load():
             image = {
                 "number": position,
                 "filename": filename,
+                "key": filename[:-4],  # "img3": used in share links
+                "id": "%s/%s" % (slug, filename[:-4]),  # "japandi/img3": used for like/save
+                "download": "%s-%s" % (slug, filename),  # name of the downloaded file
                 "path": "%s/%s/%s" % (URL_ROOT, folder, filename),
                 "width": size[0] if size else None,
                 "height": size[1] if size else None,
