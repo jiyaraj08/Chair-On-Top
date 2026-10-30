@@ -1,0 +1,213 @@
+/* Chair on Top - theme.css
+   The dark theme and the light/dark toggle button.
+   It loads after style.css, motion.css and squirrel.css.
+   The page is light by default. A tiny script in base.html sets
+   <html data-theme="dark"> before the first paint when the visitor chose dark
+   (or has not chosen and their device prefers dark).
+
+   How it works: style.css keeps its colours in variables (--bg, --surface,
+   --text ...). Here the dark theme gives those variables new values, then
+   fixes the few places that used a fixed palette colour directly.
+   Always-dark parts (the nav pill, hero, footer, quiz plate) stay as they are. */
+
+html {
+  color-scheme: light;
+}
+
+/* =========================================================
+   1. DARK TOKENS
+   ========================================================= */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #14110e;
+  --surface: #1e1a16;
+  --sand: #1a1713;
+  --text: #eee7dc;
+  --text-soft: #b8ae9f;
+  --line: rgba(247, 242, 233, 0.16);
+  --wood: #d4aa7d;
+  --focus: #e9c48e;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.45), 0 14px 30px -14px rgba(0, 0, 0, 0.7);
+  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.5), 0 28px 48px -18px rgba(0, 0, 0, 0.8);
+}
+
+/* Parts that deliberately stay light inside the dark theme get the light
+   values back, so their own text stays readable. */
+html[data-theme="dark"] .quiz-sample,
+html[data-theme="dark"] .sq-bubble {
+  --bg: #f7f2e9;
+  --surface: #fffdf8;
+  --sand: #ece1cd;
+  --text: #2a2622;
+  --text-soft: #5d554c;
+  --line: rgba(34, 30, 26, 0.14);
+  --wood: #7c5636;
+  --focus: #7c5636;
+  color: var(--text);
+}
+
+/* =========================================================
+   2. FIXES FOR PLACES THAT USED A FIXED COLOUR
+   ========================================================= */
+html[data-theme="dark"] .btn-dark {
+  background: var(--ivory);
+  color: var(--charcoal);
+}
+
+html[data-theme="dark"] .btn-dark:hover {
+  background: #ffffff;
+}
+
+html[data-theme="dark"] .btn-outline {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+html[data-theme="dark"] .btn-outline:hover {
+  border-color: var(--ivory);
+  background: var(--ivory);
+  color: var(--charcoal);
+}
+
+html[data-theme="dark"] .step-live {
+  border-top-color: var(--gold);
+}
+
+html[data-theme="dark"] .plan-bar {
+  background: rgba(247, 242, 233, 0.12);
+}
+
+html[data-theme="dark"] .seg-ess,
+html[data-theme="dark"] .dot-ess {
+  background: var(--ivory);
+}
+
+html[data-theme="dark"] .site-footer,
+html[data-theme="dark"] .quiz-plate {
+  border: 1px solid var(--line-on-dark);
+}
+
+html[data-theme="dark"] .style-dialog {
+  border: 1px solid var(--line);
+}
+
+html[data-theme="dark"] .style-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+html[data-theme="dark"] .gl-act:hover {
+  background: rgba(247, 242, 233, 0.12);
+}
+
+html[data-theme="dark"] .cot-toast {
+  background: var(--ivory);
+  color: var(--charcoal);
+}
+
+/* =========================================================
+   3. THE TOGGLE BUTTON (sun in light mode, moon in dark mode)
+   ========================================================= */
+.theme-toggle {
+  display: none;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(247, 242, 233, 0.14);
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--t-fast), transform var(--t-fast);
+}
+
+.js .theme-toggle {
+  display: inline-grid;
+}
+
+.theme-toggle:hover {
+  background: rgba(247, 242, 233, 0.26);
+}
+
+.theme-toggle:active {
+  transform: scale(0.94);
+}
+
+.theme-toggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle .icon-moon {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-toggle .icon-sun {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-toggle .icon-moon {
+  display: block;
+}
+
+/* Between 861px and 1000px the bar is tight: shave the links a little so the
+   extra button fits without the links wrapping onto a second line. */
+@media (min-width: 861px) and (max-width: 1000px) {
+  .pill-nav {
+    gap: var(--space-2);
+  }
+
+  .brand-name {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .pill-nav .nav-links a {
+    padding: 0.45rem 0.4rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 861px) and (max-width: 899px) {
+  .pill-nav .nav-links a {
+    padding: 0.45rem 0.3rem;
+    font-size: 0.76rem;
+  }
+}
+
+/* On phones the order is: logo, theme button, menu button. */
+@media (max-width: 860px) {
+  .pill-nav {
+    gap: var(--space-2);
+  }
+
+  .theme-toggle {
+    order: 1;
+    margin-left: auto;
+  }
+
+  .nav-toggle {
+    order: 2;
+  }
+
+  .nav-links {
+    order: 3;
+  }
+}
+
+/* =========================================================
+   4. SMOOTH SWITCH (the class is only present for a moment after a click)
+   ========================================================= */
+html.theme-anim,
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, fill 0.35s ease, stroke 0.35s ease !important;
+}
