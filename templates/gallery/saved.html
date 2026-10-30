@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Saved photographs - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+{% endblock %}
+
+{% block body %}
+{% import "gallery/_actions.html" as act %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+
+  <section class="gl-head" aria-labelledby="sv-title">
+    <div class="wrap">
+      <nav class="gl-crumbs" aria-label="Breadcrumb">
+        <a href="/gallery">Gallery</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Saved</span>
+      </nav>
+      <p class="kicker">Your inspiration</p>
+      <h1 id="sv-title">Saved photographs</h1>
+      <p class="gl-lead">Photographs you save while browsing the gallery appear here.</p>
+      <p class="gl-meta" id="sv-count" tabindex="-1" aria-live="polite"></p>
+      <p class="gl-limit">Saved photographs are kept in this browser, on this device only. They do not sync to other devices or browsers, and clearing your browser data removes them.</p>
+    </div>
+  </section>
+
+  <section class="gl-gallery" aria-label="Saved photographs">
+    <div class="wrap">
+      <noscript><p class="gl-limit">Saved photographs need JavaScript to be shown.</p></noscript>
+
+      <div class="gl-pending" id="sv-empty" hidden>
+        <p class="gl-pending-title">Nothing saved yet.</p>
+        <p>Use the bookmark button under any photograph to keep it here.</p>
+        <p><a class="btn btn-dark" href="/gallery">Browse the gallery</a></p>
+      </div>
+
+      <ul class="gl-grid" id="sv-list" hidden>
+        {% for c in collections %}{% for img in c.images %}
+        <li class="gl-item" data-id="{{ img.id }}" hidden>
+          <a class="gl-thumb" href="/gallery/{{ c.slug }}?image={{ img.key }}"
+             {% if img.width and img.height %}style="--ratio: {{ img.width }} / {{ img.height }};"{% endif %}
+             aria-label="Open {{ c.name }} image {{ img.number }}">
+            <img data-src="/static/{{ img.path }}"
+                 {% if img.width and img.height %}width="{{ img.width }}" height="{{ img.height }}"{% endif %}
+                 alt="{{ img.alt }}" loading="lazy" decoding="async">
+          </a>
+          <p class="gl-card-label">{{ c.name }} <span>image {{ img.number }}</span></p>
+          <div class="gl-actions" role="group" aria-label="Actions for saved {{ c.name }} image {{ img.number }}">
+            <a class="btn btn-outline btn-sm" href="/gallery/{{ c.slug }}?image={{ img.key }}">Open<span class="visually-hidden"> {{ c.name }} image {{ img.number }}</span></a>
+            <button class="gl-act" type="button" data-act="share" data-id="{{ img.id }}" data-name="{{ c.name }}" aria-label="Share {{ c.name }} image {{ img.number }}">{{ act.icon("share") }}</button>
+            <button class="btn btn-outline btn-sm" type="button" data-act="remove" data-id="{{ img.id }}">Remove<span class="visually-hidden"> {{ c.name }} image {{ img.number }} from saved</span></button>
+          </div>
+        </li>
+        {% endfor %}{% endfor %}
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/saved.js') }}" defer></script>
+{% endblock %}
