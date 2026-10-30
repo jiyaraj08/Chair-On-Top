@@ -4,11 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#221e1a">
+  <script>
+    /* Chooses the colour theme before the first paint, so the page never
+       flashes the wrong one. A saved choice wins; otherwise the device decides. */
+    (function () {
+      var theme = null;
+      try { theme = localStorage.getItem("cot.theme"); } catch (e) {}
+      if (theme !== "light" && theme !== "dark") {
+        theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
   <title>{% block title %}Chair on Top{% endblock %}</title>
   <meta name="description" content="Discover an interior-design aesthetic you love and map out how to achieve it within your budget.">
   <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/motion.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/squirrel.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/theme.css') }}">
   <style>
     /* The nav now has five links. Between 861px and 1060px, tighten them a
        little so the pill stays on one line. Applies to every page. */
@@ -42,8 +55,9 @@
   {% block body %}{% endblock %}
 
   <script src="{{ url_for('static', path='js/script.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/theme.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/motion.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/squirrel.js') }}" defer></script>
   {% block scripts_extra %}{% endblock %}
 </body>
-</html>
+</html>
