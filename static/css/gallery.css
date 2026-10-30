@@ -662,3 +662,8 @@
     transition: none;
   }
 }
+
+/* Centre the photograph vertically in the viewer. */
+.gl-lb-figure .gl-lb-img {
+  align-self: center;
+}
