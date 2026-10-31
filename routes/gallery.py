@@ -3,6 +3,7 @@
 /gallery           Overview with one card per collection
 /gallery/<slug>    One collection (for example /gallery/japandi)
 /saved             Photographs saved in this browser
+/moodboards        The Moodboards studio (boards are kept in this browser)
 
 The collections and their pictures are described in content/gallery.py.
 """
@@ -50,6 +51,31 @@ def saved_page(request: Request):
         request=request,
         name="gallery/saved.html",
         context={"collections": gallery_store.get_collections()},
+    )
+
+
+@router.get("/moodboards", response_class=HTMLResponse)
+def moodboards_page(request: Request):
+    # The moodboards themselves live in the visitor's browser. The server only
+    # supplies the list of real gallery photographs they can be built from.
+    collections = gallery_store.get_collections()
+    catalog = [
+        {
+            "id": img["id"],
+            "slug": c["slug"],
+            "collection": c["name"],
+            "number": img["number"],
+            "path": img["path"],
+            "width": img["width"],
+            "height": img["height"],
+        }
+        for c in collections
+        for img in c["images"]
+    ]
+    return templates.TemplateResponse(
+        request=request,
+        name="moodboards/index.html",
+        context={"catalog": catalog},
     )
 
 
