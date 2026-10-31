@@ -4,6 +4,7 @@
 /gallery/<slug>    One collection (for example /gallery/japandi)
 /saved             Photographs saved in this browser
 /moodboards        The Moodboards studio (boards are kept in this browser)
+/moodboards/board  One moodboard workspace (?id=...)
 
 The collections and their pictures are described in content/gallery.py.
 """
@@ -54,12 +55,9 @@ def saved_page(request: Request):
     )
 
 
-@router.get("/moodboards", response_class=HTMLResponse)
-def moodboards_page(request: Request):
-    # The moodboards themselves live in the visitor's browser. The server only
-    # supplies the list of real gallery photographs they can be built from.
-    collections = gallery_store.get_collections()
-    catalog = [
+def _catalog():
+    """Every real gallery photograph, for the Moodboards pages to choose from."""
+    return [
         {
             "id": img["id"],
             "slug": c["slug"],
@@ -69,13 +67,31 @@ def moodboards_page(request: Request):
             "width": img["width"],
             "height": img["height"],
         }
-        for c in collections
+        for c in gallery_store.get_collections()
         for img in c["images"]
     ]
+
+
+@router.get("/moodboards", response_class=HTMLResponse)
+def moodboards_page(request: Request):
+    # The moodboards themselves live in the visitor's browser. The server only
+    # supplies the list of real gallery photographs they can be built from.
     return templates.TemplateResponse(
         request=request,
         name="moodboards/index.html",
-        context={"catalog": catalog},
+        context={"catalog": _catalog()},
+    )
+
+
+@router.get("/moodboards/board", response_class=HTMLResponse)
+def moodboard_workspace(request: Request):
+    # One moodboard, chosen with ?id=... in the address. The boards live in the
+    # visitor's browser, so the server cannot check the id: workspace.js shows a
+    # friendly "not found" panel for an unknown one.
+    return templates.TemplateResponse(
+        request=request,
+        name="moodboards/board.html",
+        context={"catalog": _catalog()},
     )
 
 
