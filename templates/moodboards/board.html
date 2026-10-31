@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Moodboard - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/moodboards.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/workspace.css') }}">
+{% endblock %}
+
+{% block body %}
+{% import "gallery/_actions.html" as act %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+  <noscript><div class="wrap"><p class="mb-note mbw-noscript">Moodboards need JavaScript to be shown and edited.</p></div></noscript>
+
+  <div id="mbw-app" hidden>
+    <section class="mbw-head" aria-labelledby="mbw-title">
+      <div class="wrap">
+        <div class="mbw-topbar">
+          <a class="mbw-back" href="/moodboards"><span aria-hidden="true">&larr;</span> Moodboards</a>
+          <div class="mbw-actions">
+            <button class="btn btn-outline btn-sm" type="button" id="mbw-edit">Edit details</button>
+            <button class="btn btn-dark btn-sm" type="button" id="mbw-add">Add images</button>
+            <button class="mbw-icon-btn" type="button" id="mbw-more" aria-haspopup="menu" aria-expanded="false" aria-label="More actions">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="mbw-info">
+          <div class="mbw-info-copy">
+            <p class="kicker">Moodboard</p>
+            <h1 id="mbw-title"></h1>
+            <p class="mbw-desc" id="mbw-desc"></p>
+            <p class="mbw-add-desc" id="mbw-add-desc-wrap"><button class="mb-text-btn mb-text-btn-inline" type="button" id="mbw-add-desc">Add a description</button></p>
+            <p class="mbw-meta" id="mbw-meta"></p>
+          </div>
+          <div class="mbw-cover" id="mbw-cover">
+            <div class="mbw-cover-thumb" id="mbw-cover-thumb" aria-hidden="true"></div>
+            <div class="mbw-cover-copy">
+              <p class="mbw-cover-label" id="mbw-cover-label"></p>
+              <button class="mb-text-btn mb-text-btn-inline" type="button" id="mbw-cover-change">Change cover</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mbw-canvas" aria-label="Moodboard canvas">
+      <div class="wrap">
+        <ul class="mbw-grid" id="mbw-grid" hidden></ul>
+
+        <div class="mb-empty mbw-empty" id="mbw-empty" hidden>
+          <div class="mb-empty-copy">
+            <p class="mb-empty-quote">A blank canvas, ready for its first image.</p>
+            <p class="mb-empty-text">Choose photographs from the gallery to start building the mood. You can drag them into order, pick a cover and export the finished board as an image.</p>
+            <button class="btn btn-dark" type="button" data-add>Add images</button>
+          </div>
+          <svg class="mb-empty-art" viewBox="0 0 320 240" aria-hidden="true" focusable="false">
+            <circle cx="130" cy="70" r="15" class="mb-art-sun"/>
+            <path d="M70 200V92a60 60 0 0 1 120 0v108M130 32v168M70 124h120"/>
+            <path d="M30 200h260"/>
+            <path d="M245 40v50M232 90a13 13 0 0 1 26 0z"/>
+            <path d="M226 168l-4-46q0-7 7-7h24q7 0 7 7l-4 46M214 168h62a4 4 0 0 1 0 8h-62a4 4 0 0 1 0-8zM224 176l-6 24M266 176l6 24"/>
+          </svg>
+        </div>
+        <p class="mbw-hint" id="mbw-hint" hidden>Drag the handle on an image to reorder it, or use the image menu. Your changes are saved in this browser only.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="mbw-missing" id="mbw-missing" hidden aria-labelledby="mbw-missing-title">
+    <div class="wrap">
+      <p class="kicker">Moodboards</p>
+      <h1 id="mbw-missing-title">We could not find that moodboard.</h1>
+      <p class="mb-lead">It may have been deleted, or it was created in a different browser. Moodboards are stored in the browser they were made in.</p>
+      <a class="btn btn-dark" href="/moodboards">Back to your moodboards</a>
+    </div>
+  </section>
+</main>
+
+<p class="visually-hidden" id="mbw-live" role="status" aria-live="polite"></p>
+
+<!-- ============ EDIT DETAILS ============ -->
+<dialog class="mb-dialog" id="mbw-details-dialog" aria-labelledby="mbw-details-title">
+  <form class="mb-sheet" id="mbw-details-form" novalidate>
+    <header class="mb-sheet-head">
+      <h2 id="mbw-details-title">Edit details</h2>
+      <button class="mb-icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </header>
+    <div class="mb-sheet-body">
+      <div class="mb-field">
+        <label for="mbw-name">Name</label>
+        <input id="mbw-name" type="text" maxlength="60" autocomplete="off" aria-describedby="mbw-name-err">
+        <p class="mb-error" id="mbw-name-err" role="alert" hidden></p>
+      </div>
+      <div class="mb-field">
+        <label for="mbw-desc-input">Description <span class="mb-opt">(optional)</span></label>
+        <textarea id="mbw-desc-input" rows="4" maxlength="160" aria-describedby="mbw-desc-hint"></textarea>
+        <p class="mb-hint" id="mbw-desc-hint">A line or two about the mood you are after.</p>
+      </div>
+    </div>
+    <footer class="mb-sheet-foot">
+      <button class="btn btn-outline" type="button" data-close>Cancel</button>
+      <button class="btn btn-dark" type="submit">Save changes</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- ============ CHANGE COVER ============ -->
+<dialog class="mb-dialog mb-dialog-wide" id="mbw-cover-dialog" aria-labelledby="mbw-cover-title">
+  <form class="mb-sheet" id="mbw-cover-form">
+    <header class="mb-sheet-head">
+      <h2 id="mbw-cover-title">Choose a cover image</h2>
+      <button class="mb-icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </header>
+    <div class="mb-sheet-body">
+      <p class="mb-hint mbw-dialog-lead">The cover leads the collage on your Moodboards page. Choose from the images on this board.</p>
+      <div class="mbw-picker" id="mbw-cover-grid" role="radiogroup" aria-label="Cover image"></div>
+    </div>
+    <footer class="mb-sheet-foot mbw-split-foot">
+      <button class="mb-text-btn mb-text-btn-inline" type="button" id="mbw-cover-none">Remove cover</button>
+      <div class="mbw-foot-buttons">
+        <button class="btn btn-outline" type="button" data-close>Cancel</button>
+        <button class="btn btn-dark" type="submit">Save cover</button>
+      </div>
+    </footer>
+  </form>
+</dialog>
+
+<!-- ============ ADD IMAGES ============ -->
+<dialog class="mb-dialog mb-dialog-wide" id="mbw-add-dialog" aria-labelledby="mbw-add-title">
+  <div class="mb-sheet">
+    <header class="mb-sheet-head">
+      <h2 id="mbw-add-title">Add images</h2>
+      <button class="mb-icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </header>
+    <div class="mbw-add-tools">
+      <div class="mb-seg" id="mbw-add-seg" role="group" aria-label="Collection"></div>
+      <div class="mbw-add-bulk">
+        <button class="mb-text-btn mb-text-btn-inline" type="button" id="mbw-add-all">Select all in this collection</button>
+        <button class="mb-text-btn mb-text-btn-inline" type="button" id="mbw-add-hide" aria-pressed="false">Hide images already added</button>
+      </div>
+    </div>
+    <div class="mb-sheet-body mbw-add-body">
+      <div class="mbw-picker" id="mbw-add-grid" role="group" aria-label="Choose images to add"></div>
+      <p class="mb-hint" id="mbw-add-none" hidden>Every image in this collection is already on the board.</p>
+    </div>
+    <div class="mbw-strip" id="mbw-strip" hidden>
+      <p class="mbw-strip-title">Selected</p>
+      <div class="mbw-strip-list" id="mbw-strip-list"></div>
+    </div>
+    <footer class="mb-sheet-foot mbw-add-foot">
+      <p class="mbw-add-count" id="mbw-add-count" aria-live="polite">No images selected</p>
+      <div class="mbw-foot-buttons">
+        <button class="btn btn-outline" type="button" data-close>Cancel</button>
+        <button class="btn btn-dark" type="button" id="mbw-add-submit" disabled>Add selected images</button>
+      </div>
+    </footer>
+  </div>
+</dialog>
+
+<!-- ============ DELETE MOODBOARD ============ -->
+<dialog class="mb-dialog mb-dialog-small" id="mbw-confirm-dialog" aria-labelledby="mbw-confirm-title" aria-describedby="mbw-confirm-text">
+  <div class="mb-sheet">
+    <div class="mb-sheet-body mb-confirm-body">
+      <h2 id="mbw-confirm-title">Delete this moodboard?</h2>
+      <p id="mbw-confirm-text"></p>
+    </div>
+    <footer class="mb-sheet-foot">
+      <button class="btn btn-outline" type="button" data-close>Cancel</button>
+      <button class="btn btn-danger" type="button" id="mbw-confirm-yes">Delete moodboard</button>
+    </footer>
+  </div>
+</dialog>
+
+<!-- ============ IMAGE VIEWER (same look and actions as the gallery viewer) ============ -->
+<dialog class="gl-lightbox" id="mbw-viewer" aria-label="Image viewer">
+  <div class="gl-lb-inner">
+    <div class="gl-lb-bar">
+      <p class="gl-lb-count" id="mbw-v-count" aria-live="polite"></p>
+      <button class="gl-lb-btn gl-lb-close" id="mbw-v-close" type="button" aria-label="Close image viewer">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <figure class="gl-lb-figure">
+      <img class="gl-lb-img" id="mbw-v-img" alt="">
+      <figcaption class="gl-lb-caption" id="mbw-v-caption"></figcaption>
+      <div class="gl-actions gl-lb-actions" role="group" aria-label="Actions for this image">
+        <button class="gl-act" id="mbw-v-like" type="button" data-act="like" data-id="" aria-pressed="false" aria-label="Like this image">{{ act.icon("like") }}</button>
+        <button class="gl-act" id="mbw-v-save" type="button" data-act="save" data-id="" aria-pressed="false" aria-label="Save this image">{{ act.icon("save") }}</button>
+        <button class="gl-act" id="mbw-v-share" type="button" data-act="share" data-id="" aria-label="Share this image">{{ act.icon("share") }}</button>
+        <a class="gl-act" id="mbw-v-download" data-act="download" data-id="" href="#" download aria-label="Download this image">{{ act.icon("download") }}</a>
+        <a class="mbw-v-link" id="mbw-v-gallery" href="#">View in gallery</a>
+      </div>
+    </figure>
+    <button class="gl-lb-btn gl-lb-prev" id="mbw-v-prev" type="button" aria-label="Previous image">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="gl-lb-btn gl-lb-next" id="mbw-v-next" type="button" aria-label="Next image">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</dialog>
+
+{% include "partials/site_footer.html" %}
+<script type="application/json" id="cot-catalog">{{ catalog | tojson }}</script>
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/mb-core.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/workspace.js') }}" defer></script>
+{% endblock %}
