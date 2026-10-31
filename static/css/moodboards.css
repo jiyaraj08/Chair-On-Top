@@ -91,6 +91,7 @@ html[data-theme="dark"] {
 }
 
 .mb-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -108,6 +109,36 @@ html[data-theme="dark"] {
 
 .mb-card:focus {
   outline: none;
+}
+
+/* The title link stretches over the whole card: one big tap target. The
+   Rename and Delete buttons sit above it. */
+.mb-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mb-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.mb-card-link:focus-visible {
+  outline: none;
+}
+
+.mb-card-link:focus-visible::after {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
+.mb-card-actions {
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
 }
 
 .mb-card:focus-visible {
