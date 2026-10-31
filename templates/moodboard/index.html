@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Moodboards - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/moodboards.css') }}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+
+  <section class="mb-hero" aria-labelledby="mb-title">
+    <div class="wrap">
+      <p class="kicker">Moodboards</p>
+      <h1 id="mb-title">Your Creative Studio</h1>
+      <p class="mb-lead">Gather the photographs that move you, group them into boards, and see how a room could feel before you choose a single chair.</p>
+      <div class="mb-hero-actions">
+        <button class="btn btn-dark" type="button" id="mb-create">Create Moodboard</button>
+        <p class="mb-count" id="mb-count" aria-live="polite"></p>
+      </div>
+      <p class="mb-note">Moodboards are saved in this browser, on this device only. They do not sync to other devices or browsers, and clearing your browser data removes them.</p>
+    </div>
+  </section>
+
+  <section class="mb-studio" aria-label="Your moodboards">
+    <div class="wrap">
+      <noscript><p class="mb-note">Moodboards need JavaScript to be shown and edited.</p></noscript>
+
+      <ul class="mb-grid" id="mb-grid" hidden></ul>
+
+      <div class="mb-empty" id="mb-empty" hidden>
+        <div class="mb-empty-copy">
+          <p class="mb-empty-quote">Every beautiful space begins with an idea.</p>
+          <p class="mb-empty-text">Start a moodboard to collect the photographs that catch your eye. Name it after a room, a mood or a dream, then choose images from the gallery to build it up.</p>
+          <button class="btn btn-dark" type="button" data-create>Create Your First Moodboard</button>
+        </div>
+        <svg class="mb-empty-art" viewBox="0 0 320 240" aria-hidden="true" focusable="false">
+          <circle cx="130" cy="70" r="15" class="mb-art-sun"/>
+          <path d="M70 200V92a60 60 0 0 1 120 0v108M130 32v168M70 124h120"/>
+          <path d="M30 200h260"/>
+          <path d="M245 40v50M232 90a13 13 0 0 1 26 0z"/>
+          <path d="M226 168l-4-46q0-7 7-7h24q7 0 7 7l-4 46M214 168h62a4 4 0 0 1 0 8h-62a4 4 0 0 1 0-8zM224 176l-6 24M266 176l6 24"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ CREATE / EDIT DIALOG ============ -->
+<dialog class="mb-dialog" id="mb-form-dialog" aria-labelledby="mb-form-title">
+  <form class="mb-sheet" id="mb-form" novalidate>
+    <header class="mb-sheet-head">
+      <h2 id="mb-form-title">Create moodboard</h2>
+      <button class="mb-icon-btn" type="button" data-close aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+
+    <div class="mb-sheet-body">
+      <div class="mb-field">
+        <label for="mb-name">Name</label>
+        <input id="mb-name" name="name" type="text" maxlength="60" autocomplete="off" aria-describedby="mb-name-hint mb-name-err">
+        <p class="mb-hint" id="mb-name-hint">For example: Dream Living Room</p>
+        <p class="mb-error" id="mb-name-err" role="alert" hidden></p>
+      </div>
+
+      <div class="mb-field">
+        <label for="mb-desc">Description <span class="mb-opt">(optional)</span></label>
+        <textarea id="mb-desc" name="description" rows="3" maxlength="160" aria-describedby="mb-desc-hint"></textarea>
+        <p class="mb-hint" id="mb-desc-hint">A line or two about the mood you are after.</p>
+      </div>
+
+      <fieldset class="mb-field mb-cover">
+        <legend>Cover image <span class="mb-opt">(optional)</span></legend>
+        <div class="mb-cover-row">
+          <div class="mb-cover-thumb" id="mb-cover-thumb" aria-hidden="true"></div>
+          <p class="mb-cover-label" id="mb-cover-label">No cover chosen</p>
+        </div>
+        <div class="mb-cover-actions">
+          <button class="mb-text-btn mb-text-btn-inline" type="button" id="mb-cover-toggle" aria-expanded="false" aria-controls="mb-picker">Choose a cover image</button>
+          <button class="mb-text-btn mb-text-btn-inline" type="button" id="mb-cover-clear" hidden>Remove cover</button>
+        </div>
+        <div class="mb-picker" id="mb-picker" hidden>
+          <div class="mb-seg" id="mb-seg" role="group" aria-label="Collection"></div>
+          <div class="mb-thumbs" id="mb-thumbs" role="radiogroup" aria-label="Choose a cover image"></div>
+        </div>
+      </fieldset>
+    </div>
+
+    <footer class="mb-sheet-foot">
+      <button class="btn btn-outline" type="button" data-close>Cancel</button>
+      <button class="btn btn-dark" type="submit" id="mb-submit">Create moodboard</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- ============ DELETE CONFIRMATION ============ -->
+<dialog class="mb-dialog mb-dialog-small" id="mb-confirm-dialog" aria-labelledby="mb-confirm-title" aria-describedby="mb-confirm-text">
+  <div class="mb-sheet">
+    <div class="mb-sheet-body mb-confirm-body">
+      <h2 id="mb-confirm-title">Delete this moodboard?</h2>
+      <p id="mb-confirm-text"></p>
+    </div>
+    <footer class="mb-sheet-foot">
+      <button class="btn btn-outline" type="button" data-close>Cancel</button>
+      <button class="btn btn-danger" type="button" id="mb-confirm-yes">Delete moodboard</button>
+    </footer>
+  </div>
+</dialog>
+
+{% include "partials/site_footer.html" %}
+<script type="application/json" id="cot-catalog">{{ catalog | tojson }}</script>
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/moodboards.js') }}" defer></script>
+{% endblock %}
