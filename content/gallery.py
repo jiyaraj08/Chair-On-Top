@@ -227,7 +227,10 @@ def _load():
                 "width": size[0] if size else None,
                 "height": size[1] if size else None,
                 "alt": "%s collection, image %d of %d" % (name, position, total),
-                # Search uses these. "meta" holds only facts someone has checked.
+                # "meta" holds only facts someone has checked (content/image_meta.py).
+                # "title" is a checked title when there is one. Otherwise it is only a
+                # generated DISPLAY LABEL ("Japandi image 3"): it is not metadata and
+                # search never ranks or matches on it.
                 "meta": meta,
                 "title": meta.get("title") or "%s image %d" % (name, position),
             }
