@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}{% if q %}{{ q }} - Search - Chair on Top{% else %}Search - Chair on Top{% endif %}{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+  {# Phase 2 only: these few rules move into search.css in Phase 3. #}
+  <style>
+    .sr-hero { padding: clamp(7rem, 13vw, 9.5rem) 0 clamp(1.25rem, 3vw, 2rem); }
+    .sr-hero h1 { max-width: 20ch; margin-bottom: var(--space-4); font-family: var(--font-display); font-weight: 500; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.06; letter-spacing: -0.012em; overflow-wrap: anywhere; text-wrap: balance; }
+    .sr-form { display: flex; gap: var(--space-2); max-width: 36rem; margin-bottom: var(--space-3); }
+    .sr-form input { flex: 1; min-width: 0; min-height: 2.9rem; padding: 0.75rem 1.1rem; border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--surface); font: inherit; font-size: 1rem; color: var(--text); }
+    .sr-form input:focus-visible { outline: none; border-color: var(--wood); box-shadow: 0 0 0 3px var(--focus); }
+    .sr-form .btn { min-height: 2.9rem; }
+    .sr-meta { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wood); }
+    .sr-notice { max-width: 40rem; margin-top: var(--space-3); color: var(--text-soft); }
+    .sr-error { max-width: 40rem; margin-top: var(--space-3); font-weight: 600; color: var(--text); }
+    .sr-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) 0 0; padding: 0; list-style: none; }
+    .sr-chips a { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1rem; border: 1px solid var(--line); border-radius: var(--r-pill); font-size: 0.9rem; font-weight: 600; text-decoration: none; color: var(--text); }
+    .sr-chips a:hover { border-color: var(--text-soft); background: var(--sand); }
+    .sr-chips a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .sr-chips span { margin-left: 0.4rem; font-weight: 400; color: var(--text-soft); }
+    .sr-caption { margin-top: 0.4rem; font-size: var(--fs-sm); color: var(--text-soft); }
+    .sr-caption a { color: inherit; text-underline-offset: 3px; }
+    .sr-pager { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
+    .sr-hint { margin-top: var(--space-4); font-size: var(--fs-sm); color: var(--text-soft); }
+    .sr-empty { max-width: 40rem; }
+  </style>
+{% endblock %}
+
+{% block body %}
+{% import "gallery/_actions.html" as act %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+  <section class="sr-hero" aria-labelledby="sr-title">
+    <div class="wrap">
+      <p class="kicker">Search</p>
+      {% if state == "results" or state == "empty" %}
+        <h1 id="sr-title">Results for &ldquo;{{ q }}&rdquo;</h1>
+      {% elif state == "error" %}
+        <h1 id="sr-title">Let&rsquo;s try that again</h1>
+      {% else %}
+        <h1 id="sr-title">Search the gallery</h1>
+      {% endif %}
+
+      <form class="sr-form" action="/search" method="get" role="search">
+        <label class="visually-hidden" for="sr-q">Search interiors, styles and materials</label>
+        <input id="sr-q" name="q" type="search" value="{{ q }}" maxlength="80" placeholder="Search interiors, styles, rooms..." autocomplete="off">
+        <button class="btn btn-dark" type="submit">Search</button>
+      </form>
+
+      {% if state == "error" %}
+        <p class="sr-error" role="alert">{{ error }}</p>
+      {% elif state == "results" %}
+        <p class="sr-meta" role="status">{{ search.total }} photograph{{ '' if search.total == 1 else 's' }}{% if search.total > search.count %} &middot; showing {{ search.offset + 1 }}&ndash;{{ search.offset + search.count }}{% endif %}</p>
+        {% if search.notice %}<p class="sr-notice">{{ search.notice }}</p>{% endif %}
+      {% elif state == "empty" %}
+        <p class="sr-notice" role="status">{{ search.notice or "No photographs matched that search." }}</p>
+      {% else %}
+        <p class="sr-notice">Search by style, colour or material. Results come from the photographs in the gallery.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  {% if state == "results" %}
+  <section class="gl-gallery" aria-label="Search results">
+    <div class="wrap">
+      <ul class="gl-grid" id="sr-grid">
+        {% for r in search["_raw"] %}
+        {% set img = r.image %}
+        <li class="gl-item" data-id="{{ img.id }}">
+          <a class="gl-thumb" href="/gallery/{{ r.slug }}?image={{ img.key }}"
+             {% if img.width and img.height %}style="--ratio: {{ img.width }} / {{ img.height }};"{% endif %}
+             aria-label="Open {{ r.style }} image {{ img.number }} in the gallery">
+            <img src="/static/{{ img.path }}"
+                 {% if img.width and img.height %}width="{{ img.width }}" height="{{ img.height }}"{% endif %}
+                 alt="{{ img.alt }}" loading="{{ 'eager' if loop.index <= 4 else 'lazy' }}" decoding="async">
+          </a>
+          {{ act.row(img, r.style) }}
+          <p class="sr-caption"><a href="/gallery/{{ r.slug }}">{{ r.style }}</a> &middot; Image {{ img.number }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+
+      {% if search.previous_offset is not none or search.has_more %}
+      <nav class="sr-pager" aria-label="Search result pages">
+        {% if search.previous_offset is not none %}
+          <a class="btn btn-outline" href="/search?q={{ q | urlencode }}&amp;offset={{ search.previous_offset }}">Previous</a>
+        {% endif %}
+        {% if search.has_more %}
+          <a class="btn btn-dark" href="/search?q={{ q | urlencode }}&amp;offset={{ search.next_offset }}">Show more</a>
+        {% endif %}
+      </nav>
+      {% endif %}
+      <p class="sr-hint">Likes and saved pictures are kept in this browser on this device only.</p>
+    </div>
+  </section>
+  {% else %}
+  <section class="section gl-section" aria-labelledby="sr-more-title">
+    <div class="wrap sr-empty">
+      <h2 class="visually-hidden" id="sr-more-title">Suggested searches</h2>
+      {% if state == "empty" %}<p>Try one of these instead:</p>{% else %}<p>Hand-picked by Chair on Top. These are suggestions, not live trends.</p>{% endif %}
+      <ul class="sr-chips">
+        {% for c in curated %}
+        <li><a href="{{ c.url }}">{{ c.label }}<span>{{ c.count }}</span><span class="visually-hidden"> photographs</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% endif %}
+</main>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
+{% endblock %}
