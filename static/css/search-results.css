@@ -1,0 +1,370 @@
+/* Chair on Top - search-results.css
+   The search RESULTS page (/search). Loaded after gallery.css, which supplies
+   the photo-action buttons and the image viewer styles.
+
+   1. Page top: title, search form, messages
+   2. Suggested searches (empty and discover states)
+   3. The grid. Without JavaScript: CSS columns. With JavaScript: masonry
+   4. Cards
+   5. Load More and result pages
+   6. The "View in gallery" link in the viewer
+   7. Motion
+*/
+
+/* =========================================================
+   1. PAGE TOP
+   ========================================================= */
+.sr-hero {
+  padding: clamp(7rem, 13vw, 9.5rem) 0 clamp(1.25rem, 3vw, 2rem);
+}
+
+.sr-hero h1 {
+  max-width: 20ch;
+  margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.sr-form {
+  display: flex;
+  gap: var(--space-2);
+  max-width: 36rem;
+  margin-bottom: var(--space-3);
+}
+
+/* 16px text: iPhones zoom the page when a smaller field is focused. */
+.sr-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.9rem;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.sr-form input:focus-visible {
+  outline: none;
+  border-color: var(--wood);
+  box-shadow: 0 0 0 3px var(--focus);
+}
+
+.sr-form .btn {
+  min-height: 2.9rem;
+}
+
+.sr-meta {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wood);
+}
+
+.sr-notice {
+  max-width: 40rem;
+  margin-top: var(--space-3);
+  color: var(--text-soft);
+}
+
+.sr-error {
+  max-width: 40rem;
+  margin-top: var(--space-3);
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* =========================================================
+   2. SUGGESTED SEARCHES (empty, error and first-visit states)
+   ========================================================= */
+.sr-empty {
+  max-width: 40rem;
+}
+
+.sr-empty-title {
+  margin-bottom: var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.15;
+}
+
+.sr-empty p {
+  color: var(--text-soft);
+}
+
+.sr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sr-chips a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color var(--t-fast), background-color var(--t-fast);
+}
+
+.sr-chips a:hover {
+  border-color: var(--text-soft);
+  background: var(--sand);
+}
+
+.sr-chips a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sr-chips span {
+  margin-left: 0.4rem;
+  font-weight: 400;
+  color: var(--text-soft);
+}
+
+/* =========================================================
+   3. THE GRID
+   Without JavaScript: CSS columns (2, 3, 4, 5 columns).
+   With JavaScript the grid gets .is-masonry and search-results.js places
+   each card in the shortest column, in result order.
+   ========================================================= */
+.sr-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  column-count: 2;
+  column-gap: var(--space-3);
+}
+
+@media (min-width: 600px) {
+  .sr-grid {
+    column-count: 3;
+    column-gap: var(--space-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .sr-grid {
+    column-count: 4;
+  }
+}
+
+@media (min-width: 1440px) {
+  .sr-grid {
+    column-count: 5;
+  }
+}
+
+.sr-grid .gl-item {
+  margin-bottom: var(--space-4);
+}
+
+.sr-grid.is-masonry {
+  position: relative;
+  column-count: auto;
+  columns: auto;
+}
+
+.sr-grid.is-masonry .gl-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  break-inside: auto;
+}
+
+/* After the first layout, cards glide to a new place when the window changes. */
+.sr-grid.is-ready .gl-item {
+  transition: transform 0.35s var(--ease);
+}
+
+/* A newly loaded card fades in. */
+.sr-grid .gl-item.sr-enter {
+  opacity: 0;
+  translate: 0 12px;
+}
+
+.sr-grid .gl-item {
+  transition: opacity 0.5s var(--ease), translate 0.5s var(--ease);
+}
+
+.sr-grid.is-ready .gl-item {
+  transition: transform 0.35s var(--ease), opacity 0.5s var(--ease), translate 0.5s var(--ease);
+}
+
+/* =========================================================
+   4. CARDS
+   ========================================================= */
+.sr-card .gl-thumb {
+  border-radius: var(--r-md);
+}
+
+.sr-caption {
+  margin: 0.55rem 0.2rem 0;
+  font-size: var(--fs-sm);
+  line-height: 1.35;
+  color: var(--text-soft);
+}
+
+.sr-caption a {
+  font-weight: 600;
+  color: var(--wood);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.sr-caption a:hover {
+  text-decoration: underline;
+}
+
+.sr-caption a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sr-card .gl-actions {
+  gap: 0;
+  margin-top: 0.1rem;
+  margin-left: -0.35rem;
+}
+
+/* Phones: two columns, so each card is narrow. The card shows Like and Save.
+   Share and Download are in the image viewer (open a photograph to use them). */
+@media (max-width: 599px) {
+  .sr-card [data-act="share"],
+  .sr-card [data-act="download"] {
+    display: none;
+  }
+}
+
+/* Larger screens: all four buttons fit in the card. */
+@media (min-width: 600px) {
+  .sr-card .gl-act {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+/* =========================================================
+   5. LOAD MORE AND RESULT PAGES
+   ========================================================= */
+.sr-pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.sr-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  text-align: center;
+}
+
+.sr-more[hidden] {
+  display: none;
+}
+
+.sr-more-btn[aria-busy="true"] {
+  cursor: progress;
+}
+
+.sr-more-btn .ss-spin {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.sr-more-text {
+  margin: 0;
+  max-width: 28rem;
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.sr-more-error {
+  margin: 0;
+  max-width: 28rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sr-hint {
+  margin-top: var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+/* =========================================================
+   6. VIEWER: "View in gallery"
+   ========================================================= */
+.gl-lb-gallery {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-left: auto;
+  padding: 0 1rem;
+  border: 1px solid rgba(247, 242, 233, 0.35);
+  border-radius: var(--r-pill);
+  background: rgba(34, 30, 26, 0.7);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text-on-dark);
+  transition: background-color 0.25s ease;
+}
+
+.gl-lb-gallery:hover {
+  background: rgba(247, 242, 233, 0.2);
+}
+
+.gl-lb-gallery:focus-visible {
+  outline: 3px solid var(--focus-on-dark);
+  outline-offset: 3px;
+}
+
+@media (max-width: 380px) {
+  .gl-lb-gallery {
+    padding: 0 0.75rem;
+    font-size: 0.82rem;
+  }
+}
+
+/* =========================================================
+   7. MOTION
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .sr-grid .gl-item,
+  .sr-grid.is-ready .gl-item {
+    transition: none;
+  }
+
+  .sr-grid .gl-item.sr-enter {
+    opacity: 1;
+    translate: none;
+  }
+
+  .gl-lb-gallery {
+    transition: none;
+  }
+}

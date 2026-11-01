@@ -1,0 +1,588 @@
+/* Chair on Top - search.css
+   The header search control and its drop-down panel. Loaded on every page.
+   (The search RESULTS page has its own file: search-results.css.)
+
+   1. The round search button in the header
+   2. Header layout at small and in-between widths
+   3. The search panel
+   4. Recent searches, curated suggestions, live suggestions
+   5. Loading, empty and error states
+   6. Motion
+*/
+
+/* =========================================================
+   1. THE SEARCH BUTTON
+   Same size and look as the round theme button next to it.
+   ========================================================= */
+.nav-tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav-search {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: rgba(247, 242, 233, 0.14);
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+}
+
+.nav-search:hover {
+  background: rgba(247, 242, 233, 0.26);
+}
+
+.nav-search:active {
+  transform: scale(0.94);
+}
+
+.nav-search[aria-expanded="true"] {
+  background: var(--ivory);
+  color: var(--charcoal);
+}
+
+.nav-search svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* =========================================================
+   2. HEADER LAYOUT
+   ========================================================= */
+
+/* The extra theme row inside the mobile menu. Hidden unless the screen is
+   under 360px (see below). */
+.nav-theme-item {
+  display: none;
+}
+
+/* On phones and small tablets the wrapper disappears and its two buttons
+   join the bar directly: logo, search, theme, menu. */
+@media (max-width: 860px) {
+  .nav-tools {
+    display: contents;
+  }
+
+  .nav-search {
+    order: 1;
+    margin-left: auto;
+  }
+
+  .nav-tools .theme-toggle {
+    margin-left: 0;
+  }
+}
+
+/* Under 360px there is no spare room, so the theme button moves into the
+   menu. Logo, search and menu stay visible. Theme switching still works:
+   theme.js treats every [data-theme-toggle] button the same way. */
+@media (max-width: 359px) {
+  .js .pill-nav .nav-tools .theme-toggle {
+    display: none;
+  }
+
+  .js .nav-theme-item {
+    display: block;
+  }
+
+  .nav-theme-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 0;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--text-on-dark-soft);
+    font: inherit;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--t-fast), color var(--t-fast);
+  }
+
+  .nav-theme-btn:hover {
+    background: rgba(247, 242, 233, 0.14);
+    color: #ffffff;
+  }
+
+  .nav-theme-btn svg {
+    flex: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .nav-theme-btn .icon-moon {
+    display: none;
+  }
+
+  html[data-theme="dark"] .nav-theme-btn .icon-sun {
+    display: none;
+  }
+
+  html[data-theme="dark"] .nav-theme-btn .icon-moon {
+    display: block;
+  }
+}
+
+/* 861px to 1060px: the bar holds the logo, five links, search and theme.
+   Make the round buttons and the link spacing a little smaller so nothing
+   wraps or overflows. */
+@media (min-width: 861px) and (max-width: 1060px) {
+  .pill-nav {
+    gap: var(--space-2);
+    padding-left: 1rem;
+  }
+
+  .nav-tools {
+    gap: 0.125rem;
+  }
+
+  .nav-tools .nav-search,
+  .nav-tools .theme-toggle {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (min-width: 861px) and (max-width: 1000px) {
+  .pill-nav .nav-links {
+    gap: 0;
+  }
+
+  .pill-nav .nav-links a {
+    padding: 0.45rem 0.35rem;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .brand {
+    gap: 0.45rem;
+  }
+}
+
+/* =========================================================
+   3. THE SEARCH PANEL
+   Sits just under the header bar. On phones it spans the full width of
+   the bar. On larger screens it is a card on the right.
+   ========================================================= */
+.ss-panel {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  width: min(34rem, 100%);
+  max-height: min(72vh, 36rem);
+  max-height: min(72dvh, 36rem);
+  padding: 0.75rem;
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-lift);
+  color: var(--text);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.985);
+  transform-origin: top right;
+  transition: opacity 0.2s var(--ease), transform 0.24s var(--ease), visibility 0.2s;
+}
+
+.ss-panel[hidden] {
+  display: none;
+}
+
+.ss-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  /* visibility must flip at once when opening, or the input cannot take focus */
+  transition: opacity 0.2s var(--ease), transform 0.24s var(--ease), visibility 0s;
+}
+
+@media (max-width: 860px) {
+  .ss-panel {
+    left: 0;
+    width: auto;
+    max-height: calc(100vh - 6.5rem);
+    max-height: calc(100dvh - 6.5rem);
+    padding-inline: 0.65rem;
+    transform-origin: top center;
+  }
+}
+
+.ss-form {
+  flex: none;
+  margin: 0;
+}
+
+.ss-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ss-field-icon {
+  position: absolute;
+  left: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: none;
+  stroke: var(--text-soft);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+/* 16px text: iPhones zoom the page when a smaller field is focused. */
+.ss-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.7rem 3rem 0.7rem 2.8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--bg, var(--surface));
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.3;
+  color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ss-input::placeholder {
+  color: var(--text-soft);
+  opacity: 0.85;
+}
+
+.ss-input:focus-visible {
+  outline: none;
+  border-color: var(--wood);
+  box-shadow: 0 0 0 2px var(--focus);
+}
+
+/* Hides the browser's own clear button, because we draw ours. */
+.ss-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.ss-clear {
+  position: absolute;
+  right: 0.3rem;
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+}
+
+.ss-clear[hidden] {
+  display: none;
+}
+
+.ss-clear:hover {
+  background: var(--sand);
+  color: var(--text);
+}
+
+.ss-clear svg,
+.ss-remove svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+}
+
+.ss-panel :focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.ss-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 0.5rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* =========================================================
+   4. THE LISTS
+   ========================================================= */
+.ss-section + .ss-section {
+  margin-top: 0.75rem;
+}
+
+.ss-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2rem;
+  padding: 0 0.5rem;
+}
+
+.ss-title {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wood);
+}
+
+.ss-link-btn {
+  min-height: 2.25rem;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.ss-link-btn:hover {
+  background: var(--sand);
+  color: var(--text);
+}
+
+.ss-note {
+  margin: 0.15rem 0 0.35rem;
+  padding: 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.ss-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ss-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ss-opt {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  min-height: 2.9rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--r-sm);
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ss-opt:hover,
+.ss-opt.is-active {
+  background: var(--sand);
+}
+
+.ss-opt.is-active {
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.ss-opt-icon {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: var(--text-soft);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ss-opt-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ss-opt-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.ss-opt-meta {
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: var(--text-soft);
+}
+
+.ss-opt-count {
+  flex: none;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.ss-remove {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.ss-remove:hover {
+  background: var(--sand);
+  color: var(--text);
+}
+
+/* Curated suggestions: small rounded chips. */
+.ss-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0 0.35rem 0.25rem;
+  list-style: none;
+}
+
+.ss-chips .ss-row {
+  display: block;
+}
+
+.ss-chips .ss-opt {
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.ss-chips .ss-opt:hover,
+.ss-chips .ss-opt.is-active {
+  border-color: var(--text-soft);
+}
+
+.ss-chips .ss-opt-count {
+  font-weight: 400;
+}
+
+/* =========================================================
+   5. LOADING, EMPTY AND ERROR STATES
+   ========================================================= */
+.ss-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-soft);
+}
+
+.ss-state strong {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.ss-state p {
+  margin: 0;
+  max-width: 26rem;
+}
+
+.ss-state .btn {
+  min-height: 2.75rem;
+  margin-top: 0.25rem;
+}
+
+.ss-spin {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 2px solid var(--line);
+  border-top-color: var(--wood);
+  border-radius: 50%;
+  animation: ss-spin 0.8s linear infinite;
+}
+
+@keyframes ss-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   6. MOTION
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .ss-panel,
+  .ss-panel.is-open,
+  .nav-search,
+  .ss-clear {
+    transition: none;
+  }
+
+  .ss-panel {
+    transform: none;
+  }
+
+  .ss-spin {
+    animation: none;
+    border-top-color: var(--line);
+    border-right-color: var(--wood);
+  }
+}
