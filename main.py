@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 
 from content import gallery as gallery_store
 from routes import gallery as gallery_routes
+from routes import search as search_routes
 
 # BASE_DIR is the folder that contains this file.
 # Using it means the app works no matter which folder you start it from.
@@ -22,6 +23,9 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 # Gallery pages: /gallery and /gallery/<collection>. Registered exactly once.
 app.include_router(gallery_routes.router)
+
+# Search: /search and the /api/search/... endpoints. Registered exactly once.
+app.include_router(search_routes.router)
 
 
 @app.get("/", response_class=HTMLResponse)
