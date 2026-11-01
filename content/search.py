@@ -12,10 +12,13 @@ It does not use AI, a database or any outside service. The gallery catalogue
 
 HOW A RESULT IS RANKED (score per word typed, best match for that word)
 -----------------------------------------------------------------------
-  100  the whole query equals the photograph's title        (added once)
+  100  the whole query equals the photograph's VERIFIED title (added once).
+       Photographs have no verified titles yet, so this scores nothing today.
+       The display label "Japandi image 3" is NOT a title and never scores.
    80  the word is the style (or a spelling of it: "scandi")
    60  the word is the photograph's room                     (when tagged)
    50  the word is part of a style name ("century", "modern")
+   45  the word is in a verified title (none yet)
    40  the word is a tag, colour or material
    20  the word appears in the style's description
   -10  if the match came through a "related word" (green -> olive)
@@ -45,6 +48,7 @@ SCORE_TITLE = 100
 SCORE_STYLE = 80
 SCORE_ROOM = 60
 SCORE_STYLE_PART = 50
+SCORE_TITLE_WORD = 45
 SCORE_FACET = 40  # tag, colour, material
 SCORE_DESCRIPTION = 20
 RELATED_PENALTY = 10
@@ -175,8 +179,12 @@ def _index():
             meta = image.get("meta") or {}
             style["images"].append({
                 "image": image,
-                "title_norm": normalize(image["title"]),
+                # Only a title someone has checked (IMAGE_META) may score. The generated
+                # display label ("Japandi image 3") is deliberately left out.
+                "title_norm": normalize(meta["title"]) if isinstance(meta.get("title"), str) else "",
                 "room": normalize(meta.get("room", "")),
+                "title_words": set(words_of(meta["title"])) if isinstance(meta.get("title"), str) else set(),
+                "description_words": set(words_of(meta["description"])) if isinstance(meta.get("description"), str) else set(),
                 "tags": {w for t in meta.get("tags", []) for w in words_of(t)},
                 "colour_words": {w for c in meta.get("colors", []) for w in words_of(c)},
                 "material_words": {w for m in meta.get("materials", []) for w in words_of(m)},
@@ -276,6 +284,8 @@ def _match(style, entry, term, word, related):
     # ordinary word
     if word in style["name_words"]:
         return SCORE_STYLE_PART - penalty, "Style: " + style["name"]
+    if word in entry["title_words"]:
+        return SCORE_TITLE_WORD - penalty, "Title word: " + word
     if word in entry["tags"]:
         return SCORE_FACET - penalty, "Tag: " + word
     if word in entry["colour_words"] or word in style["colour_words"]:
@@ -284,7 +294,7 @@ def _match(style, entry, term, word, related):
     if word in entry["material_words"] or word in style["material_words"]:
         label = next((m for m in style["material_labels"] if word in words_of(m)), word)
         return SCORE_FACET - penalty, "Material: " + label
-    if word in style["description_words"]:
+    if word in style["description_words"] or word in entry["description_words"]:
         return SCORE_DESCRIPTION - penalty, "Description"
     return 0, None
 
@@ -306,7 +316,7 @@ def _score(style, entry, terms, query_norm):
                 reasons.append(best[1])
     if terms and len(matched) == len(terms) and len(terms) > 1:
         total += BONUS_ALL_MATCHED
-    if total and query_norm and entry["title_norm"] == query_norm:
+    if total and query_norm and entry["title_norm"] and entry["title_norm"] == query_norm:
         total += SCORE_TITLE
         reasons.insert(0, "Title")
     return total, reasons, matched
@@ -337,6 +347,7 @@ def _public(result):
         "style_slug": slug,
         "number": image["number"],
         "title": image["title"],
+        "title_generated": not bool((image.get("meta") or {}).get("title")),  # True = display label only
         "path": image["path"],
         "url": "/static/" + image["path"],
         "width": image["width"],
