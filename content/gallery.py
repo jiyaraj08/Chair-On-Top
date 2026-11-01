@@ -33,6 +33,8 @@ import struct
 from functools import lru_cache
 from pathlib import Path
 
+from content import image_meta
+
 logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -213,16 +215,21 @@ def _load():
         images = []
         for position, (number, filename) in enumerate(files, start=1):
             size = jpeg_size(folder_path / filename)
+            image_id = "%s/%s" % (slug, filename[:-4])
+            meta = image_meta.get_image_meta(image_id)  # checked facts, usually empty
             image = {
                 "number": position,
                 "filename": filename,
                 "key": filename[:-4],  # "img3": used in share links
-                "id": "%s/%s" % (slug, filename[:-4]),  # "japandi/img3": used for like/save
+                "id": image_id,  # "japandi/img3": used for like/save
                 "download": "%s-%s" % (slug, filename),  # name of the downloaded file
                 "path": "%s/%s/%s" % (URL_ROOT, folder, filename),
                 "width": size[0] if size else None,
                 "height": size[1] if size else None,
                 "alt": "%s collection, image %d of %d" % (name, position, total),
+                # Search uses these. "meta" holds only facts someone has checked.
+                "meta": meta,
+                "title": meta.get("title") or "%s image %d" % (name, position),
             }
             images.append(image)
 
@@ -239,6 +246,8 @@ def _load():
             "images": images,
             "cover": cover,
         })
+    for problem in image_meta.problems([i["id"] for c in prepared for i in c["images"]]):
+        logger.warning("Gallery metadata: %s", problem)
     return prepared
 
 
