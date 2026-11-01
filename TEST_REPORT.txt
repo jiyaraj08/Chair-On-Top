@@ -1,0 +1,93 @@
+CHAIR ON TOP - PHASE 3 - TEST REPORT
+=====================================
+Nothing is marked "passed" unless it was actually run. Tests use YOUR project files
+(from the ZIP you sent), the real FastAPI app (uvicorn) and the real 64 photographs.
+
+A. RUN IN MY ENVIRONMENT (real app + headless Chromium via Playwright)
+-----------------------------------------------------------------------
+Only the Chromium engine was used (not Safari/WebKit, not Firefox).
+
+1. Header layout - 20 widths (320, 340, 359, 360, 375, 390, 414, 430, 600, 768, 861, 880,
+   900, 950, 1000, 1024, 1060, 1100, 1280, 1440) x light/dark x 5 pages
+   (/, /search, /journal, /gallery, /moodboards) = 200 page loads.
+   Checked: no horizontal scroll, nothing outside the pill, links stay on one row above 860px,
+   search never overlaps links, theme button hidden only below 360px.   Result: 0 problems.
+   The 861-1000px width you flagged was measured at 861, 880, 900, 950 and 1000: no overflow.
+2. Search panel (desktop 1280 and phone 390): open/close, Escape, outside click, Enter,
+   clear button, live suggestions, ArrowUp/ArrowDown (+ aria-activedescendant), Enter on a
+   highlighted suggestion, recent searches (add, de-duplicate, max 10, remove one, Clear all),
+   curated suggestions labelled "not live trends", malformed localStorage (5 kinds),
+   error state + Try again, empty state, 1-letter hint, other storage keys untouched
+   (cot.v1, cot.theme, cot.moodboards.v1).                          Result: 70 of 70 passed.
+3. Results page: 2/3/4/5 columns at 11 widths x 2 themes; shortest-column rule verified
+   from real card positions; no horizontal overflow; Load More x2 (24 -> 48 -> 64), DOM order
+   equals API order, no duplicates, new cards have all 4 actions; Load More failure shows an
+   error and recovers; viewer: opens, URL keeps /search?q=wood and only adds #photo=...,
+   mixed-collection navigation, Next at the last loaded photo loads more automatically,
+   Back closes, Forward reopens, Escape / Close button / outside click, focus returns,
+   View in gallery link, deep link #photo=japandi/img3, unknown fragment ignored;
+   Like, Save, Share (toast + copied link is the /gallery/ link), Download (real file name)
+   in the viewer and on dynamically loaded cards; Saved page shows saved photos.
+   Result: 154 of 156 checks passed. The 2 others were NOT code bugs:
+     - "below-fold images not fetched yet": loading="lazy" IS on cards 5+ (first 4 are eager),
+       but Chromium's lazy distance is large, so it fetched 23 of 24 images at once at 390px.
+       Lazy loading is set correctly; I could not show images being deferred on this short page.
+     - "SSR vs JS card equivalence": everything matches except the alt text. Server cards say
+       "Scandinavian collection, image 9 of 16"; Load More cards say "... image 9" (the API
+       does not give the collection size). See known limitations.
+4. Viewer and panel at all 11 widths x 2 themes (181 checks): panel inside the screen,
+   input >= 44px tall, panel colours follow theme, all viewer buttons inside the screen and
+   not overlapping, no JS errors, reduced-motion behaviour.         Result: 180 of 181 passed.
+   The 1 other was a wrong test assertion (the site's global reduced-motion rule already
+   sets transitions to ~0 and the panel does appear at once).
+5. Mobile menu and search below/around 360px (320, 340, 359, 360, 390): menu and search never
+   open together, theme row appears only below 360px, switches the theme and saves cot.theme,
+   logo/search/menu all visible, logo size unchanged.
+   No-JavaScript (320 and 1280): server-rendered cards, Show more / Previous links, search
+   form, thumbnail link to the gallery page, empty state.            Result: 57 of 57 passed.
+6. Regression, same script run on your ORIGINAL ZIP and on the modified app (59 checks each):
+   home, theme toggle, 4 collections (16 images each; lightbox open, count, next, previous,
+   wrap-around, caption, Esc, outside click, ?image= added and removed, deep link ?image=img5),
+   like/save, Saved page, Moodboards Stage A (create), Stage C workspace (add 3 images,
+   keyboard reorder, change cover, "Export as image" produced a .png download, Print menu
+   item enabled, workspace viewer opens), Journal.
+   Original: 2 failed = Journal 404 (the bug fixed here) + a test text-case mismatch.
+   Modified: 1 failed = the same test text-case mismatch (the Saved page DOES show the
+   photo: "1 saved photograph" and 1 visible card). Everything else identical.
+7. Journal: /journal and /journal/<real slug> return 200; unknown or malformed slugs return 404;
+   no route conflicts with gallery/search/moodboards.
+
+B. NOT DONE - needs a real browser/device on your side (please check)
+-----------------------------------------------------------------------
+  - iPhone Safari: no zoom when focusing the search field (it is 16px, but I cannot test iOS),
+    safe-area spacing, on-screen keyboard pushing the panel.
+  - Android Chrome and desktop Firefox / Safari.
+  - The real phone Share sheet and a real phone download.
+  - Print / Save as PDF: I only confirmed the menu item is enabled; I did not open the print dialog.
+  - PNG export: I confirmed a .png file downloads; I did not inspect the picture.
+  - Moodboard rename, delete, mouse drag-and-drop reorder were not re-tested.
+  - Your own saved data (likes, saves, boards) in your browser; Windows CMD run; Render deploy.
+
+C. HOW TO TEST ON YOUR PHONE (same Wi-Fi)
+  Run:  python -m uvicorn main:app --host 0.0.0.0 --port 8000
+  Find your PC's IP with:  ipconfig   (IPv4 address), then open http://THAT-IP:8000/search?q=wood
+  (Windows may ask to allow Python through the firewall; allow it on private networks only.)
+  Look at: tapping the search field (no zoom), the panel with the keyboard open, 2-column cards,
+  opening a photo, swiping between photos, and the menu at the narrowest width.
+
+D. KNOWN LIMITATIONS
+  1. Phones (under 600px wide): each card shows Like and Save only; Share and Download are inside
+     the photo viewer. Four buttons do not fit in a ~130px card without shrinking below a
+     comfortable touch size. From 600px up, all four show on the card.
+  2. Photos are single full-size JPEGs (about 100-170 KB each). No smaller versions exist, so
+     "responsive image sizing" is CSS sizing + width/height attributes only. Real thumbnails
+     would need new image files (a separate step).
+  3. Alt text on Load More cards omits "of 16" (see test 3).
+  4. No editorial titles: cards show the style name and "Image N" (a display label only).
+  5. The results page's own search box has no live suggestions; the header panel does.
+  6. Suggestion counts ("64 photographs") are shown exactly as /api/search/suggestions returns them;
+     I did not change or re-derive the backend numbers.
+  7. Without JavaScript on a narrow screen the whole menu shows stacked and covers the top of the
+     page. That is how your original header already behaved (I measured it); I did not change it.
+  8. Viewer counter says "Result 3 of 64" (position in the search), the caption says "Japandi - Image 5".
+  9. routes/pages.py has an unused broken import (from app.config). Left alone.

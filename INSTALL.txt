@@ -1,0 +1,67 @@
+CHAIR ON TOP - PHASE 3 - INSTALL, TEST AND ROLLBACK (Windows CMD)
+==================================================================
+Nothing here commits, pushes or deploys. Everything stays on your computer.
+
+STEP 0 - Look at your main.py first (important)
+  Open your project's main.py in Notepad.
+  The main.py in this ZIP is based on the project ZIP you gave me.
+  - If your main.py has NO line mentioning "journal", copying mine is fine (STEP 3).
+  - If your main.py ALREADY registers the Journal router, or has other changes
+    that are not in the ZIP you sent me, do NOT copy my main.py.
+    Instead, if "journal" is missing, add these lines yourself:
+        after the line  from routes import gallery as gallery_routes
+            from routes import journal as journal_routes
+        after the line  app.include_router(gallery_routes.router)
+            app.include_router(journal_routes.router)
+    Never register the Journal router twice.
+
+STEP 1 - Set two folder names (change the paths to yours)
+  set PROJECT=C:\Users\aksha\OneDrive\Desktop\chair-on-top\app
+  set EXTRACT=C:\Temp\cot-phase3
+  (Unzip chair-on-top-phase3.zip into the EXTRACT folder first.)
+
+STEP 2 - Make a backup (this is your rollback)
+  set BK=%PROJECT%\_backup_before_phase3
+  xcopy "%PROJECT%\main.py" "%BK%\" /Y
+  xcopy "%PROJECT%\static\js\gallery.js" "%BK%\static\js\" /Y
+  xcopy "%PROJECT%\templates\base.html" "%BK%\templates\" /Y
+  xcopy "%PROJECT%\templates\partials\site_header.html" "%BK%\templates\partials\" /Y
+  xcopy "%PROJECT%\templates\search\index.html" "%BK%\templates\search\" /Y
+
+STEP 3 - Copy the new files in
+  copy /Y "%EXTRACT%\main.py" "%PROJECT%\main.py"          (skip this line if STEP 0 said so)
+  xcopy "%EXTRACT%\static" "%PROJECT%\static" /E /Y /I
+  xcopy "%EXTRACT%\templates" "%PROJECT%\templates" /E /Y /I
+
+STEP 4 - Run the site
+  cd /d "%PROJECT%"
+  venv\Scripts\activate
+  python -m uvicorn main:app --reload
+  Open http://127.0.0.1:8000/ and press Ctrl+F5 once (forces fresh CSS and JS).
+
+STEP 5 - Quick check on your computer (5 minutes)
+  1. Click the search icon in the header. The panel opens. Press Escape: it closes.
+  2. Type "jap". Suggestions appear. Use Up/Down, then Enter.
+  3. Open http://127.0.0.1:8000/search?q=wood . Press Load more twice.
+  4. Click a photo. Press the right arrow many times: it moves across collections.
+  5. Press the browser Back button: the viewer closes and you stay on the search page.
+  6. Like and Save a photo, then open /saved.
+  7. Open /journal: it should now load (it returned "not found" before).
+  8. Open a collection (/gallery/japandi) and a moodboard: they should work as before.
+  9. Try your phone on the same Wi-Fi if you can (see TEST_REPORT.txt, section C).
+
+ROLLBACK
+  del "%PROJECT%\static\css\search.css"
+  del "%PROJECT%\static\css\search-results.css"
+  del "%PROJECT%\static\js\search.js"
+  del "%PROJECT%\static\js\search-results.js"
+  copy /Y "%BK%\main.py" "%PROJECT%\main.py"
+  copy /Y "%BK%\static\js\gallery.js" "%PROJECT%\static\js\gallery.js"
+  copy /Y "%BK%\templates\base.html" "%PROJECT%\templates\base.html"
+  copy /Y "%BK%\templates\partials\site_header.html" "%PROJECT%\templates\partials\site_header.html"
+  copy /Y "%BK%\templates\search\index.html" "%PROJECT%\templates\search\index.html"
+  Note: rolling back main.py also removes the Journal registration (Journal returns "not found" again,
+  as it did before Phase 3). If you want Journal back, keep only the two Journal lines from STEP 0.
+  Your browser data (cot.v1, cot.theme, cot.moodboards.v1) is never modified by Phase 3.
+  The new recent-searches key cot.search.v1 can be removed in the browser console:
+      localStorage.removeItem("cot.search.v1")

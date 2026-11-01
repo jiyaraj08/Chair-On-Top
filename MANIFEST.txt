@@ -1,0 +1,22 @@
+CHAIR ON TOP - PHASE 3 (Premium visual search) - FILE MANIFEST
+================================================================
+Paths are relative to your project root (the folder that contains main.py).
+Do NOT copy this MANIFEST.txt, INSTALL.txt or TEST_REPORT.txt into the project.
+
+NEW FILES (4)
+  static/css/search.css            Header search button, search panel, below-360px header rules
+  static/css/search-results.css    Results page: hero, masonry cards, Load More, viewer link
+  static/js/search.js              Header search: panel, suggestions, recent searches (cot.search.v1)
+  static/js/search-results.js      Masonry (shortest column), Load More, card building
+
+MODIFIED FILES (5)
+  main.py                          +2 lines: registers the Journal router (it was missing)
+  static/js/gallery.js             Opt-in search mode (data-viewer="search"); collection mode unchanged
+  templates/base.html              Loads search.css and search.js on every page
+  templates/partials/site_header.html   Search button, search panel, theme row for <360px
+  templates/search/index.html      New results layout, Load More hooks, viewer, scripts
+
+NOT TOUCHED (as agreed)
+  content/search.py, routes/search.py, content/gallery.py, all moodboard files,
+  Journal files, actions.js, theme.js, script.js, style.css, theme.css, gallery.css.
+  No new libraries. No photographs added or changed.
