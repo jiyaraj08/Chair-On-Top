@@ -65,32 +65,7 @@
 
 </main>
 
-<dialog class="gl-lightbox" id="gl-lightbox" aria-label="Image viewer">
-  <div class="gl-lb-inner">
-    <div class="gl-lb-bar">
-      <p class="gl-lb-count" id="gl-lb-count" aria-live="polite"></p>
-      <button class="gl-lb-btn gl-lb-close" id="gl-lb-close" type="button" aria-label="Close image viewer">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <figure class="gl-lb-figure">
-      <img class="gl-lb-img" id="gl-lb-img" alt="">
-      <figcaption class="gl-lb-caption" id="gl-lb-caption"></figcaption>
-      <div class="gl-actions gl-lb-actions" role="group" aria-label="Actions for this image">
-        <button class="gl-act" id="gl-lb-like" type="button" data-act="like" data-id="" aria-pressed="false" aria-label="Like this image">{{ act.icon("like") }}</button>
-        <button class="gl-act" id="gl-lb-save" type="button" data-act="save" data-id="" aria-pressed="false" aria-label="Save this image">{{ act.icon("save") }}</button>
-        <button class="gl-act" id="gl-lb-share" type="button" data-act="share" data-id="" aria-label="Share this image">{{ act.icon("share") }}</button>
-        <a class="gl-act" id="gl-lb-download" data-act="download" data-id="" href="#" download aria-label="Download this image">{{ act.icon("download") }}</a>
-      </div>
-    </figure>
-    <button class="gl-lb-btn gl-lb-prev" id="gl-lb-prev" type="button" aria-label="Previous image">
-      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button class="gl-lb-btn gl-lb-next" id="gl-lb-next" type="button" aria-label="Next image">
-      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-  </div>
-</dialog>
+{% include "gallery/_viewer.html" %}
 
 {% include "partials/site_footer.html" %}
 {% endblock %}
