@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% import "partials/_filters.html" as fl %}
+{% import "partials/_cards.html" as cards %}
+
+{% block title %}Explore - Chair on Top{% endblock %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/search-results.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/explore.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/viewer-extras.css') }}">
+{% endblock %}
+
+{% block body %}
+{% set current_nav = "explore" %}
+{% include "partials/site_header.html" %}
+
+<main id="main">
+  <section class="ex-hero" aria-labelledby="ex-title">
+    <div class="wrap">
+      <p class="kicker">Explore</p>
+      <h1 id="ex-title">Wander through eight interior styles</h1>
+      <p class="ex-lead">{{ feed.unfiltered_total }} photographs from {{ categories.styles | length }} collections. Browse without a search, then save what stays with you.</p>
+      <form class="sr-form ex-search" action="/search" method="get" role="search">
+        <label class="visually-hidden" for="ex-q">Search interiors, styles and materials</label>
+        <input id="ex-q" name="q" type="search" maxlength="80" placeholder="Search interiors..." autocomplete="off" enterkeyhint="search">
+        <button class="btn btn-dark" type="submit">Search</button>
+      </form>
+      {% if error %}<p class="sr-error" role="alert">{{ error }} Showing everything instead.</p>{% endif %}
+    </div>
+  </section>
+
+  <section class="ex-shortcuts" aria-labelledby="ex-short-title">
+    <div class="wrap">
+      <h2 class="ex-h" id="ex-short-title">Collections</h2>
+      <ul class="ex-rail">
+        <li>
+          <a class="ex-tile ex-tile-all" href="/explore"{% if not feed.filters.styles %} aria-current="page"{% endif %}>
+            <span class="ex-tile-name">All styles</span><span class="ex-tile-count">{{ feed.unfiltered_total }}</span>
+          </a>
+        </li>
+        {% for c in categories.styles %}
+        {% set only = feed.filters.styles == [c.slug] %}
+        <li>
+          <a class="ex-tile" href="/explore?style={{ c.slug | urlencode }}"{% if only %} aria-current="page"{% endif %}>
+            <img src="/static/{{ c.cover.path }}" alt="" width="{{ c.cover.width or 400 }}" height="{{ c.cover.height or 500 }}" loading="lazy" decoding="async">
+            <span class="ex-tile-name">{{ c.name }}</span><span class="ex-tile-count">{{ c.count }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+
+      {% if categories.searches %}
+      <h2 class="ex-h" id="ex-mat-title">Materials &amp; colours</h2>
+      <ul class="sr-chips ex-chips" aria-labelledby="ex-mat-title">
+        {% for s in categories.searches %}
+        <li><a href="{{ s.url }}">{{ s.label }}<span>{{ s.count }}</span><span class="visually-hidden"> photographs</span></a></li>
+        {% endfor %}
+      </ul>
+      <p class="ex-note">Hand-picked by Chair on Top. These are suggestions, not live trends.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="ex-feed gl-gallery" aria-labelledby="ex-feed-title">
+    <div class="wrap">
+      <div class="ex-feed-head">
+        <h2 class="ex-h" id="ex-feed-title">{% if feed.filters.styles | length == 1 %}{% for s in feed.facets.styles %}{% if s.slug == feed.filters.styles[0] %}{{ s.name }}{% endif %}{% endfor %}{% else %}Discover{% endif %}</h2>
+        <p class="sr-meta" id="sr-meta" role="status" data-total="{{ feed.total }}" data-start="{{ feed.offset }}">{{ feed.total }} photograph{{ '' if feed.total == 1 else 's' }}{% if feed.total > feed.count %} &middot; showing {{ feed.offset + 1 }}&ndash;{{ feed.offset + feed.count }}{% endif %}</p>
+      </div>
+
+      {{ fl.bar("/explore", "", feed.facets, feed.filters, feed.sort, feed.sorts, false, filters_active) }}
+
+      {% if curated_styles %}
+      <p class="ex-related">
+        <span>You might also like</span>
+        {% for s in curated_styles %}<a href="/explore?style={{ s.slug | urlencode }}">{{ s.name }}</a>{% endfor %}
+        <small>{{ curated_note }}</small>
+      </p>
+      {% endif %}
+
+      {% if feed.total == 0 %}
+      <div class="ex-empty" role="status">
+        <h3>Nothing matches those filters</h3>
+        <p>There are {{ feed.unfiltered_total }} photographs in the full gallery.</p>
+        <a class="btn btn-dark" href="/explore">Show all photographs</a>
+      </div>
+      {% else %}
+      <ul class="gl-grid sr-grid" id="sr-grid" data-viewer="search"
+          data-endpoint="/api/explore" data-params="{{ params }}"
+          data-done-text="You have seen every photograph here."
+          data-query="" data-page-size="{{ page_size }}"
+          data-total="{{ feed.total }}" data-offset="{{ feed.offset }}"
+          data-has-more="{{ 'true' if feed.has_more else 'false' }}"
+          data-next-offset="{{ feed.next_offset if feed.has_more else '' }}">
+        {% for r in feed["_raw"] %}{{ cards.card(r, loop.index) }}{% endfor %}
+      </ul>
+
+      <nav class="sr-pager" id="sr-pager" aria-label="Explore pages">
+        {% if feed.previous_offset is not none %}
+          <a class="btn btn-outline sr-prev" href="/explore?{% if params %}{{ params }}&amp;{% endif %}offset={{ feed.previous_offset }}">Previous</a>
+        {% endif %}
+        {% if feed.has_more %}
+          <a class="btn btn-dark sr-next" href="/explore?{% if params %}{{ params }}&amp;{% endif %}offset={{ feed.next_offset }}">Show more</a>
+        {% endif %}
+      </nav>
+      <div class="sr-more" id="sr-more" hidden></div>
+      <p class="sr-hint">Likes and saved pictures are kept in this browser on this device only.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  {{ cards.card_template() }}
+</main>
+
+{% if feed.total %}
+{% set viewer_gallery_link = true %}
+{% include "gallery/_viewer.html" %}
+{% endif %}
+
+{% include "partials/site_footer.html" %}
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/filters.js') }}" defer></script>
+  {% if feed.total %}
+  <script src="{{ url_for('static', path='js/gallery.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/search-results.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/viewer-extras.js') }}" defer></script>
+  {% endif %}
+{% endblock %}
