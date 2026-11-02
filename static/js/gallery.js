@@ -292,6 +292,27 @@
   });
   closeButton.addEventListener("click", close);
 
+  // viewer-extras.js asks the viewer to show another photograph (a related one).
+  // If it is in this page's grid, show it here. Otherwise open its gallery page,
+  // which opens the same viewer on that photograph.
+  document.addEventListener("cot:viewer-goto", function (event) {
+    var wanted = event.detail || {};
+    if (!dialog.open || typeof wanted.id !== "string") {
+      return;
+    }
+    if (isSearch) {
+      collect();
+    }
+    var found = items.findIndex(function (item) {
+      return item.id === wanted.id;
+    });
+    if (found !== -1) {
+      show(found);
+    } else if (typeof wanted.href === "string" && /^\/gallery\/[a-z0-9-]+\?image=img\d+$/.test(wanted.href)) {
+      window.location.href = wanted.href;
+    }
+  });
+
   // A click on the empty area around the picture closes the viewer. Clicks on
   // the picture, the buttons and the action row never do.
   dialog.addEventListener("click", function (event) {
