@@ -2,8 +2,8 @@
 
 TWO LEVELS
 ----------
-1. STYLE_META: facts about each of the six styles (Japandi, Mid-Century Modern,
-   Scandinavian, Minimalism, Industrial, Indian Deco). Search treats them as true
+1. STYLE_META: facts about each of the eight styles (Japandi, Mid-Century Modern,
+   Scandinavian, Minimalism, Industrial, Indian Deco, Bohemian, Transitional). Search treats them as true
    for every photograph in that style's collection. They are copied from the style cards on the
    homepage (templates/index.html): the colour names, the materials and the
    short descriptions.
@@ -12,7 +12,7 @@ TWO LEVELS
    collection description were written while the homepage and gallery were
    being updated, so they are worth a quick read.
 
-   Industrial and Indian Deco have NO colour or material facts on purpose:
+   Industrial, Indian Deco, Bohemian and Transitional have NO colour or material facts on purpose:
    nobody has checked those photographs yet. Their entries hold only the
    names a visitor may type (aliases) and one short collection-level line.
    Colour and material searches therefore do not match these two collections
@@ -101,6 +101,14 @@ STYLE_META = {
         "aliases": ["indian deco", "indian decor", "indian"],
         "mood": "Interiors shaped by Indian decorative traditions and design sensibility.",
     },
+    "bohemian": {
+        "aliases": ["bohemian", "boho"],
+        "mood": "Layered, eclectic interiors with a relaxed, collected character.",
+    },
+    "transitional": {
+        "aliases": ["transitional"],
+        "mood": "Interiors that bring traditional and contemporary design together.",
+    },
 }
 
 # ---------------------------------------------------------------------------
@@ -125,6 +133,8 @@ CURATED_SEARCHES = [
     {"label": "Minimalism", "kind": "style"},
     {"label": "Industrial", "kind": "style"},
     {"label": "Indian Deco", "kind": "style"},
+    {"label": "Bohemian", "kind": "style"},
+    {"label": "Transitional", "kind": "style"},
     {"label": "Wood", "kind": "material"},
     {"label": "Wool", "kind": "material"},
     {"label": "White", "kind": "colour"},
