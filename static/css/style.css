@@ -8,7 +8,7 @@
   --cot-css-loaded: 1;
 
   /* Colour */
-  --ivory: #f7f2e9;
+  --ivory: #f2ede8; /* palette Ivory */
   --sand: #ece1cd;
   --sand-deep: #d9c7a8;
   --wood: #7c5636;
@@ -16,6 +16,11 @@
   --charcoal: #221e1a;
   --charcoal-soft: #34302b;
   --gold: #e9c48e;
+
+  /* Palette upgrade (reference colours) */
+  --chocolate: #362017;
+  --burgundy: #3a0108;
+  --olive-accent: #4c5408;
 
   --bg: var(--ivory);
   --surface: #fffdf8;
@@ -199,6 +204,22 @@ main {
   background: var(--sand);
 }
 
+/* Home page "How it works" band: Burgundy with light text.
+   Scoped to #how so the other .section-sand bands stay as they were.
+   The local variables make it read the same in light and dark themes. */
+#how.section-sand {
+  --text: #f2ede8;
+  --text-soft: rgba(242, 237, 232, 0.8);
+  --wood: var(--gold);
+  --line: rgba(242, 237, 232, 0.2);
+  background: var(--burgundy);
+  color: var(--text);
+}
+
+#how.section-sand .step-live {
+  border-top-color: var(--gold);
+}
+
 .section-head {
   max-width: 44rem;
   margin-bottom: clamp(2rem, 5vw, 3.5rem);
@@ -309,8 +330,8 @@ main {
 }
 
 .btn-outline[aria-pressed="true"] {
-  background: var(--olive);
-  border-color: var(--olive);
+  background: var(--olive-accent);
+  border-color: var(--olive-accent);
   color: var(--text-on-dark);
 }
 
@@ -324,7 +345,7 @@ main {
 }
 
 .chip-live {
-  background: var(--olive);
+  background: var(--olive-accent);
   color: var(--text-on-dark);
 }
 
@@ -362,7 +383,7 @@ main {
   padding: 0.5rem 0.6rem 0.5rem 1.25rem;
   border: 1px solid var(--line-on-dark);
   border-radius: var(--r-pill);
-  background: rgba(34, 30, 26, 0.72);
+  background: rgba(54, 32, 23, 0.72);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   color: var(--text-on-dark);
@@ -501,7 +522,7 @@ main {
     padding: var(--space-3);
     border: 1px solid var(--line-on-dark);
     border-radius: var(--r-md);
-    background: var(--charcoal);
+    background: var(--chocolate);
     box-shadow: var(--shadow-lift);
   }
 
@@ -528,7 +549,7 @@ main {
   min-height: min(90svh, 52rem);
   overflow: hidden;
   border-radius: var(--r-lg);
-  background: var(--charcoal);
+  background: var(--chocolate);
   color: var(--text-on-dark);
 }
 
@@ -549,7 +570,7 @@ main {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(34, 30, 26, 0.86) 0%, rgba(34, 30, 26, 0.8) 45%, rgba(34, 30, 26, 0.55) 65%, rgba(34, 30, 26, 0) 90%);
+  background: linear-gradient(90deg, rgba(54, 32, 23, 0.86) 0%, rgba(54, 32, 23, 0.8) 45%, rgba(54, 32, 23, 0.55) 65%, rgba(54, 32, 23, 0) 90%);
   pointer-events: none;
 }
 
@@ -624,7 +645,7 @@ main {
   }
 
   .hero-media::after {
-    background: linear-gradient(180deg, rgba(34, 30, 26, 0.6) 0%, rgba(34, 30, 26, 0) 40%);
+    background: linear-gradient(180deg, rgba(54, 32, 23, 0.6) 0%, rgba(54, 32, 23, 0) 40%);
   }
 
   .hero-content {
