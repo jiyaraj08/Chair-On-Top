@@ -75,6 +75,22 @@ COLLECTIONS = [
         "description": "Open space, quiet surfaces, and only the pieces that earn their place.",
         "cover": "img1.jpg",
     },
+    {
+        "slug": "industrial",
+        "name": "Industrial",
+        "folder": "industrial",
+        # PLEASE CONFIRM: collection-level wording only. No photo-specific claims.
+        "description": "Raw, utilitarian interiors with the honest character of working buildings.",
+        "cover": "img1.jpg",
+    },
+    {
+        "slug": "indian-deco",
+        "name": "Indian Deco",
+        "folder": "indian-deco",  # no space in the folder name (see the note in static/images/designs)
+        # PLEASE CONFIRM: collection-level wording only. No photo-specific claims.
+        "description": "Interiors shaped by Indian decorative traditions and design sensibility.",
+        "cover": "img1.jpg",
+    },
 ]
 
 
