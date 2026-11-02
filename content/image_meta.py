@@ -2,15 +2,21 @@
 
 TWO LEVELS
 ----------
-1. STYLE_META: facts about each of the four styles (Japandi, Mid-Century Modern,
-   Scandinavian, Minimalism). Search treats them as true for every photograph in
-   that style's collection. They are copied from the style cards on the
+1. STYLE_META: facts about each of the six styles (Japandi, Mid-Century Modern,
+   Scandinavian, Minimalism, Industrial, Indian Deco). Search treats them as true
+   for every photograph in that style's collection. They are copied from the style cards on the
    homepage (templates/index.html): the colour names, the materials and the
    short descriptions.
 
    PLEASE CONFIRM: the Mid-Century Modern card text and the Minimalism
    collection description were written while the homepage and gallery were
    being updated, so they are worth a quick read.
+
+   Industrial and Indian Deco have NO colour or material facts on purpose:
+   nobody has checked those photographs yet. Their entries hold only the
+   names a visitor may type (aliases) and one short collection-level line.
+   Colour and material searches therefore do not match these two collections
+   until real, checked facts are added.
 
 2. IMAGE_META: facts about ONE photograph. It is EMPTY on purpose. Nothing here
    may be guessed. When each photograph has been looked at and checked, add an
@@ -87,6 +93,14 @@ STYLE_META = {
         "materials": "Matte paint, light wood, linen, simple metal",
         "colors": ["Soft white", "Stone grey", "Pale oak", "Warm white"],
     },
+    "industrial": {
+        "aliases": ["industrial"],
+        "mood": "Raw, utilitarian interiors with the honest character of working buildings.",
+    },
+    "indian-deco": {
+        "aliases": ["indian deco", "indian decor", "indian"],
+        "mood": "Interiors shaped by Indian decorative traditions and design sensibility.",
+    },
 }
 
 # ---------------------------------------------------------------------------
@@ -109,6 +123,8 @@ CURATED_SEARCHES = [
     {"label": "Mid-Century Modern", "kind": "style"},
     {"label": "Scandinavian", "kind": "style"},
     {"label": "Minimalism", "kind": "style"},
+    {"label": "Industrial", "kind": "style"},
+    {"label": "Indian Deco", "kind": "style"},
     {"label": "Wood", "kind": "material"},
     {"label": "Wool", "kind": "material"},
     {"label": "White", "kind": "colour"},
