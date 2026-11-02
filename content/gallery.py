@@ -91,6 +91,22 @@ COLLECTIONS = [
         "description": "Interiors shaped by Indian decorative traditions and design sensibility.",
         "cover": "img1.jpg",
     },
+    {
+        "slug": "bohemian",
+        "name": "Bohemian",
+        "folder": "bohemian",
+        # PLEASE CONFIRM: collection-level wording only. No photo-specific claims.
+        "description": "Layered, eclectic interiors with a relaxed, collected character.",
+        "cover": "img1.jpg",
+    },
+    {
+        "slug": "transitional",
+        "name": "Transitional",
+        "folder": "transitional",
+        # PLEASE CONFIRM: collection-level wording only. No photo-specific claims.
+        "description": "Interiors that bring traditional and contemporary design together.",
+        "cover": "img1.jpg",
+    },
 ]
 
 
