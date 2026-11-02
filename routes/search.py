@@ -10,13 +10,14 @@ never used to build one.
 """
 
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
 from content import search as search_store
+from routes.explore import _text, filter_params
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
@@ -53,8 +54,19 @@ def _whole_number(value, name, default):
 
 
 @router.get("/search", response_class=HTMLResponse)
-def search_page(request: Request, q: Optional[str] = None, offset: Optional[str] = None):
+def search_page(
+    request: Request,
+    q: Optional[str] = None,
+    offset: Optional[str] = None,
+    style: List[str] = Query(default=[]),
+    sort: Optional[str] = None,
+    room: Optional[str] = None,
+    color: Optional[str] = None,
+    material: Optional[str] = None,
+):
     context = {
+        "filters_active": False,
+        "params": "",
         "q": "",
         "state": "discover",
         "error": "",
@@ -66,7 +78,12 @@ def search_page(request: Request, q: Optional[str] = None, offset: Optional[str]
     if q is not None and q.strip():
         try:
             start = _whole_number(offset, "offset", 0)
-            response = search_store.search(q, offset=start, limit=PAGE_SIZE)
+            response = search_store.search(
+                q, offset=start, limit=PAGE_SIZE,
+                styles=style, sort=sort, room=_text(room), color=_text(color), material=_text(material),
+            )
+            context["params"] = filter_params(response["filters"], response["sort"], "relevance")
+            context["filters_active"] = bool(context["params"])
             context["q"] = response["query"]
             context["search"] = response
             context["state"] = "results" if response["total"] else "empty"
@@ -99,6 +116,11 @@ def api_results(
     offset: Optional[str] = None,
     limit: Optional[str] = None,
     strict: Optional[str] = None,
+    style: List[str] = Query(default=[]),
+    sort: Optional[str] = None,
+    room: Optional[str] = None,
+    color: Optional[str] = None,
+    material: Optional[str] = None,
 ):
     try:
         response = search_store.search(
@@ -106,6 +128,11 @@ def api_results(
             offset=_whole_number(offset, "offset", 0),
             limit=_whole_number(limit, "limit", search_store.DEFAULT_LIMIT) or search_store.DEFAULT_LIMIT,
             strict=(strict or "").lower() in ("1", "true", "yes"),
+            styles=style,
+            sort=sort,
+            room=_text(room),
+            color=_text(color),
+            material=_text(material),
         )
     except search_store.QueryError as error:
         return _error(error)
