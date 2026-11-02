@@ -1,10 +1,13 @@
 {% extends "base.html" %}
+{% import "partials/_filters.html" as fl %}
 
 {% block title %}{% if q %}{{ q }} - Search - Chair on Top{% else %}Search - Chair on Top{% endif %}{% endblock %}
 
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/search-results.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/explore.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/viewer-extras.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -40,6 +43,14 @@
       {% else %}
         <p class="sr-notice">Search by style, colour or material. Results come from the photographs in the gallery.</p>
       {% endif %}
+
+      {% if search and (state == "results" or state == "empty") %}
+        {{ fl.bar("/search", q, search.facets, search.filters, search.sort, search.sorts, true, filters_active) }}
+        {% if state == "empty" and filters_active and search.unfiltered_total %}
+          <p class="sr-notice">{{ search.unfiltered_total }} photograph{{ '' if search.unfiltered_total == 1 else 's' }} match &ldquo;{{ q }}&rdquo; without these filters. <a href="/search?q={{ q | urlencode }}">Clear filters</a></p>
+        {% endif %}
+        <p class="sr-notice"><a href="/explore">Or explore all photographs</a></p>
+      {% endif %}
     </div>
   </section>
 
@@ -47,7 +58,7 @@
   <section class="gl-gallery" aria-label="Search results">
     <div class="wrap">
       <ul class="gl-grid sr-grid" id="sr-grid" data-viewer="search"
-          data-query="{{ q }}" data-page-size="{{ page_size }}"
+          data-query="{{ q }}" data-params="{{ params }}" data-page-size="{{ page_size }}"
           data-total="{{ search.total }}" data-offset="{{ search.offset }}"
           data-has-more="{{ 'true' if search.has_more else 'false' }}"
           data-next-offset="{{ search.next_offset if search.has_more else '' }}">
@@ -71,10 +82,10 @@
       {# Without JavaScript these links page through the results. With JavaScript, "Show more" is replaced by Load More. #}
       <nav class="sr-pager" id="sr-pager" aria-label="Search result pages">
         {% if search.previous_offset is not none %}
-          <a class="btn btn-outline sr-prev" href="/search?q={{ q | urlencode }}&amp;offset={{ search.previous_offset }}">Previous</a>
+          <a class="btn btn-outline sr-prev" href="/search?q={{ q | urlencode }}{% if params %}&amp;{{ params }}{% endif %}&amp;offset={{ search.previous_offset }}">Previous</a>
         {% endif %}
         {% if search.has_more %}
-          <a class="btn btn-dark sr-next" href="/search?q={{ q | urlencode }}&amp;offset={{ search.next_offset }}">Show more</a>
+          <a class="btn btn-dark sr-next" href="/search?q={{ q | urlencode }}{% if params %}&amp;{{ params }}{% endif %}&amp;offset={{ search.next_offset }}">Show more</a>
         {% endif %}
       </nav>
       <div class="sr-more" id="sr-more" hidden></div>
@@ -120,8 +131,10 @@
 
 {% block scripts_extra %}
   <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/filters.js') }}" defer></script>
   {% if state == "results" %}
   <script src="{{ url_for('static', path='js/gallery.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/search-results.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/viewer-extras.js') }}" defer></script>
   {% endif %}
 {% endblock %}
