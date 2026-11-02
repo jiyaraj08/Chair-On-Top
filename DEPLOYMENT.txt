@@ -1,0 +1,26 @@
+CHAIR ON TOP - DEPLOYMENT (GitHub + Render)   *** DO NOT RUN UNTIL YOU APPROVE ***
+
+I did not commit, push or deploy anything.
+
+Why the live site showed no search button: if your repository holds the same
+older header/base templates as the ZIP you gave me, Render has been serving
+exactly that. I could not open the live site to confirm, so this is likely, not proven.
+
+Steps (after you have tested locally and approved):
+  1. cd /d "<your project folder>"
+  2. git status                      (review: only the files in MANIFEST.txt should be listed)
+  3. git add content/gallery.py content/image_meta.py templates static/css static/images/designs/indian-deco
+        (git add templates adds the new _viewer.html too. Do not add .env or venv.)
+  4. git commit -m "Fix header search button; add Industrial and Indian Deco collections"
+  5. git push origin <your branch>
+  6. Render redeploys automatically if auto-deploy is on; otherwise use
+     Manual Deploy > Deploy latest commit in the Render dashboard.
+  7. After deploy, open the live site with a hard refresh (Ctrl+F5), and check
+     the magnifier button, /gallery (six collections), /gallery/indian-deco.
+
+Notes
+  - Image files are about 10 MB total; the push will include the 16 new photos.
+  - requirements.txt is unchanged, no new packages, no new environment variables.
+  - Keep the Render start command you already use; I did not change main.py.
+  - Folder names are lowercase with a hyphen (indian-deco). The Linux server on
+    Render is case-sensitive, so keep the names exactly as shipped.
