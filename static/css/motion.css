@@ -104,7 +104,7 @@
 }
 
 .site-header.is-scrolled .pill-nav {
-  background: rgba(34, 30, 26, 0.9);
+  background: rgba(54, 32, 23, 0.9);
   box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.55);
 }
 
@@ -248,7 +248,7 @@
   padding: 0.5rem 0.55rem 0.45rem;
   border: 1px solid rgba(233, 196, 142, 0.35);
   border-radius: 1.2rem;
-  background: rgba(34, 30, 26, 0.5);
+  background: rgba(54, 32, 23, 0.5);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   text-align: center;
@@ -256,7 +256,7 @@
 }
 
 .motif:hover {
-  background: rgba(34, 30, 26, 0.66);
+  background: rgba(54, 32, 23, 0.66);
   border-color: rgba(233, 196, 142, 0.6);
 }
 
