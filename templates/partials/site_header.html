@@ -1,6 +1,7 @@
-{# Shared site header (used by the homepage and the Journal pages).
+{# Shared site header (used by every page).
    on_home = true      -> links stay in-page (#styles) on the homepage.
-   current_nav = "journal" -> marks the Journal & Listen link as the current page. #}
+   current_nav = "journal" -> marks the Journal & Listen link as the current page.
+   The search button and its panel live here, so every page has them. #}
 {% set _h = "" if on_home else "/" %}
 <header class="site-header">
   <nav class="pill-nav" aria-label="Main">
@@ -17,10 +18,39 @@
       <li><a href="{{ _h }}#budget">Budget Planner</a></li>
       <li><a href="{{ _h }}#how">How it works</a></li>
       <li><a href="/journal"{% if current_nav == "journal" %} aria-current="page"{% endif %}>Journal &amp; Listen</a></li>
+      {# Only shown below 360px (search.css), where the round theme button leaves the bar. #}
+      <li class="nav-theme-item">
+        <button class="nav-theme-btn" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <span>Light / dark theme</span>
+        </button>
+      </li>
     </ul>
-    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Switch to dark theme">
-      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"/></svg>
-      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
+    <div class="nav-tools">
+      {# A real link to /search, so search works even without JavaScript. search.js turns it into the panel opener. #}
+      <a class="nav-search" href="/search" data-search-open aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      </a>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Switch to dark theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+
+    <div class="ss-panel" id="ss-panel" role="dialog" aria-label="Search" hidden>
+      <form class="ss-form" id="ss-form" action="/search" method="get" role="search">
+        <div class="ss-field">
+          <svg class="ss-field-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+          <label class="visually-hidden" for="ss-input">Search interiors, styles and materials</label>
+          <input class="ss-input" id="ss-input" name="q" type="search" maxlength="80" placeholder="Search interiors..." autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-expanded="false" aria-controls="ss-body" aria-autocomplete="list">
+          <button class="ss-clear" id="ss-clear" type="button" aria-label="Clear search" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+      </form>
+      <div class="ss-body" id="ss-body"></div>
+      <p class="visually-hidden" id="ss-status" role="status" aria-live="polite"></p>
+    </div>
   </nav>
 </header>
