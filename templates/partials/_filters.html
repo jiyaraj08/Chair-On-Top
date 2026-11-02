@@ -1,0 +1,54 @@
+{# The filter bar, shared by /explore and /search.
+   It is a normal GET form, so it works without JavaScript and every state is a
+   shareable address. filters.js only submits it automatically when a control changes.
+   Room, colour and material controls appear ONLY when checked photograph-level
+   facts exist (content/image_meta.py), so no filter is ever offered without real data. #}
+{% macro bar(action, q, facets, filters, sort, sorts, show_styles=true, active=false) %}
+<form class="fb" data-filter-form action="{{ action }}" method="get" aria-label="Filter photographs">
+  {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+  {# When the style chips are not shown (Explore uses collection tiles), keep the chosen styles. #}
+  {% if not show_styles %}{% for slug in filters.styles %}<input type="hidden" name="style" value="{{ slug }}">{% endfor %}{% endif %}
+
+  {% if show_styles %}
+  <fieldset class="fb-group fb-styles">
+    <legend class="fb-legend">Style</legend>
+    <div class="fb-chips">
+      {% for s in facets.styles %}
+      {% set on = s.slug in filters.styles %}
+      <label class="fb-chip{% if s.count == 0 and not on %} is-empty{% endif %}">
+        <input type="checkbox" name="style" value="{{ s.slug }}"{% if on %} checked{% endif %}{% if s.count == 0 and not on %} disabled{% endif %}>
+        <span>{{ s.name }}<em>{{ s.count }}</em></span>
+      </label>
+      {% endfor %}
+    </div>
+  </fieldset>
+  {% endif %}
+
+  <div class="fb-row">
+    {% if facets.rooms %}
+    <label class="fb-select"><span>Room</span>
+      <select name="room"><option value="">Any room</option>
+        {% for r in facets.rooms %}<option value="{{ r.value }}"{% if filters.room == r.value %} selected{% endif %}>{{ r.label }} ({{ r.count }})</option>{% endfor %}
+      </select></label>
+    {% endif %}
+    {% if facets.colors %}
+    <label class="fb-select"><span>Colour</span>
+      <select name="color"><option value="">Any colour</option>
+        {% for r in facets.colors %}<option value="{{ r.value }}"{% if filters.color == r.value %} selected{% endif %}>{{ r.label }} ({{ r.count }})</option>{% endfor %}
+      </select></label>
+    {% endif %}
+    {% if facets.materials %}
+    <label class="fb-select"><span>Material</span>
+      <select name="material"><option value="">Any material</option>
+        {% for r in facets.materials %}<option value="{{ r.value }}"{% if filters.material == r.value %} selected{% endif %}>{{ r.label }} ({{ r.count }})</option>{% endfor %}
+      </select></label>
+    {% endif %}
+    <label class="fb-select"><span>Sort by</span>
+      <select name="sort">
+        {% for o in sorts %}<option value="{{ o.value }}"{% if sort == o.value %} selected{% endif %}>{{ o.label }}</option>{% endfor %}
+      </select></label>
+    <button class="btn btn-outline fb-apply" type="submit">Apply</button>
+    {% if active %}<a class="fb-clear" href="{{ action }}{% if q %}?q={{ q | urlencode }}{% endif %}">Clear filters</a>{% endif %}
+  </div>
+</form>
+{% endmacro %}
