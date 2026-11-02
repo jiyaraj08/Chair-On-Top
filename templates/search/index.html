@@ -4,28 +4,7 @@
 
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
-  {# Phase 2 only: these few rules move into search.css in Phase 3. #}
-  <style>
-    .sr-hero { padding: clamp(7rem, 13vw, 9.5rem) 0 clamp(1.25rem, 3vw, 2rem); }
-    .sr-hero h1 { max-width: 20ch; margin-bottom: var(--space-4); font-family: var(--font-display); font-weight: 500; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.06; letter-spacing: -0.012em; overflow-wrap: anywhere; text-wrap: balance; }
-    .sr-form { display: flex; gap: var(--space-2); max-width: 36rem; margin-bottom: var(--space-3); }
-    .sr-form input { flex: 1; min-width: 0; min-height: 2.9rem; padding: 0.75rem 1.1rem; border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--surface); font: inherit; font-size: 1rem; color: var(--text); }
-    .sr-form input:focus-visible { outline: none; border-color: var(--wood); box-shadow: 0 0 0 3px var(--focus); }
-    .sr-form .btn { min-height: 2.9rem; }
-    .sr-meta { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wood); }
-    .sr-notice { max-width: 40rem; margin-top: var(--space-3); color: var(--text-soft); }
-    .sr-error { max-width: 40rem; margin-top: var(--space-3); font-weight: 600; color: var(--text); }
-    .sr-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) 0 0; padding: 0; list-style: none; }
-    .sr-chips a { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1rem; border: 1px solid var(--line); border-radius: var(--r-pill); font-size: 0.9rem; font-weight: 600; text-decoration: none; color: var(--text); }
-    .sr-chips a:hover { border-color: var(--text-soft); background: var(--sand); }
-    .sr-chips a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-    .sr-chips span { margin-left: 0.4rem; font-weight: 400; color: var(--text-soft); }
-    .sr-caption { margin-top: 0.4rem; font-size: var(--fs-sm); color: var(--text-soft); }
-    .sr-caption a { color: inherit; text-underline-offset: 3px; }
-    .sr-pager { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
-    .sr-hint { margin-top: var(--space-4); font-size: var(--fs-sm); color: var(--text-soft); }
-    .sr-empty { max-width: 40rem; }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/search-results.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -44,16 +23,17 @@
         <h1 id="sr-title">Search the gallery</h1>
       {% endif %}
 
-      <form class="sr-form" action="/search" method="get" role="search">
+      {# data-record tells search.js which query produced results, so it can be added to Recent searches. #}
+      <form class="sr-form" id="sr-form" action="/search" method="get" role="search"{% if state == "results" %} data-record="{{ q }}"{% endif %}>
         <label class="visually-hidden" for="sr-q">Search interiors, styles and materials</label>
-        <input id="sr-q" name="q" type="search" value="{{ q }}" maxlength="80" placeholder="Search interiors, styles, rooms..." autocomplete="off">
+        <input id="sr-q" name="q" type="search" value="{{ q }}" maxlength="80" placeholder="Search interiors, styles, rooms..." autocomplete="off" enterkeyhint="search">
         <button class="btn btn-dark" type="submit">Search</button>
       </form>
 
       {% if state == "error" %}
         <p class="sr-error" role="alert">{{ error }}</p>
       {% elif state == "results" %}
-        <p class="sr-meta" role="status">{{ search.total }} photograph{{ '' if search.total == 1 else 's' }}{% if search.total > search.count %} &middot; showing {{ search.offset + 1 }}&ndash;{{ search.offset + search.count }}{% endif %}</p>
+        <p class="sr-meta" id="sr-meta" role="status" data-total="{{ search.total }}" data-start="{{ search.offset }}">{{ search.total }} photograph{{ '' if search.total == 1 else 's' }}{% if search.total > search.count %} &middot; showing {{ search.offset + 1 }}&ndash;{{ search.offset + search.count }}{% endif %}</p>
         {% if search.notice %}<p class="sr-notice">{{ search.notice }}</p>{% endif %}
       {% elif state == "empty" %}
         <p class="sr-notice" role="status">{{ search.notice or "No photographs matched that search." }}</p>
@@ -66,36 +46,55 @@
   {% if state == "results" %}
   <section class="gl-gallery" aria-label="Search results">
     <div class="wrap">
-      <ul class="gl-grid" id="sr-grid">
+      <ul class="gl-grid sr-grid" id="sr-grid" data-viewer="search"
+          data-query="{{ q }}" data-page-size="{{ page_size }}"
+          data-total="{{ search.total }}" data-offset="{{ search.offset }}"
+          data-has-more="{{ 'true' if search.has_more else 'false' }}"
+          data-next-offset="{{ search.next_offset if search.has_more else '' }}">
         {% for r in search["_raw"] %}
         {% set img = r.image %}
-        <li class="gl-item" data-id="{{ img.id }}">
+        <li class="gl-item sr-card" data-id="{{ img.id }}" data-key="{{ img.key }}" data-download="{{ img.download }}"
+            data-style="{{ r.style }}" data-gallery="/gallery/{{ r.slug }}?image={{ img.key }}" data-label="Image {{ img.number }}">
           <a class="gl-thumb" href="/gallery/{{ r.slug }}?image={{ img.key }}"
              {% if img.width and img.height %}style="--ratio: {{ img.width }} / {{ img.height }};"{% endif %}
-             aria-label="Open {{ r.style }} image {{ img.number }} in the gallery">
+             aria-label="Open {{ r.style }} image {{ img.number }}">
             <img src="/static/{{ img.path }}"
                  {% if img.width and img.height %}width="{{ img.width }}" height="{{ img.height }}"{% endif %}
                  alt="{{ img.alt }}" loading="{{ 'eager' if loop.index <= 4 else 'lazy' }}" decoding="async">
           </a>
           {{ act.row(img, r.style) }}
-          <p class="sr-caption"><a href="/gallery/{{ r.slug }}">{{ r.style }}</a> &middot; Image {{ img.number }}</p>
+          <p class="sr-caption"><a href="/gallery/{{ r.slug }}">{{ r.style }}</a> &middot; <span class="sr-caption-label">Image {{ img.number }}</span></p>
         </li>
         {% endfor %}
       </ul>
 
-      {% if search.previous_offset is not none or search.has_more %}
-      <nav class="sr-pager" aria-label="Search result pages">
+      {# Without JavaScript these links page through the results. With JavaScript, "Show more" is replaced by Load More. #}
+      <nav class="sr-pager" id="sr-pager" aria-label="Search result pages">
         {% if search.previous_offset is not none %}
-          <a class="btn btn-outline" href="/search?q={{ q | urlencode }}&amp;offset={{ search.previous_offset }}">Previous</a>
+          <a class="btn btn-outline sr-prev" href="/search?q={{ q | urlencode }}&amp;offset={{ search.previous_offset }}">Previous</a>
         {% endif %}
         {% if search.has_more %}
-          <a class="btn btn-dark" href="/search?q={{ q | urlencode }}&amp;offset={{ search.next_offset }}">Show more</a>
+          <a class="btn btn-dark sr-next" href="/search?q={{ q | urlencode }}&amp;offset={{ search.next_offset }}">Show more</a>
         {% endif %}
       </nav>
-      {% endif %}
+      <div class="sr-more" id="sr-more" hidden></div>
       <p class="sr-hint">Likes and saved pictures are kept in this browser on this device only.</p>
     </div>
   </section>
+
+  {# One hidden card that Load More copies. Its buttons are the same ones actions.js already handles. #}
+  <template id="sr-card-template">
+    <li class="gl-item sr-card" data-id="" data-key="" data-download="" data-style="" data-gallery="" data-label="">
+      <a class="gl-thumb" href="#" aria-label=""><img src="" alt="" loading="lazy" decoding="async"></a>
+      <div class="gl-actions" role="group" aria-label="">
+        <button class="gl-act" type="button" data-act="like" data-id="" aria-pressed="false" aria-label="Like">{{ act.icon("like") }}</button>
+        <button class="gl-act" type="button" data-act="save" data-id="" aria-pressed="false" aria-label="Save">{{ act.icon("save") }}</button>
+        <button class="gl-act" type="button" data-act="share" data-id="" data-name="" aria-label="Share">{{ act.icon("share") }}</button>
+        <a class="gl-act" data-act="download" data-id="" href="#" download aria-label="Download">{{ act.icon("download") }}</a>
+      </div>
+      <p class="sr-caption"><a href="#"></a> &middot; <span class="sr-caption-label"></span></p>
+    </li>
+  </template>
   {% else %}
   <section class="section gl-section" aria-labelledby="sr-more-title">
     <div class="wrap sr-empty">
@@ -111,9 +110,18 @@
   {% endif %}
 </main>
 
+{% if state == "results" %}
+{% set viewer_gallery_link = true %}
+{% include "gallery/_viewer.html" %}
+{% endif %}
+
 {% include "partials/site_footer.html" %}
 {% endblock %}
 
 {% block scripts_extra %}
   <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
+  {% if state == "results" %}
+  <script src="{{ url_for('static', path='js/gallery.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/search-results.js') }}" defer></script>
+  {% endif %}
 {% endblock %}
