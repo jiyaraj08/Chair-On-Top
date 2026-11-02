@@ -596,3 +596,25 @@
     border-right-color: var(--wood);
   }
 }
+
+/* =========================================================
+   7. "Explore all photographs" link at the foot of the panel
+   ========================================================= */
+.ss-explore {
+  display: block;
+  flex: none;
+  margin-top: 0.4rem;
+  padding: 0.7rem 0.5rem 0.2rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.92rem;
+  color: var(--text);
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ss-explore:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
