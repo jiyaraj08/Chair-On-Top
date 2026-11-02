@@ -24,6 +24,10 @@
   var reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   var query = grid.getAttribute("data-query") || "";
+  // Explore reuses this file: it sets its own endpoint, filter parameters and closing text.
+  var endpoint = grid.getAttribute("data-endpoint") === "/api/explore" ? "/api/explore" : "/api/search/results";
+  var extraParams = (grid.getAttribute("data-params") || "").replace(/[^A-Za-z0-9_=&%.+~-]/g, "");
+  var doneText = grid.getAttribute("data-done-text") || "That is every photograph for this search.";
   var pageSize = parseInt(grid.getAttribute("data-page-size"), 10) || 24;
   var loading = false;
   var ID_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*\/img\d+$/;
@@ -310,7 +314,7 @@
     loading = true;
     var restoreFocus = !!(more && more.contains(document.activeElement));
     renderMore("loading");
-    var url = "/api/search/results?q=" + encodeURIComponent(query) + "&offset=" + offset + "&limit=" + pageSize;
+    var url = endpoint + "?" + (query ? "q=" + encodeURIComponent(query) + "&" : "") + "offset=" + offset + "&limit=" + pageSize + (extraParams ? "&" + extraParams : "");
     window
       .fetch(url, { headers: { Accept: "application/json" } })
       .then(function (response) {
@@ -368,7 +372,7 @@
         if (data.has_more) {
           renderMore("button");
         } else {
-          renderMore("done", "That is every photograph for this search.");
+          renderMore("done", doneText);
         }
         announce(fresh.length + (fresh.length === 1 ? " more photograph loaded." : " more photographs loaded."));
         // If the visitor used the Load More button, move focus to the first new
@@ -410,6 +414,6 @@
   if (hasMore()) {
     renderMore("button");
   } else if (cards().length > pageSize || parseInt(grid.getAttribute("data-offset"), 10) > 0) {
-    renderMore("done", "That is every photograph for this search.");
+    renderMore("done", doneText);
   }
 })();
