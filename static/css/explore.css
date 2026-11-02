@@ -1,0 +1,404 @@
+/* Chair on Top - explore.css
+   The Explore page (/explore) and the filter bar shared with /search.
+   Loaded after gallery.css and search-results.css, which supply the masonry
+   grid, the photo cards and their hover actions.
+
+   1. Page top
+   2. Collection shortcuts and material / colour searches
+   3. Feed header
+   4. Filter bar
+   5. Related styles, empty state
+   6. Motion and small screens
+*/
+
+/* 1. PAGE TOP ------------------------------------------------------------ */
+.ex-hero {
+  padding: clamp(7rem, 13vw, 9.5rem) 0 clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.ex-hero h1 {
+  max-width: 18ch;
+  margin-bottom: var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.3rem, 6.4vw, 4.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.014em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.ex-lead {
+  max-width: 36rem;
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-lead);
+  color: var(--text-soft);
+}
+
+.ex-search {
+  margin-bottom: 0;
+}
+
+/* 2. SHORTCUTS ------------------------------------------------------------ */
+.ex-shortcuts {
+  padding: var(--space-3) 0 var(--space-2);
+}
+
+.ex-shortcuts .wrap {
+  min-width: 0;
+}
+
+.ex-h {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  letter-spacing: -0.005em;
+}
+
+.ex-rail {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0 0 var(--space-5);
+  padding: 0.25rem 0.25rem 0.9rem;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.ex-rail li {
+  flex: none;
+  scroll-snap-align: start;
+}
+
+.ex-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 8.75rem;
+  aspect-ratio: 4 / 5;
+  padding: 0.8rem;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--charcoal);
+  color: var(--text-on-dark);
+  text-decoration: none;
+  box-shadow: var(--shadow-card);
+  isolation: isolate;
+}
+
+.ex-tile img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ex-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, rgba(24, 20, 17, 0.82), rgba(24, 20, 17, 0) 62%);
+}
+
+.ex-tile-all {
+  background: var(--sand);
+  color: var(--charcoal);
+  justify-content: flex-end;
+}
+
+.ex-tile-all::after {
+  display: none;
+}
+
+html[data-theme="dark"] .ex-tile-all {
+  background: var(--charcoal-soft);
+  color: var(--text-on-dark);
+}
+
+.ex-tile-name {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.ex-tile-count {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+
+.ex-tile:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+html[data-theme="dark"] .ex-tile:focus-visible,
+html[data-theme="dark"] .ex-tile[aria-current="page"] {
+  outline-color: var(--focus-on-dark);
+}
+
+.ex-tile[aria-current="page"] {
+  outline: 3px solid var(--wood);
+  outline-offset: 3px;
+}
+
+.ex-chips {
+  margin-bottom: var(--space-2);
+}
+
+.ex-note {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+/* 3. FEED HEADER ---------------------------------------------------------- */
+.ex-feed {
+  padding-top: var(--space-4);
+}
+
+.ex-feed-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.ex-feed-head .ex-h {
+  margin-bottom: var(--space-2);
+}
+
+.ex-feed-head .sr-meta {
+  margin: 0 0 var(--space-2);
+}
+
+/* 4. FILTER BAR ------------------------------------------------------------ */
+.fb {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+}
+
+.fb-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.fb-legend {
+  margin-bottom: 0.5rem;
+  padding: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.fb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fb-chip {
+  position: relative;
+  display: inline-block;
+}
+
+.fb-chip input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.fb-chip span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.92rem;
+  align-items: center;
+}
+
+.fb-chip em {
+  font-style: normal;
+  font-size: 0.78rem;
+  opacity: 0.65;
+}
+
+.fb-chip input:checked + span {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.fb-chip input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"] .fb-chip input:focus-visible + span {
+  outline-color: var(--focus-on-dark);
+}
+
+.fb-chip.is-empty span {
+  opacity: 0.45;
+}
+
+.fb-chip.is-empty input {
+  cursor: not-allowed;
+}
+
+.fb-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+}
+
+.fb-select {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.fb-select select {
+  min-height: 2.6rem;
+  max-width: 100%;
+  padding: 0.45rem 2rem 0.45rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background-color: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px; /* iPhones zoom the page when a smaller field is focused */
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.fb-select select:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.fb-js .fb-apply {
+  display: none;
+}
+
+.fb-clear {
+  align-self: center;
+  font-size: 0.92rem;
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fb-clear:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* 5. RELATED STYLES, EMPTY STATE -------------------------------------------- */
+.ex-related {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.6rem;
+  margin: 0 0 var(--space-4);
+  font-size: 0.95rem;
+  color: var(--text-soft);
+}
+
+.ex-related a {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.ex-related a:hover {
+  border-color: var(--text);
+}
+
+.ex-related a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.ex-related small {
+  flex-basis: 100%;
+  font-size: 0.82rem;
+}
+
+.ex-empty {
+  max-width: 28rem;
+  margin: var(--space-5) 0;
+}
+
+.ex-empty h3 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.ex-empty p {
+  margin: 0 0 var(--space-3);
+  color: var(--text-soft);
+}
+
+/* 6. MOTION AND SMALL SCREENS ------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  .ex-tile {
+    transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  }
+
+  .ex-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .fb-chip span {
+    transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+  }
+}
+
+@media (max-width: 400px) {
+  .ex-tile {
+    width: 7.5rem;
+    padding: 0.65rem;
+  }
+
+  .fb-select {
+    flex: 1 1 100%;
+  }
+
+  .fb-select select {
+    width: 100%;
+  }
+}
