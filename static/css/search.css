@@ -144,8 +144,7 @@
 }
 
 /* 861px to 1060px: the bar holds the logo, five links, search and theme.
-   Make the round buttons and the link spacing a little smaller so nothing
-   wraps or overflows. */
+   Tighten the link spacing so nothing wraps or overflows. */
 @media (min-width: 861px) and (max-width: 1060px) {
   .pill-nav {
     gap: var(--space-2);
@@ -156,11 +155,7 @@
     gap: 0.125rem;
   }
 
-  .nav-tools .nav-search,
-  .nav-tools .theme-toggle {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
+  /* The round buttons keep their full 44px touch size (2.75rem). */
 }
 
 @media (min-width: 861px) and (max-width: 1000px) {
@@ -498,16 +493,31 @@
 
 .ss-chips .ss-row {
   display: block;
+  flex: 0 0 auto;
+  max-width: 100%;
 }
 
+/* A chip never shrinks below its words. On a very narrow panel the count
+   drops under the name instead of being cut off or hidden. */
 .ss-chips .ss-opt {
-  gap: 0.45rem;
+  flex-wrap: wrap;
+  gap: 0 0.45rem;
   min-height: 2.75rem;
-  padding: 0 1rem;
+  padding: 0.2rem 1rem;
   border: 1px solid var(--line);
   border-radius: var(--r-pill);
   font-size: 0.92rem;
   font-weight: 600;
+}
+
+.ss-chips .ss-opt-text {
+  flex: 0 1 auto;
+}
+
+.ss-chips .ss-opt-label {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .ss-chips .ss-opt:hover,
