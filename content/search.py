@@ -358,7 +358,131 @@ def _public(result):
     }
 
 
-def search(raw_query, offset=0, limit=DEFAULT_LIMIT, strict=False):
+# ---------------------------------------------------------------------------
+# Filters, sorting and facets (added for the Explore page)
+# ---------------------------------------------------------------------------
+SORT_LABELS = {
+    "relevance": "Relevance",
+    "collection": "Collection order",
+    "newest": "Newest first",
+    "oldest": "Oldest first",
+}
+
+
+def _has_dates():
+    """True when at least one photograph has a checked 'added' date."""
+    return any(
+        isinstance((e["meta"] or {}).get("added"), str)
+        for style in _index()["styles"] for e in style["images"]
+    )
+
+
+def available_sorts():
+    """Sort options that can honestly be offered. Newest/Oldest need real dates."""
+    keys = ["relevance", "collection"] + (["newest", "oldest"] if _has_dates() else [])
+    return [{"value": k, "label": SORT_LABELS[k]} for k in keys]
+
+
+def clean_styles(styles):
+    """Keep only known collection slugs (an old or edited link must not break the page)."""
+    known = _index()["by_slug"]
+    out = []
+    for value in styles or []:
+        if isinstance(value, str) and SLUG_RE.match(value) and value in known and value not in out:
+            out.append(value)
+    return out
+
+
+def clean_sort(sort, default="relevance"):
+    if sort is None or sort == "":
+        return default
+    if sort not in SORT_LABELS:
+        raise QueryError("invalid_sort", "That sort order is not available.")
+    if sort in ("newest", "oldest") and not _has_dates():
+        raise QueryError("invalid_sort", "That sort order is not available yet.")
+    return sort
+
+
+def _meta_of(result):
+    return (result["image"].get("meta") or {})
+
+
+def _same(a, b):
+    return bool(a) and normalize(a) == normalize(b)
+
+
+def filter_results(results, styles=None, room=None, color=None, material=None):
+    """Apply the filters. Room, colour and material only match checked photograph facts."""
+    styles = set(styles or [])
+    out = []
+    for r in results:
+        meta = _meta_of(r)
+        if styles and r["slug"] not in styles:
+            continue
+        if room and not _same(meta.get("room", ""), room):
+            continue
+        if color and not any(_same(c, color) for c in meta.get("colors", [])):
+            continue
+        if material and not any(_same(m, material) for m in meta.get("materials", [])):
+            continue
+        out.append(r)
+    return out
+
+
+def sort_results(results, sort):
+    if sort == "collection":
+        return sorted(results, key=lambda r: (r["order"], r["image"]["number"]))
+    if sort in ("newest", "oldest"):
+        dated = [r for r in results if isinstance(_meta_of(r).get("added"), str)]
+        undated = [r for r in results if not isinstance(_meta_of(r).get("added"), str)]
+        dated.sort(key=lambda r: (_meta_of(r)["added"], -r["order"]), reverse=(sort == "newest"))
+        return dated + undated
+    return results  # relevance: already ordered by score, then gallery order
+
+
+def build_facets(results):
+    """Counts for the filter bar, from the matched photographs only.
+
+    Styles always exist. Rooms, colours and materials appear ONLY when checked
+    photograph-level facts exist (content/image_meta.py IMAGE_META), so the bar
+    never offers a filter that has no real data behind it.
+    """
+    index = _index()
+    style_counts = {}
+    rooms, colors, materials = {}, {}, {}
+
+    def bump(bucket, label):
+        key = normalize(label)
+        if key:
+            entry = bucket.setdefault(key, {"value": label, "label": label, "count": 0})
+            entry["count"] += 1
+
+    for r in results:
+        style_counts[r["slug"]] = style_counts.get(r["slug"], 0) + 1
+        meta = _meta_of(r)
+        if isinstance(meta.get("room"), str):
+            bump(rooms, meta["room"])
+        for c in meta.get("colors", []):
+            bump(colors, c)
+        for m in meta.get("materials", []):
+            bump(materials, m)
+
+    def listed(bucket):
+        return sorted(bucket.values(), key=lambda e: (-e["count"], e["label"].lower()))
+
+    return {
+        "styles": [
+            {"slug": s["slug"], "name": s["name"], "count": style_counts.get(s["slug"], 0)}
+            for s in index["styles"]
+        ],
+        "rooms": listed(rooms),
+        "colors": listed(colors),
+        "materials": listed(materials),
+    }
+
+
+def search(raw_query, offset=0, limit=DEFAULT_LIMIT, strict=False,
+           styles=None, sort="relevance", room=None, color=None, material=None):
     """Run a search. Raises QueryError for a query the visitor can fix."""
     text = clean_query(raw_query)
     try:
@@ -395,6 +519,13 @@ def search(raw_query, offset=0, limit=DEFAULT_LIMIT, strict=False):
                 })
     results.sort(key=lambda r: (-r["score"], r["order"], r["image"]["number"]))
 
+    # Filters and sorting (all optional; the defaults leave the old behaviour unchanged).
+    styles = clean_styles(styles)
+    sort = clean_sort(sort)
+    unfiltered_total = len(results)
+    facets = build_facets(results)
+    results = sort_results(filter_results(results, styles, room, color, material), sort)
+
     unmatched = [t for n, t in enumerate(terms) if n not in matched_numbers]
     if not terms:
         notice = "Try a style, colour or material, such as \u201cJapandi\u201d, \u201colive\u201d or \u201cwool\u201d."
@@ -421,6 +552,11 @@ def search(raw_query, offset=0, limit=DEFAULT_LIMIT, strict=False):
         "terms": [t["text"] for t in terms],
         "unmatched": [t["text"] for t in unmatched],
         "notice": notice,
+        "sort": sort,
+        "sorts": available_sorts(),
+        "filters": {"styles": styles, "room": room or "", "color": color or "", "material": material or ""},
+        "unfiltered_total": unfiltered_total,
+        "facets": facets,
         "results": [_public(r) for r in page],
         "_raw": page,  # for templates only; removed before JSON is sent
     }
