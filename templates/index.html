@@ -8,8 +8,8 @@
 
 {% block body %}
 {# ------------------------------------------------------------------
-   TEMPORARY CONTENT. The six styles match the six gallery collections (Japandi, Mid-Century Modern, Scandinavian, Minimalism, Industrial, Indian Deco).
-   Industrial and Indian Deco have no palette, materials or budget feel yet: nobody has checked them, so the cards leave those parts out.
+   TEMPORARY CONTENT. The eight styles match the eight gallery collections (Japandi, Mid-Century Modern, Scandinavian, Minimalism, Industrial, Indian Deco, Bohemian, Transitional).
+   Industrial, Indian Deco, Bohemian and Transitional have no palette, materials or budget feel yet: nobody has checked them, so the cards leave those parts out.
    Palette order is: wall, main furniture colour, floor, light.
    ------------------------------------------------------------------ #}
 {% set styles = [
@@ -90,6 +90,20 @@
     "name": "Indian Deco",
     "mood": "Interiors shaped by Indian decorative traditions and design sensibility.",
     "summary": "Indian Deco interiors draw on Indian decorative traditions. Palette, materials and budget notes will be added once the photographs have been reviewed."
+  },
+  {
+    "slug": "bohemian",
+    "gallery": "bohemian",
+    "name": "Bohemian",
+    "mood": "Layered, eclectic interiors with a relaxed, collected character.",
+    "summary": "Bohemian interiors are layered and eclectic. Palette, materials and budget notes will be added once the photographs have been reviewed."
+  },
+  {
+    "slug": "transitional",
+    "gallery": "transitional",
+    "name": "Transitional",
+    "mood": "Interiors that bring traditional and contemporary design together.",
+    "summary": "Transitional interiors bring traditional and contemporary design together. Palette, materials and budget notes will be added once the photographs have been reviewed."
   }
 ] %}
 
@@ -205,7 +219,7 @@
         <a class="btn btn-primary" href="#quiz">Find My Aesthetic</a>
         <a class="btn btn-ghost" href="#styles">Explore Aesthetics</a>
       </div>
-      <p class="hero-status">Six style collections are live. The quiz and budget planner are coming soon.</p>
+      <p class="hero-status">Eight style collections are live. The quiz and budget planner are coming soon.</p>
     </div>
   </section>
 
@@ -214,13 +228,13 @@
     <div class="wrap">
       <div class="section-head reveal">
         <p class="kicker">Explore</p>
-        <h2 class="section-title" id="styles-title">Six ways to make a room feel like yours</h2>
+        <h2 class="section-title" id="styles-title">Eight ways to make a room feel like yours</h2>
         <p class="section-lead">
           Preview each style's mood, palette and materials, then open its gallery to see the photographs. The budget feel is a rough guide, not a price.
         </p>
       </div>
 
-      <p class="swipe-hint">Swipe sideways to see all six styles</p>
+      <p class="swipe-hint">Swipe sideways to see all eight styles</p>
 
       <div class="style-scroller" role="region" aria-label="Interior styles, scrolls sideways on small screens" tabindex="0">
         <ul class="style-grid" id="style-cards">
@@ -409,7 +423,7 @@
     <div class="wrap">
       <div class="cta-plate on-dark reveal">
         <h2 class="section-title" id="cta-title">Start with the feeling. The plan comes next.</h2>
-        <p class="cta-text">Browse six styles today. The quiz and budget planner are on their way.</p>
+        <p class="cta-text">Browse eight styles today. The quiz and budget planner are on their way.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#styles">Explore Aesthetics</a>
           <a class="btn btn-ghost" href="#how">See how it works</a>
