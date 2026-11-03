@@ -1,0 +1,34 @@
+{# Reusable shopping section. Include it with a `shop` variable (see content/shop.py):
+   {% with shop = shop_style %}{% include "partials/_shop.html" %}{% endwith %} #}
+{% if shop and shop["items"] %}
+<section class="section shop-section{{ ' section-sand' if shop["band"] }}" id="{{ shop["id"] }}" aria-labelledby="{{ shop["id"] }}-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">{{ shop["kicker"] }}</p>
+      <h2 class="section-title" id="{{ shop["id"] }}-title">{{ shop["title"] }}</h2>
+      <p class="section-lead">{{ shop["lead"] }}</p>
+    </div>
+
+    <ul class="shop-grid">
+      {% for item in shop["items"] %}
+      <li class="shop-card">
+        <div class="shop-media">
+          <img src="/static/{{ item["image"] }}" alt="" loading="lazy" decoding="async">
+          <span class="shop-store shop-store--{{ item["store_key"] }}">{{ item["store"] }}</span>
+        </div>
+        <div class="shop-body">
+          <h3 class="shop-name">{{ item["category"] }}</h3>
+          <p class="shop-where">on {{ item["store"] }}</p>
+          <a class="btn btn-dark btn-sm shop-cta" href="{{ item["url"] }}" target="_blank" rel="noopener noreferrer"
+             aria-label="Explore {{ item["category"] }} on {{ item["store"] }} (opens in a new tab)">
+            Explore <span aria-hidden="true">&nearr;</span>
+          </a>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% if shop["note"] %}<p class="shop-note">{{ shop["note"] }}</p>{% endif %}
+  </div>
+</section>
+{% endif %}
