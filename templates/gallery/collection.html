@@ -5,6 +5,7 @@
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/viewer-extras.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/shop.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -50,6 +51,9 @@
       <p class="gl-hint js-only">Select a picture to see it larger. Use the arrow keys to move between pictures, and Escape to close. Likes and saved pictures are kept in this browser on this device only.</p>
     </div>
   </section>
+
+  {% with shop = shop_style %}{% include "partials/_shop.html" %}{% endwith %}
+  {% with shop = shop_complete %}{% include "partials/_shop.html" %}{% endwith %}
 
   {% if others %}
   <section class="section section-sand gl-section" aria-labelledby="gl-other-title">
