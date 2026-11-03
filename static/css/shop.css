@@ -1,0 +1,144 @@
+/* Chair on Top - shop.css
+   "Shop This Style" and "Complete Your Space" on the collection pages.
+   Uses the site's own variables, so light and dark themes follow automatically. */
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: var(--space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.shop-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast);
+}
+
+.shop-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+
+.shop-card:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.shop-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.shop-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale var(--t-med) var(--ease);
+}
+
+.shop-card:hover .shop-media img {
+  scale: 1.05;
+}
+
+.shop-store {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--r-pill);
+  background: rgba(34, 30, 26, 0.82);
+  color: var(--text-on-dark);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+}
+
+.shop-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
+.shop-name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+}
+
+.shop-where {
+  color: var(--text-soft);
+  font-size: var(--fs-sm);
+}
+
+.shop-cta {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+/* The whole card is clickable: the Explore link stretches over the card. */
+.shop-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.shop-body .shop-cta {
+  margin-top: var(--space-3);
+}
+
+.shop-note {
+  max-width: 44rem;
+  margin-top: var(--space-5);
+  color: var(--text-soft);
+  font-size: var(--fs-sm);
+}
+
+@media (max-width: 560px) {
+  .shop-grid {
+    grid-template-columns: 1fr;
+  }
+  .shop-body {
+    padding: var(--space-4);
+  }
+  .shop-cta {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shop-card,
+  .shop-media img {
+    transition: none;
+  }
+  .shop-card:hover {
+    transform: none;
+  }
+  .shop-card:hover .shop-media img {
+    scale: 1;
+  }
+}
+
+@media print {
+  .shop-section {
+    display: none;
+  }
+}
