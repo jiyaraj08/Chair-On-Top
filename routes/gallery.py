@@ -17,6 +17,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from content import gallery as gallery_store
+from content import shop as shop_store
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
@@ -106,5 +107,10 @@ def gallery_collection(request: Request, slug: str):
     return templates.TemplateResponse(
         request=request,
         name="gallery/collection.html",
-        context={"collection": collection, "others": others},
+        context={
+            "collection": collection,
+            "others": others,
+            "shop_style": shop_store.get_style_section(collection),
+            "shop_complete": shop_store.get_complete_section(collection),
+        },
     )
