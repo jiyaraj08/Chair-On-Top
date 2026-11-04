@@ -6,6 +6,7 @@
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/journal.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/library.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/journal-photos.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -35,7 +36,14 @@
         </ul>
         {% endif %}
       </div>
-      <div class="jn-hero-art" aria-hidden="true"></div>
+      <div class="jn-hero-art jn-hero-photos" role="img" aria-label="A collage of interior photographs: an arched view of a bonsai and wooden chest, a sideboard with blossom, a wood-lined corridor with plants, a console with a stool, and a woven textile">
+        <span class="jhp-arch"><img src="{{ url_for('static', path='images/journal/hero-arch.jpg') }}" width="560" height="760" alt="" decoding="async" fetchpriority="high"></span>
+        <span class="jhp-frame jhp-a"><img src="{{ url_for('static', path='images/journal/hero-frame-sideboard.jpg') }}" width="440" height="330" alt="" decoding="async" loading="lazy"></span>
+        <span class="jhp-frame jhp-b"><img src="{{ url_for('static', path='images/journal/hero-frame-corridor.jpg') }}" width="420" height="380" alt="" decoding="async" loading="lazy"></span>
+        <span class="jhp-frame jhp-c"><img src="{{ url_for('static', path='images/journal/hero-frame-textile.jpg') }}" width="380" height="280" alt="" decoding="async" loading="lazy"></span>
+        <span class="jhp-frame jhp-d"><img src="{{ url_for('static', path='images/journal/hero-frame-furniture.jpg') }}" width="380" height="300" alt="" decoding="async" loading="lazy"></span>
+        <span class="jhp-palette"><i></i><i></i><i></i><i></i></span>
+      </div>
     </div>
   </section>
 
@@ -175,19 +183,28 @@
       </div>
       <ul class="jn-links">
         <li class="jn-link-card">
-          <h3><a href="/#styles">Browse the six styles</a></h3>
-          <p>Preview the mood, palette and materials of each aesthetic.</p>
-          <span class="chip chip-live">Available</span>
+          <a class="jn-link-thumb" href="/#styles" tabindex="-1" aria-hidden="true"><img src="{{ url_for('static', path='images/journal/link-eight-styles.jpg') }}" width="720" height="480" alt="" loading="lazy" decoding="async"></a>
+          <div class="jn-link-body">
+            <h3><a href="/#styles">Browse all eight styles</a></h3>
+            <p>Preview the mood, palette and materials of each aesthetic.</p>
+            <span class="chip chip-live">Available</span>
+          </div>
         </li>
         <li class="jn-link-card">
-          <h3><a href="/#quiz">Find your aesthetic</a></h3>
-          <p>A short quiz that will point you toward a style.</p>
-          <span class="chip chip-soon">Coming soon</span>
+          <a class="jn-link-thumb" href="/#quiz" tabindex="-1" aria-hidden="true"><img src="{{ url_for('static', path='images/journal/link-find-aesthetic.jpg') }}" width="720" height="480" alt="" loading="lazy" decoding="async"></a>
+          <div class="jn-link-body">
+            <h3><a href="/#quiz">Find your aesthetic</a></h3>
+            <p>A short quiz that will point you toward a style.</p>
+            <span class="chip chip-soon">Coming soon</span>
+          </div>
         </li>
         <li class="jn-link-card">
-          <h3><a href="/#budget">Plan within a budget</a></h3>
-          <p>Split a total budget between essentials and optional upgrades.</p>
-          <span class="chip chip-soon">Coming soon</span>
+          <a class="jn-link-thumb" href="/#budget" tabindex="-1" aria-hidden="true"><img src="{{ url_for('static', path='images/journal/link-plan-budget.jpg') }}" width="720" height="480" alt="" loading="lazy" decoding="async"></a>
+          <div class="jn-link-body">
+            <h3><a href="/#budget">Plan within a budget</a></h3>
+            <p>Split a total budget between essentials and optional upgrades.</p>
+            <span class="chip chip-soon">Coming soon</span>
+          </div>
         </li>
       </ul>
     </div>
@@ -198,7 +215,7 @@
     <div class="wrap">
       <div class="cta-plate on-dark">
         <h2 class="section-title" id="jn-cta-title">Found an idea you love? Find the style behind it.</h2>
-        <p class="cta-text">Preview six aesthetics, then keep reading whenever you want more ideas.</p>
+        <p class="cta-text">Preview all eight aesthetics, then keep reading whenever you want more ideas.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="/#styles">Explore Aesthetics</a>
           <a class="btn btn-ghost" href="#journal-articles">Back to the Journal</a>
