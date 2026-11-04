@@ -15,6 +15,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from content import articles as article_store
+from content import library as library_store
 from content import media as media_store
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,6 +54,8 @@ def journal_home(request: Request):
             "video_categories": media_store.get_video_categories(),
             "podcasts": media_store.get_podcasts(),
             "podcast_categories": media_store.get_podcast_categories(),
+            "library": library_store.get_library(),
+            "library_stats": library_store.get_stats(),
         },
     )
 
