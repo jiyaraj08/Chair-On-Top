@@ -891,3 +891,71 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Journal hero collage: replaces the plain arch drawing.
+   Rooms, a piece of furniture, two close-up textures and the site palette. */
+.jn-hero-art.jn-collage {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  grid-template-areas:
+    "a a a a b b"
+    "a a a a b b"
+    "a a a a b b"
+    "a a a a c c"
+    "a a a a c c"
+    "d d e e f f"
+    "d d e e f f"
+    "d d e e f f";
+  gap: 6px;
+  padding: 6px;
+  background: var(--chocolate);
+}
+
+.jn-collage::before,
+.jn-collage::after {
+  content: none;
+}
+
+.jn-collage .jc-tile {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: 0.8rem;
+  object-fit: cover;
+  filter: sepia(0.08) saturate(1.04);
+}
+
+.jc-room { grid-area: a; object-position: 50% 55%; }
+.jc-textile { grid-area: b; object-position: 50% 40%; }
+.jc-furniture { grid-area: d; object-position: 35% 80%; }
+.jc-room2 { grid-area: e; object-position: 50% 30%; }
+.jc-rug { grid-area: f; object-position: 50% 50%; }
+
+/* The four colours of the site, as a swatch tile. */
+.jc-palette {
+  grid-area: c;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  filter: none;
+  box-shadow: inset 0 0 0 1px rgba(242, 237, 232, 0.28);
+}
+
+.jc-palette i:nth-child(1) { background: var(--burgundy); }
+.jc-palette i:nth-child(2) { background: var(--chocolate); }
+.jc-palette i:nth-child(3) { background: var(--olive-accent); }
+.jc-palette i:nth-child(4) { background: var(--ivory); }
+
+@media (max-width: 860px) {
+  .jn-hero-art.jn-collage {
+    width: 100%;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+      "a a b c d"
+      "a a e f f";
+  }
+
+  .jc-room { object-position: 50% 45%; }
+}
