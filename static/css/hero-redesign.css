@@ -1,0 +1,453 @@
+/* Chair on Top - hero-redesign.css
+   Homepage hero only. Loaded by templates/index.html (head_extra), after the
+   shared stylesheets, so every rule below is scoped to .hero--collage and no
+   other page or section is affected.
+
+   Layout idea: one ornamental texture collage fills the hero. A wood shelf runs
+   along the bottom. The squirrel (built by squirrel.js) stands on it with its
+   books, the cream speech bubble opens above it, the "Morning light" window
+   (built by motion.js) stands at the right, and the caption sits on the shelf.
+
+   Everything is sized from --u (about 1% of the hero width), so the whole scene
+   scales as one picture. Palette: Chocolate, Ivory, Gold, Olive.
+
+   To revert: remove the hero-redesign.css <link> from index.html and restore
+   the old hero markup from your backup. */
+
+/* =========================================================
+   1. TOKENS AND HERO FRAME
+   ========================================================= */
+.hero--collage {
+  --u: min(1vw, 1.7svh, 1.03rem);          /* scene unit: ~1% of hero width */
+  --shelf-h: calc(var(--u) * 6.34);        /* wood shelf height */
+
+  /* Reference palette */
+  --hr-chocolate: #362017;
+  --hr-chocolate-2: #523420;
+  --hr-ivory: #f8ecde;
+  --hr-ivory-text: #f6ecdc;
+  --hr-gold: #e0a94f;
+  --hr-gold-soft: #e9c48e;
+  --hr-olive: #5f6743;
+  --hr-ink: #2e1a0f;
+  --hr-link: #5e2d0f;
+
+  display: block;
+  min-height: max(34rem, calc(var(--u) * 56.3));
+}
+
+@supports not (height: 1svh) {
+  .hero--collage { --u: min(1vw, 1.03rem); }
+}
+
+/* =========================================================
+   2. BACKGROUND: the texture collage (one picture, no tiles)
+   ========================================================= */
+.hero--collage .hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  height: auto;
+}
+
+.hero--collage .hero-collage {
+  position: absolute;
+  inset: -2.5rem 0 0 0;                    /* extra height for the scroll parallax */
+  width: 100%;
+  display: block;
+  padding: 0;
+  gap: 0;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.hero--collage .hero-collage picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero--collage .hc-bg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 36%;
+}
+
+/* Only a faint tint at the top (behind the nav) and the bottom (behind the shelf). */
+.hero--collage .hero-media-collage::after {
+  background: linear-gradient(180deg, rgba(54, 32, 23, 0.3) 0%, rgba(54, 32, 23, 0) 20%, rgba(54, 32, 23, 0) 80%, rgba(54, 32, 23, 0.18) 100%);
+}
+
+/* The wood shelf. Drawn in CSS so it always lines up with the squirrel's feet.
+   Lighter top surface with a bright front edge, dark front face below. */
+.hero--collage .hero-media::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;                               /* above the picture, below the window */
+  height: var(--shelf-h);
+  background:
+    linear-gradient(180deg, rgba(255, 220, 170, 0.5) 0, rgba(255, 220, 170, 0) 3.5%),
+    repeating-linear-gradient(180deg, rgba(40, 18, 4, 0.07) 0 1px, transparent 1px 6px),
+    linear-gradient(180deg, #a1622f 0%, #96592b 18%, #8a4f25 40%, #5a2f12 42%, #45200a 62%, #371a08 100%);
+  box-shadow: 0 -14px 26px -10px rgba(25, 10, 0, 0.45);
+}
+
+/* =========================================================
+   3. HEADLINE TEXT: kept for screen readers and search engines, not shown.
+      (The reference design has no headline. Delete this block to show it again.)
+   ========================================================= */
+.hero--collage .hero-content {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  animation: none;
+}
+
+.hero--collage .hero-content > * {
+  animation: none;
+}
+
+/* The nav and the speech bubble already carry these links. */
+.hero--collage .hero-actions {
+  display: none;
+}
+
+/* =========================================================
+   4. SQUIRREL, BOOKS AND SPEECH BUBBLE (squirrel.js builds them)
+   ========================================================= */
+.hero--collage > .sq {
+  --sq-size: calc(var(--u) * 21.5);        /* squirrel + books + tail */
+  top: auto;
+  right: auto;
+  left: calc(var(--u) * 4.6);
+  /* Feet land on the shelf's top surface. */
+  bottom: calc(var(--shelf-h) * 0.75 - var(--sq-size) * 0.1857);
+  width: var(--sq-size);
+}
+
+.hero--collage > .sq::before {
+  display: none;                            /* no glow behind the squirrel */
+}
+
+/* The shelf is the CSS wood above, so hide the SVG's own little plank. */
+.hero--collage .sq-furniture > rect:nth-of-type(1),
+.hero--collage .sq-furniture > rect:nth-of-type(2) {
+  display: none;
+}
+
+/* Bigger, chunkier books, as in the reference. They grow from the bottom-left
+   corner; the second book is lifted to rest on top of the first. */
+.hero--collage .sq-furniture > rect:nth-of-type(3),
+.hero--collage .sq-furniture > rect:nth-of-type(4) {
+  transform-box: fill-box;
+  transform-origin: 0 100%;
+}
+
+.hero--collage .sq-furniture > rect:nth-of-type(3) {
+  transform: translate(-5px, 0) scale(1.9, 2);
+}
+
+.hero--collage .sq-furniture > rect:nth-of-type(4) {
+  transform: translate(-1px, -7px) scale(1.9, 2);
+}
+
+/* The soft shadow under the squirrel now sits on the shelf, not below it. */
+.hero--collage .sq-furniture > ellipse {
+  transform: translateY(-14px);
+}
+
+/* Speech bubble: opens above the squirrel on every screen size. */
+.hero--collage .sq-bubble {
+  top: auto;
+  right: auto;
+  bottom: calc(100% - var(--sq-size) * 0.14);
+  left: calc(var(--sq-size) * 0.15);
+  width: calc(var(--sq-size) * 1.68);
+  padding: calc(var(--sq-size) * 0.1) calc(var(--sq-size) * 0.3) calc(var(--sq-size) * 0.11) calc(var(--sq-size) * 0.13);
+  border-radius: calc(var(--sq-size) * 0.17);
+  background: var(--hr-ivory);
+  color: var(--hr-ink);
+  box-shadow: 0 2px 4px rgba(34, 14, 4, 0.12), 0 26px 44px -16px rgba(20, 8, 0, 0.55);
+  translate: 0 8px;
+}
+
+.hero--collage .sq-bubble.is-open {
+  translate: 0 0;
+}
+
+/* Pointer toward the squirrel's head. */
+.hero--collage .sq-bubble::before {
+  top: auto;
+  right: auto;
+  bottom: calc(var(--sq-size) * -0.115);
+  left: calc(var(--sq-size) * 0.27);
+  width: calc(var(--sq-size) * 0.12);
+  height: calc(var(--sq-size) * 0.13);
+  border-radius: 0;
+  rotate: none;
+  clip-path: polygon(0 0, 100% 0, 35% 100%);
+}
+
+.hero--collage .sq-bubble-text {
+  max-width: 9.6em;
+  font-size: calc(var(--sq-size) * 0.155);
+  line-height: 1.08;
+  font-weight: 500;
+  color: var(--hr-ink);
+  text-wrap: balance;
+}
+
+.hero--collage .sq-bubble-link {
+  margin-top: calc(var(--sq-size) * 0.07);
+  font-family: var(--font-display);
+  font-size: calc(var(--sq-size) * 0.115);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--hr-link);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
+  white-space: nowrap;
+}
+
+.hero--collage .sq-bubble-link::after {
+  content: "\2192";
+  display: inline-block;                    /* keeps the arrow out of the underline */
+  margin-left: 0.7em;
+  text-decoration: none;
+}
+
+.hero--collage .sq-bubble-link:hover {
+  color: var(--hr-ink);
+}
+
+.hero--collage .sq-bubble-close {
+  top: calc(var(--sq-size) * 0.065);
+  right: calc(var(--sq-size) * 0.07);
+  width: calc(var(--sq-size) * 0.17);
+  height: calc(var(--sq-size) * 0.17);
+  min-width: 2rem;
+  min-height: 2rem;
+  font-size: calc(var(--sq-size) * 0.14);
+  color: var(--hr-ink);
+}
+
+.hero--collage .sq-bubble-close:hover {
+  background: rgba(54, 32, 23, 0.1);
+}
+
+.hero--collage .sq-bubble :focus-visible {
+  outline-color: var(--hr-link);
+}
+
+/* =========================================================
+   5. "MORNING LIGHT" WINDOW (motion.js builds it inside .hero-media)
+      An arched chocolate panel with a gold-framed window and a caption.
+   ========================================================= */
+.hero--collage .motif {
+  --mw: calc(var(--u) * 16.9);
+  right: calc(var(--u) * 5.8);
+  bottom: calc(var(--shelf-h) * 0.58);
+  width: var(--mw);
+  padding: calc(var(--mw) * 0.04) calc(var(--mw) * 0.035) calc(var(--mw) * 0.075);
+  border: 1px solid rgba(233, 196, 142, 0.3);
+  border-radius: calc(var(--mw) / 2) calc(var(--mw) / 2) calc(var(--mw) * 0.14) calc(var(--mw) * 0.14);
+  background: linear-gradient(180deg, #5b361b 0%, #4a2a17 55%, #3d2314 100%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 24px 40px -14px rgba(15, 6, 0, 0.6), inset 0 0 0 1px rgba(255, 228, 180, 0.06);
+}
+
+.hero--collage .motif:hover {
+  background: linear-gradient(180deg, #623b1e 0%, #4f2d19 55%, #412615 100%);
+  border-color: rgba(233, 196, 142, 0.5);
+}
+
+.hero--collage .motif-btn {
+  position: relative;
+  width: 100%;
+  border-radius: calc(var(--mw) * 0.46) calc(var(--mw) * 0.46) 0.4rem 0.4rem;
+}
+
+.hero--collage .motif-fill {
+  fill: #442a18;
+}
+
+.hero--collage .motif-frame {
+  stroke: var(--hr-gold);
+  stroke-width: 1.9;
+}
+
+/* Reference shows a plain arch, so the window bars and floor line are dropped. */
+.hero--collage .motif-pane,
+.hero--collage .motif-floor {
+  display: none;
+}
+
+.hero--collage .motif-patch {
+  display: none;
+}
+
+.hero--collage .motif-halo {
+  opacity: 0.4;
+}
+
+/* A potted plant inside the arch; the sun can set behind it. */
+.hero--collage .motif-btn::after {
+  content: "";
+  position: absolute;
+  left: 46%;
+  top: 53%;
+  width: 41.6%;
+  height: 39.4%;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 95'%3E%3Cpath d='M50 62C46 46 36 36 22 32c2 16 12 26 28 30z' fill='%235f7a2a'/%3E%3Cpath d='M50 62C54 42 64 28 80 22c-1 20-12 34-30 40z' fill='%236f8f2f'/%3E%3Cpath d='M50 64C47 44 49 26 58 8c8 16 6 38-8 56z' fill='%2388a83a'/%3E%3Cpath d='M49 64C40 54 24 52 10 58c8 10 24 12 39 6z' fill='%234c5408'/%3E%3Cpath d='M51 64C60 54 76 50 92 54c-8 12-26 14-41 10z' fill='%235a7127'/%3E%3Cpath d='M50 62L50 30' stroke='%23324006' stroke-width='1.4' fill='none' opacity='.55'/%3E%3Cpath d='M28 72h44l-5 22H33z' fill='%238a5a37'/%3E%3Cpath d='M26 68h48v6H26z' fill='%23a56e43'/%3E%3C/svg%3E") center bottom / contain no-repeat;
+}
+
+.hero--collage .motif-caption {
+  position: relative;
+  margin-top: calc(var(--mw) * 0.065);
+  padding-bottom: calc(var(--mw) * 0.07);
+  font-family: var(--font-display);
+  font-size: max(0.78rem, calc(var(--mw) * 0.12));
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.2;
+  color: var(--hr-ivory-text);
+}
+
+.hero--collage .motif-caption::after {
+  content: "";
+  display: block;
+  width: 14%;
+  height: 2px;
+  margin: calc(var(--mw) * 0.05) auto 0;
+  background: var(--hr-gold);
+  border-radius: 2px;
+}
+
+/* =========================================================
+   6. CAPTION ON THE SHELF
+   ========================================================= */
+.hero--collage .hero-caption {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--shelf-h) * 0.59);
+  z-index: 5;
+  translate: -50% 0;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  margin: 0;
+  padding: 0.55em 1.7em;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #5b3924 0%, var(--hr-chocolate-2) 100%);
+  box-shadow: 0 12px 24px -10px rgba(15, 6, 0, 0.7), inset 0 1px 0 rgba(255, 225, 180, 0.12);
+  font-family: var(--font-display);
+  font-size: calc(var(--u) * 2.05);
+  line-height: 1.25;
+  text-align: center;
+  color: var(--hr-ivory-text);
+}
+
+/* Narrow desktops: give the caption a little less room so it clears the squirrel. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .hero--collage .hero-caption {
+    font-size: calc(var(--u) * 1.85);
+  }
+}
+
+/* =========================================================
+   7. PHONES AND TABLETS (900px and narrower)
+      Same scene, re-proportioned: taller hero, smaller window, bubble
+      kept clear of the window.
+   ========================================================= */
+@media (max-width: 900px) {
+  .hero--collage {
+    --u: min(1vw, 0.38rem);
+    --shelf-h: calc(var(--u) * 21);
+    display: block;
+    min-height: max(32rem, min(calc(var(--u) * 140), calc(100svh - 1.5rem)));
+  }
+
+  .hero--collage .hero-media {
+    position: absolute;
+    inset: 0;
+    height: auto;
+  }
+
+  .hero--collage .hero-collage {
+    inset: 0;
+  }
+
+  .hero--collage .hc-bg {
+    object-position: 50% 50%;
+  }
+
+  .hero--collage .hero-media-collage {
+    align-self: auto;
+  }
+
+  .hero--collage > .sq {
+    --sq-size: calc(var(--u) * 38);
+    left: calc(var(--u) * 2);
+    bottom: calc(var(--shelf-h) * 0.72 - var(--sq-size) * 0.1857);
+  }
+
+  .hero--collage .sq-bubble {
+    bottom: calc(100% - var(--sq-size) * 0.1);
+    left: calc(var(--sq-size) * 0.12);
+    width: calc(var(--sq-size) * 1.6);
+    padding-right: calc(var(--sq-size) * 0.12);
+  }
+
+  .hero--collage .sq-bubble-text {
+    margin-right: 1.4rem;                   /* room for the close button */
+    font-size: max(1.2rem, calc(var(--sq-size) * 0.15));
+  }
+
+  .hero--collage .sq-bubble-link {
+    font-size: max(0.9rem, calc(var(--sq-size) * 0.105));
+  }
+
+  .hero--collage .sq-bubble-link::after {
+    margin-left: 0.4em;
+  }
+
+  .hero--collage .motif {
+    --mw: calc(var(--u) * 23);
+    right: calc(var(--u) * 2.2);
+    bottom: calc(var(--shelf-h) * 0.55);
+  }
+
+  .hero--collage .hero-caption {
+    bottom: calc(var(--shelf-h) * 0.1);
+    padding: 0.5em 1.3em;
+    font-size: max(0.85rem, calc(var(--u) * 3.5));
+  }
+}
+
+/* Very small phones: let the caption wrap to two lines. */
+@media (max-width: 380px) {
+  .hero--collage .hero-caption {
+    max-width: calc(100% - 1rem);
+    padding: 0.45em 1em;
+  }
+}
+
+/* =========================================================
+   8. MOTION PREFERENCES
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .hero--collage .sq-bubble {
+    translate: 0 0;
+  }
+}
