@@ -5,6 +5,7 @@
 
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/journal.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/library.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -16,13 +17,23 @@
   <section class="jn-hero" aria-labelledby="jn-hero-title">
     <div class="wrap jn-hero-grid">
       <div class="jn-hero-copy">
-        <p class="kicker">The Chair on Top Journal</p>
-        <h1 id="jn-hero-title">Ideas for living beautifully.</h1>
-        <p class="jn-hero-text">Thoughtful interiors, considered details, and fresh perspectives on making a space your own.</p>
+        <p class="kicker">Journal &amp; Listen</p>
+        <h1 id="jn-hero-title">A library of design inspiration.</h1>
+        <p class="jn-hero-text">Watch and listen your way through {{ library_stats.styles }} interior styles, then keep reading in the Journal. Every card opens on YouTube or Spotify in a new tab.</p>
         <div class="jn-hero-actions">
-          <a class="btn btn-dark" href="#journal-articles">Explore the Journal</a>
-          <a class="btn btn-outline" href="#design-stories">Watch &amp; listen</a>
+          <a class="btn btn-dark" href="#design-library">Explore the library</a>
+          <a class="btn btn-outline" href="#journal-articles">Read the Journal</a>
         </div>
+        {% if library %}
+        <ul class="lib-stats" aria-label="Library at a glance">
+          <li class="lib-stat"><strong>{{ library_stats.styles }}</strong><span>Styles</span></li>
+          <li class="lib-stat"><strong>{{ library_stats.videos }}</strong><span>Videos</span></li>
+          {% if library_stats.episodes %}<li class="lib-stat"><strong>{{ library_stats.episodes }}</strong><span>Episodes</span></li>{% endif %}
+        </ul>
+        <ul class="lib-pills" aria-label="Jump to a style">
+          {% for s in library %}<li><a href="#style-{{ s.slug }}">{{ s.name }}</a></li>{% endfor %}
+        </ul>
+        {% endif %}
       </div>
       <div class="jn-hero-art" aria-hidden="true"></div>
     </div>
@@ -39,8 +50,9 @@
         </div>
         <nav class="jn-jump" aria-label="Journal sections">
           <ul>
+            {% if library %}<li><a href="#design-library">Design Library</a></li>{% endif %}
             <li><a href="#journal-articles">Articles</a></li>
-            <li><a href="#design-stories">Design Stories</a></li>
+            {% if videos %}<li><a href="#design-stories">Design Stories</a></li>{% endif %}
             <li><a href="#listening-room">Listening Room</a></li>
           </ul>
         </nav>
@@ -51,6 +63,9 @@
       </div>
     </div>
   </section>
+
+  <!-- ============ DESIGN LIBRARY (8 styles: YouTube + Spotify link cards) ============ -->
+  {% if library %}{% include "journal/_library.html" %}{% endif %}
 
   <!-- ============ ARTICLES ============ -->
   <section class="section jn-section" id="journal-articles" aria-labelledby="jn-articles-title">
@@ -89,6 +104,7 @@
   </section>
 
   <!-- ============ DESIGN STORIES (VIDEOS) ============ -->
+  {% if videos or not library %}
   <section class="section section-sand jn-section" id="design-stories" aria-labelledby="jn-videos-title">
     <div class="wrap">
       <div class="section-head">
@@ -117,6 +133,8 @@
       {% endif %}
     </div>
   </section>
+
+  {% endif %}
 
   <!-- ============ THE LISTENING ROOM (PODCASTS) ============ -->
   <section class="section jn-section" id="listening-room" aria-labelledby="jn-podcasts-title">
