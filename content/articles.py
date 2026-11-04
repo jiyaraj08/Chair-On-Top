@@ -66,7 +66,8 @@ ARTICLES = [
         "published": "2026-10-26",
         "featured": True,
         "palette": ["#e9e5dd", "#7c7770", "#c9bfae"],
-        "cover_image": None,
+        "cover_image": "images/journal/cover-small-living-room.jpg",
+        "cover_alt": "A bright, uncluttered living room with a low cream sofa, a round dark coffee table and soft curtains.",
         "body": [
             {"type": "p", "text": "A small living room rarely needs more floor area. It usually needs clearer sightlines, better light and fewer things competing for attention. The steps below run from free to modest spend, so you can stop as soon as the room feels right."},
             {"type": "h2", "text": "Clear the surfaces first"},
@@ -105,7 +106,8 @@ ARTICLES = [
         "published": "2026-10-26",
         "featured": False,
         "palette": ["#ddd0bc", "#b5603a", "#7a5538"],
-        "cover_image": None,
+        "cover_image": "images/journal/cover-warm-neutral-palette.jpg",
+        "cover_alt": "A warm neutral living room with an ivory sofa, a dark wooden sideboard, a branch in a white vase and amber artwork.",
         "body": [
             {"type": "p", "text": "Warm neutrals are the backbone of many calm homes: ivory, sand, oatmeal, clay and soft taupe. They are easy to live with, but a palette that is all beige can look flat or oddly mismatched. The difference usually comes down to undertone, texture and one dark anchor."},
             {"type": "h2", "text": "Start with undertones"},
@@ -144,7 +146,8 @@ ARTICLES = [
         "published": "2026-10-26",
         "featured": False,
         "palette": ["#2f2b27", "#e8cf9c", "#1e1b18"],
-        "cover_image": None,
+        "cover_image": "images/journal/cover-lighting-layers.jpg",
+        "cover_alt": "Paper lantern pendants and an arc floor lamp glowing beside a window with a small reading table.",
         "body": [
             {"type": "p", "text": "If a room looks flat even though the furniture is right, the lighting is often the missing piece. A single ceiling light throws the same flat light everywhere. Rooms that feel finished usually combine several layers of light at different heights."},
             {"type": "h2", "text": "The three layers"},
@@ -180,7 +183,8 @@ ARTICLES = [
         "published": "2026-10-26",
         "featured": False,
         "palette": ["#f1eee8", "#b88b4a", "#d8bf98"],
-        "cover_image": None,
+        "cover_image": "images/journal/cover-budget-interior.jpg",
+        "cover_alt": "A calm living room with a wooden credenza, a framed abstract print, a lounge chair and garden views.",
         "body": [
             {"type": "p", "text": "A room looks expensive when it looks calm, consistent and cared for, not when every item has a high price. Much of the premium look comes from decisions that cost little: restraint, matching finishes and good lighting. The rest is knowing where spending actually shows."},
             {"type": "h2", "text": "Spend where you touch, sit and sleep"},
@@ -222,7 +226,8 @@ ARTICLES = [
         "published": "2026-10-26",
         "featured": False,
         "palette": ["#ece1cd", "#5e6444", "#a9b5bd"],
-        "cover_image": None,
+        "cover_image": "images/journal/cover-calm-bedroom.jpg",
+        "cover_alt": "A restful bedroom with a sage green bed, warm wood panelling, a woven pendant light and soft curtains.",
         "body": [
             {"type": "p", "text": "A bedroom works best when it is easy to use and easy to leave alone: a clear path, soft light and a bed that is the obvious centre of the room. This guide is about comfort and layout. It is not medical advice."},
             {"type": "h2", "text": "Place the bed first"},
