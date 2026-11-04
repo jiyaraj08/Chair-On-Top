@@ -68,7 +68,7 @@
       '</button>' +
       '<div class="sq-bubble" id="sq-bubble" role="group" aria-label="Message from the squirrel">' +
         '<p class="sq-bubble-text">Shall we find your style?</p>' +
-        '<a class="sq-bubble-link" href="#styles">Browse the six styles</a>' +
+        '<a class="sq-bubble-link" href="#styles">Browse all eight styles</a>' +
         '<button class="sq-bubble-close" type="button" aria-label="Dismiss message">&times;</button>' +
       '</div>' +
     '</div>';
