@@ -1,0 +1,332 @@
+/* Chair on Top - library.css
+   The Design Library on the Journal & Listen page (/journal).
+   Every class starts with lib- so nothing else can change.
+   Loaded only by templates/journal/index.html, after journal.css.
+   Uses the site's colour variables, so light and dark themes follow. */
+
+/* ---------- Hero additions ---------- */
+.lib-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  margin: var(--space-6) 0 0;
+  padding: var(--space-5) 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.lib-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.lib-stat strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--wood);
+}
+
+.lib-stat span {
+  margin-top: var(--space-1);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.lib-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lib-pills a {
+  display: inline-block;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+
+.lib-pills a:hover,
+.lib-pills a:focus-visible {
+  border-color: var(--burgundy);
+  background: var(--burgundy);
+  color: var(--text-on-dark);
+}
+
+/* ---------- Style sections ---------- */
+.lib-section[hidden],
+.lib-group[hidden] {
+  display: none;
+}
+
+.lib-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-5);
+  align-items: start;
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.lib-index {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  line-height: 0.9;
+  color: var(--wood);
+  opacity: 0.45;
+}
+
+.lib-head-text {
+  max-width: 44rem;
+}
+
+.lib-gallery-link {
+  display: inline-block;
+  margin-top: var(--space-4);
+  font-weight: 600;
+  color: var(--wood);
+  text-underline-offset: 4px;
+}
+
+.lib-gallery-link:hover {
+  color: var(--text);
+}
+
+.lib-group + .lib-group {
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.lib-group-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.lib-count {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.lib-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lib-grid--audio {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+}
+
+/* ---------- Cards (the whole card is one link) ---------- */
+.lib-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast);
+}
+
+.lib-card:hover,
+.lib-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+
+.lib-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.lib-link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.lib-thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--chocolate), var(--burgundy));
+}
+
+.lib-thumb .jn-thumb img {
+  transition: scale var(--t-med) var(--ease);
+}
+
+.lib-card:hover .lib-thumb .jn-thumb img {
+  scale: 1.06;
+}
+
+.lib-play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  width: 3.4rem;
+  height: 3.4rem;
+  margin: auto;
+  border-radius: 50%;
+  background: rgba(247, 242, 233, 0.94);
+  color: var(--charcoal);
+  place-items: center;
+  transition: transform var(--t-fast) var(--ease);
+}
+
+.lib-card:hover .lib-play {
+  transform: scale(1.1);
+}
+
+.lib-badge {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  border-radius: var(--r-pill);
+  color: var(--text-on-dark);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.lib-thumb .lib-badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+}
+
+.lib-badge--yt {
+  background: var(--burgundy);
+}
+
+.lib-badge--sp {
+  background: var(--olive-accent);
+}
+
+.lib-badge--inline {
+  margin-bottom: var(--space-2);
+}
+
+.lib-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 1.2rem 1.25rem;
+}
+
+.lib-meta {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wood);
+}
+
+.lib-title {
+  margin: var(--space-1) 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.lib-cta {
+  margin-top: auto;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--wood);
+}
+
+.lib-cta span {
+  display: inline-block;
+  transition: translate var(--t-fast);
+}
+
+.lib-card:hover .lib-cta span {
+  translate: 2px -2px;
+}
+
+/* Spotify cards sit beside a cover tile instead of above a picture. */
+.lib-link--row {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.lib-sp-cover {
+  display: grid;
+  flex: none;
+  width: 7rem;
+  place-items: center;
+  background: linear-gradient(160deg, var(--olive-accent), var(--chocolate));
+  color: var(--gold);
+}
+
+.lib-link--row .lib-body {
+  padding: 1.1rem 1.3rem;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 560px) {
+  .lib-grid,
+  .lib-grid--audio {
+    grid-template-columns: 1fr;
+  }
+
+  .lib-head {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .lib-index {
+    font-size: 3rem;
+  }
+
+  .lib-sp-cover {
+    width: 5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lib-card,
+  .lib-thumb .jn-thumb img,
+  .lib-play,
+  .lib-cta span {
+    transition: none;
+  }
+
+  .lib-card:hover,
+  .lib-card:focus-within {
+    transform: none;
+  }
+
+  .lib-card:hover .lib-thumb .jn-thumb img,
+  .lib-card:hover .lib-play {
+    scale: 1;
+    transform: none;
+  }
+}
