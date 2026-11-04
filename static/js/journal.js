@@ -16,13 +16,13 @@
   var statusLine = document.getElementById("jn-status");
   var items = Array.prototype.slice.call(document.querySelectorAll("[data-jn-item]"));
 
-  var COLLECTIONS = ["articles", "videos", "podcasts"];
-  var NAMES = { articles: "articles", videos: "videos", podcasts: "podcasts" };
+  var COLLECTIONS = ["articles", "videos", "podcasts", "library"];
+  var NAMES = { articles: "articles", videos: "videos", podcasts: "podcasts", library: "library links" };
 
   if (searchInput && items.length) {
     var state = {
       query: "",
-      category: { articles: "all", videos: "all", podcasts: "all" }
+      category: { articles: "all", videos: "all", podcasts: "all", library: "all" }
     };
 
     var normalise = function (text) {
@@ -73,6 +73,18 @@
             counts[name].shown += 1;
           }
         }
+      });
+
+      // Hide a library section (or its Watch / Listen group) when every card inside it is hidden.
+      Array.prototype.forEach.call(document.querySelectorAll("[data-jn-section]"), function (block) {
+        var cards = block.querySelectorAll("[data-jn-item]");
+        var any = false;
+        Array.prototype.forEach.call(cards, function (card) {
+          if (!card.hidden) {
+            any = true;
+          }
+        });
+        block.hidden = cards.length > 0 && !any;
       });
 
       COLLECTIONS.forEach(function (name) {
