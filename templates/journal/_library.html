@@ -1,0 +1,77 @@
+{# The Design Library: one section per style. Data comes from content/library.py.
+   Every card is one plain link that opens the original YouTube or Spotify page in a new tab.
+   Nothing is embedded. #}
+<div id="design-library">
+  {% for s in library %}
+  <section class="section jn-section lib-section{{ ' section-sand' if loop.index is even }}" id="style-{{ s.slug }}" aria-labelledby="style-{{ s.slug }}-title" data-jn-section>
+    <div class="wrap">
+      <header class="lib-head">
+        <p class="lib-index" aria-hidden="true">{{ s.index }}</p>
+        <div class="lib-head-text">
+          <p class="kicker">Style {{ s.index }} of {{ library|length }}</p>
+          <h2 class="section-title" id="style-{{ s.slug }}-title">{{ s.name }}</h2>
+          {% if s.description %}<p class="section-lead">{{ s.description }}</p>{% endif %}
+          {% if s.has_gallery %}<a class="lib-gallery-link" href="/gallery/{{ s.slug }}">See the {{ s.name }} gallery<span aria-hidden="true"> &rarr;</span></a>{% endif %}
+        </div>
+      </header>
+
+      {% if s.videos %}
+      <div class="lib-group" data-jn-section>
+        <h3 class="lib-group-title">Watch <span class="lib-count">{{ s.videos|length }} on YouTube</span></h3>
+        <ul class="lib-grid">
+          {% for v in s.videos %}
+          <li class="lib-card lib-card--yt" data-jn-item data-collection="library" data-search="{{ v.search_text }}">
+            <a class="lib-link" href="{{ v.url }}" target="_blank" rel="noopener noreferrer"
+               aria-label="{{ v.title }}, {{ s.name }}{{ ', YouTube Short' if v.short }}, on YouTube (opens in a new tab)">
+              <span class="lib-thumb">
+                <span class="jn-thumb"><img src="{{ v.thumb }}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
+                <span class="lib-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+                <span class="lib-badge lib-badge--yt">YouTube</span>
+              </span>
+              <span class="lib-body">
+                <span class="lib-meta">{{ s.name }}{% if v.short %} &middot; Short{% endif %}</span>
+                <span class="lib-title">{{ v.title }}</span>
+                <span class="lib-cta">Watch on YouTube<span aria-hidden="true"> &nearr;</span></span>
+              </span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if s.episodes %}
+      <div class="lib-group" data-jn-section>
+        <h3 class="lib-group-title">Listen <span class="lib-count">{{ s.episodes|length }} on Spotify</span></h3>
+        <ul class="lib-grid lib-grid--audio">
+          {% for e in s.episodes %}
+          <li class="lib-card lib-card--sp" data-jn-item data-collection="library" data-search="{{ e.search_text }}">
+            <a class="lib-link lib-link--row" href="{{ e.url }}" target="_blank" rel="noopener noreferrer"
+               aria-label="{{ e.title }}, {{ s.name }}, on Spotify (opens in a new tab)">
+              <span class="lib-sp-cover" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="34" height="34" focusable="false"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <span class="lib-body">
+                <span class="lib-badge lib-badge--sp lib-badge--inline">Spotify</span>
+                <span class="lib-meta">{{ s.name }}</span>
+                <span class="lib-title">{{ e.title }}</span>
+                <span class="lib-cta">Listen on Spotify<span aria-hidden="true"> &nearr;</span></span>
+              </span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endfor %}
+
+  <div class="wrap">
+    <div class="jn-empty" data-jn-empty="library" hidden>
+      <p class="jn-empty-title">No library links match that search.</p>
+      <p>Try a style name such as Japandi, or the word video or episode.</p>
+      <button class="btn btn-outline btn-sm" type="button" data-jn-reset>Clear search and filters</button>
+    </div>
+  </div>
+</div>
