@@ -1,0 +1,192 @@
+/* Chair on Top - journal-photos.css
+   Photographic upgrade for the Journal page (/journal):
+     1. Journal hero collage        (.jn-hero-photos)
+     2. Article card cover photos   (.jn-cover polish)
+     3. "From reading to planning" cards with thumbnails (.jn-link-thumb)
+   Loaded only by templates/journal/index.html, AFTER journal.css and library.css.
+   Uses the site colour variables (burgundy, chocolate, olive, ivory), so the
+   light and dark themes both work. Every class starts with jn- or jhp- so
+   nothing else on the site can change. */
+
+/* =========================================================
+   1. JOURNAL HERO COLLAGE
+   ========================================================= */
+.jn-hero-art.jn-hero-photos {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: none;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(circle at 80% 12%, rgba(120, 40, 46, 0.55) 0%, rgba(58, 1, 8, 0) 55%),
+    radial-gradient(circle at 10% 95%, rgba(76, 84, 8, 0.35) 0%, rgba(76, 84, 8, 0) 50%),
+    var(--chocolate);
+  box-shadow: var(--shadow-card);
+}
+
+/* Remove the old drawn arch from journal.css. */
+.jn-hero-art.jn-hero-photos::before,
+.jn-hero-art.jn-hero-photos::after {
+  content: none;
+}
+
+.jhp-arch,
+.jhp-frame {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  background: var(--chocolate);
+}
+
+.jhp-arch img,
+.jhp-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The large arched window picture. */
+.jhp-arch {
+  left: 6%;
+  top: 6%;
+  width: 54%;
+  height: 66%;
+  border-radius: 999px 999px 0.9rem 0.9rem;
+  box-shadow: 0 0 0 4px rgba(242, 237, 232, 0.9), 0 18px 32px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Smaller tilted prints, with an ivory border like a photographic print. */
+.jhp-frame {
+  border: 4px solid #f6f0e6;
+  border-radius: 0.6rem;
+  box-shadow: 0 14px 26px -12px rgba(0, 0, 0, 0.65);
+}
+
+.jhp-a { left: 50%; top: 4%; width: 45%; height: 30%; rotate: 4deg; }
+.jhp-b { left: 58%; top: 37%; width: 37%; height: 33%; rotate: -3deg; }
+.jhp-c { left: 5%; top: 75%; width: 34%; height: 21%; rotate: -4deg; }
+.jhp-d { left: 42%; top: 74%; width: 32%; height: 21%; rotate: 3deg; }
+
+/* The four colours of the site as a small swatch strip. */
+.jhp-palette {
+  position: absolute;
+  right: 5%;
+  bottom: 6%;
+  width: 17%;
+  height: 17%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 3px #f6f0e6, 0 10px 18px -8px rgba(0, 0, 0, 0.6);
+}
+
+.jhp-palette i:nth-child(1) { background: var(--burgundy); }
+.jhp-palette i:nth-child(2) { background: var(--chocolate); }
+.jhp-palette i:nth-child(3) { background: var(--olive-accent); }
+.jhp-palette i:nth-child(4) { background: var(--ivory); }
+
+/* Gentle lift on hover, only for people who have not asked for less motion. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .jhp-frame {
+    transition: rotate 0.5s ease, translate 0.5s ease;
+  }
+
+  .jn-hero-photos:hover .jhp-a { rotate: 2deg; translate: 0 -3px; }
+  .jn-hero-photos:hover .jhp-b { rotate: -1.5deg; translate: 0 -3px; }
+  .jn-hero-photos:hover .jhp-c { rotate: -2deg; translate: 0 3px; }
+  .jn-hero-photos:hover .jhp-d { rotate: 1.5deg; translate: 0 3px; }
+}
+
+/* Tablet and phone: the collage sits under the text, wider than tall. */
+@media (max-width: 860px) {
+  .jn-hero-art.jn-hero-photos {
+    aspect-ratio: 5 / 4;
+    max-height: none;
+    width: 100%;
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  .jhp-arch { left: 4%; top: 6%; width: 32%; height: 88%; }
+  .jhp-a { left: 38%; top: 5%; width: 33%; height: 42%; }
+  .jhp-b { left: 65%; top: 22%; width: 31%; height: 40%; }
+  .jhp-c { left: 38%; top: 54%; width: 29%; height: 37%; }
+  .jhp-d { left: 66%; top: 66%; width: 29%; height: 28%; }
+  .jhp-palette { display: none; }
+}
+
+/* =========================================================
+   2. ARTICLE CARD COVERS (all cards use the same 4:3 frame)
+   ========================================================= */
+.jn-cover > img {
+  object-position: 50% 50%;
+}
+
+.jn-card-media,
+.jn-featured-media {
+  background: var(--sand);
+}
+
+/* Article page banner (wide 21:9 crop): keep the main subject of each photo in view. */
+.jn-article-cover .jn-cover > img {
+  object-position: 50% 68%;
+}
+
+/* =========================================================
+   3. FROM READING TO PLANNING: CARDS WITH THUMBNAILS
+   ========================================================= */
+.jn-link-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  border-top: 0;
+  border-radius: var(--r-md);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.jn-link-thumb {
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--chocolate);
+}
+
+.jn-link-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.8s ease;
+}
+
+.jn-link-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--space-5);
+  border-top: 3px solid var(--burgundy);
+}
+
+.jn-link-body p {
+  flex: 1;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .jn-link-card:hover,
+  .jn-link-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .jn-link-card:hover .jn-link-thumb img {
+    scale: 1.05;
+  }
+}
+
+html[data-theme="dark"] .jn-link-body {
+  border-top-color: var(--wood);
+}
