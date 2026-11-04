@@ -131,78 +131,18 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="top" aria-labelledby="hero-title">
-    <div class="hero-media">
-      <!--
-        PLACEHOLDER SCENE. Later, replace this whole <svg> with your photograph:
-        <img class="hero-img" src="..." alt="Describe the room here">
-        The container already crops images to fill the space.
-      -->
-      <svg class="hero-art" viewBox="0 0 1200 800" preserveAspectRatio="xMaxYMid slice" role="img" aria-label="Placeholder illustration of a warm living room corner with an olive armchair, a floor lamp and a potted plant.">
-        <defs>
-          <linearGradient id="hero-wall" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#e4d4ba"/>
-            <stop offset="1" stop-color="#d2bd9b"/>
-          </linearGradient>
-          <linearGradient id="hero-floor" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#9b7249"/>
-            <stop offset="1" stop-color="#76532f"/>
-          </linearGradient>
-          <linearGradient id="hero-beam" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#fff3d6" stop-opacity="0.45"/>
-            <stop offset="1" stop-color="#fff3d6" stop-opacity="0"/>
-          </linearGradient>
-          <radialGradient id="hero-glow" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0" stop-color="#ffe2a0" stop-opacity="0.6"/>
-            <stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-
-        <rect width="1200" height="800" fill="url(#hero-wall)"/>
-
-        <rect x="210" y="190" width="170" height="230" fill="#f6efe2"/>
-        <rect x="226" y="206" width="138" height="198" fill="#a07a50"/>
-        <circle cx="295" cy="270" r="40" fill="#e8d3a8"/>
-
-        <rect x="690" y="70" width="270" height="340" rx="6" fill="#f6efe2"/>
-        <rect x="706" y="86" width="116" height="150" fill="#fff6df"/>
-        <rect x="828" y="86" width="116" height="150" fill="#fff6df"/>
-        <rect x="706" y="244" width="116" height="150" fill="#fff6df"/>
-        <rect x="828" y="244" width="116" height="150" fill="#fff6df"/>
-
-        <rect y="600" width="1200" height="200" fill="url(#hero-floor)"/>
-        <rect y="590" width="1200" height="14" fill="#efe6d6"/>
-        <g stroke="#5f3f22" stroke-opacity="0.28" stroke-width="2">
-          <line x1="0" y1="665" x2="1200" y2="665"/>
-          <line x1="0" y1="730" x2="1200" y2="730"/>
-        </g>
-
-        <polygon points="690,410 960,410 1100,800 600,800" fill="url(#hero-beam)"/>
-
-        <ellipse cx="880" cy="705" rx="300" ry="52" fill="#d4c09b"/>
-        <ellipse cx="880" cy="705" rx="250" ry="40" fill="#c8b389"/>
-
-        <polygon points="600,630 660,630 652,695 608,695" fill="#b5603a"/>
-        <g fill="#6b7a45">
-          <ellipse cx="632" cy="570" rx="20" ry="64" transform="rotate(-22 632 570)"/>
-          <ellipse cx="632" cy="565" rx="20" ry="70"/>
-          <ellipse cx="632" cy="570" rx="20" ry="64" transform="rotate(22 632 570)"/>
-        </g>
-
-        <ellipse cx="880" cy="690" rx="150" ry="16" fill="#221e1a" fill-opacity="0.25"/>
-        <rect x="790" y="618" width="14" height="70" rx="4" fill="#4a3320"/>
-        <rect x="956" y="618" width="14" height="70" rx="4" fill="#4a3320"/>
-        <rect x="780" y="410" width="200" height="220" rx="70" fill="#5f6743"/>
-        <rect x="740" y="470" width="56" height="150" rx="26" fill="#566040"/>
-        <rect x="964" y="470" width="56" height="150" rx="26" fill="#566040"/>
-        <rect x="770" y="540" width="220" height="86" rx="30" fill="#6f7a4d"/>
-        <rect x="800" y="552" width="160" height="40" rx="18" fill="#7c8758"/>
-
-        <circle cx="1100" cy="300" r="170" fill="url(#hero-glow)"/>
-        <rect x="1097" y="330" width="6" height="360" fill="#221e1a"/>
-        <ellipse cx="1100" cy="690" rx="46" ry="9" fill="#221e1a"/>
-        <polygon points="1050,330 1150,330 1128,250 1072,250" fill="#f3e2bb"/>
-      </svg>
-      <span class="media-note">Placeholder scene &mdash; your photograph goes here</span>
+    <div class="hero-media hero-media-collage">
+      {# A moodboard of photographs already in the gallery: one room from each of the eight styles. #}
+      <div class="hero-collage" role="img" aria-label="A collage of interior photographs from the eight style collections">
+        <img class="hc-tile hc-t1" src="{{ url_for('static', path='images/designs/mid-cent-modern/img2.jpg') }}" width="735" height="913" alt="" decoding="async" fetchpriority="high">
+        <img class="hc-tile hc-t2" src="{{ url_for('static', path='images/designs/japandi/img4.jpg') }}" width="736" height="911" alt="" decoding="async" loading="lazy">
+        <img class="hc-tile hc-t3" src="{{ url_for('static', path='images/designs/bohemian/img10.jpg') }}" width="640" height="640" alt="" decoding="async" loading="lazy">
+        <img class="hc-tile hc-t4" src="{{ url_for('static', path='images/designs/scandinavian/img1.jpg') }}" width="736" height="977" alt="" decoding="async" loading="lazy">
+        <img class="hc-tile hc-t5" src="{{ url_for('static', path='images/designs/indian-deco/img9.jpg') }}" width="736" height="893" alt="" decoding="async" loading="lazy">
+        <img class="hc-tile hc-t6" src="{{ url_for('static', path='images/designs/transitional/img9.jpg') }}" width="736" height="1187" alt="" decoding="async" loading="lazy">
+        <img class="hc-tile hc-t7" src="{{ url_for('static', path='images/designs/minimalism/img4.jpg') }}" width="736" height="1030" alt="" decoding="async" loading="lazy">
+        <img class="hc-tile hc-t8" src="{{ url_for('static', path='images/designs/industrial/img7.jpg') }}" width="736" height="981" alt="" decoding="async" loading="lazy">
+      </div>
     </div>
 
     <div class="hero-content">
