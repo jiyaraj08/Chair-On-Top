@@ -4,6 +4,7 @@
 
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/hero-redesign.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -130,18 +131,19 @@
 <main id="main">
 
   <!-- ============ HERO ============ -->
-  <section class="hero" id="top" aria-labelledby="hero-title">
+  <section class="hero hero--collage" id="top" aria-labelledby="hero-title">
     <div class="hero-media hero-media-collage">
-      {# A moodboard of photographs already in the gallery: one room from each of the eight styles. #}
-      <div class="hero-collage" role="img" aria-label="A collage of interior photographs from the eight style collections">
-        <img class="hc-tile hc-t1" src="{{ url_for('static', path='images/designs/mid-cent-modern/img2.jpg') }}" width="735" height="913" alt="" decoding="async" fetchpriority="high">
-        <img class="hc-tile hc-t2" src="{{ url_for('static', path='images/designs/japandi/img4.jpg') }}" width="736" height="911" alt="" decoding="async" loading="lazy">
-        <img class="hc-tile hc-t3" src="{{ url_for('static', path='images/designs/bohemian/img10.jpg') }}" width="640" height="640" alt="" decoding="async" loading="lazy">
-        <img class="hc-tile hc-t4" src="{{ url_for('static', path='images/designs/scandinavian/img1.jpg') }}" width="736" height="977" alt="" decoding="async" loading="lazy">
-        <img class="hc-tile hc-t5" src="{{ url_for('static', path='images/designs/indian-deco/img9.jpg') }}" width="736" height="893" alt="" decoding="async" loading="lazy">
-        <img class="hc-tile hc-t6" src="{{ url_for('static', path='images/designs/transitional/img9.jpg') }}" width="736" height="1187" alt="" decoding="async" loading="lazy">
-        <img class="hc-tile hc-t7" src="{{ url_for('static', path='images/designs/minimalism/img4.jpg') }}" width="736" height="1030" alt="" decoding="async" loading="lazy">
-        <img class="hc-tile hc-t8" src="{{ url_for('static', path='images/designs/industrial/img7.jpg') }}" width="736" height="981" alt="" decoding="async" loading="lazy">
+      {# One ornamental texture collage (gold, silver, copper, ivory, green, wood, patterned fabric). Mobile gets a portrait crop. #}
+      <div class="hero-collage" role="img" aria-label="A collage of ornamental textures: gold leaf, silver, copper, ivory, green, wood and patterned fabrics">
+        <picture>
+          <source media="(max-width: 900px)" type="image/webp"
+                  srcset="{{ url_for('static', path='images/hero/hero-collage-mobile-sm.webp') }} 570w, {{ url_for('static', path='images/hero/hero-collage-mobile.webp') }} 760w"
+                  sizes="100vw">
+          <source type="image/webp"
+                  srcset="{{ url_for('static', path='images/hero/hero-collage-1280.webp') }} 1280w, {{ url_for('static', path='images/hero/hero-collage-1920.webp') }} 1920w"
+                  sizes="100vw">
+          <img class="hc-bg" src="{{ url_for('static', path='images/hero/hero-collage-1920.jpg') }}" width="1920" height="1080" alt="" decoding="async" fetchpriority="high">
+        </picture>
       </div>
     </div>
 
@@ -161,6 +163,8 @@
       </div>
       <p class="hero-status">Eight style collections are live. The quiz and budget planner are coming soon.</p>
     </div>
+
+    <p class="hero-caption">A curated world of interiors, styles and ideas</p>
   </section>
 
   <!-- ============ STYLES ============ -->
