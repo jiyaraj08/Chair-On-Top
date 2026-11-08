@@ -1061,11 +1061,20 @@
       return;
     }
     toast("Preparing your moodboard image\u2026");
-    var serif = "Georgia, 'Times New Roman', serif";
-    try {
-      serif = window.getComputedStyle(titleEl).fontFamily || serif;
-    } catch (error) { /* keep the default */ }
-    var sans = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+    // The exported picture uses Playfair Display for every piece of text.
+    var face = "'Playfair Display', Georgia, serif";
+    var serif = face;
+    var sans = face;
+    // A canvas cannot wait for a font by itself, so load the weights it draws first.
+    var fontsReady = Promise.resolve();
+    if (document.fonts && document.fonts.load) {
+      fontsReady = Promise.all([
+        document.fonts.load("400 34px 'Playfair Display'"),
+        document.fonts.load("500 92px 'Playfair Display'"),
+        document.fonts.load("600 24px 'Playfair Display'")
+      ]).catch(function () { /* fall back to the stand-in serif */ });
+    }
+    fontsReady.then(function () {
     var W = 1800;
     var pad = 96;
     var gap = 24;
@@ -1184,6 +1193,7 @@
         window.setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
         toast("Your moodboard image is ready.");
       }, "image/png");
+    });
     });
   }
 
