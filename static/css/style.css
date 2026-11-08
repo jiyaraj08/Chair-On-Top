@@ -34,8 +34,10 @@
   --focus-on-dark: #e9c48e;
 
   /* Typography */
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
-  --font-body: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  /* Playfair Display is loaded in templates/base.html. The fallbacks are
+     close-looking serifs, so the page stays readable while it loads. */
+  --font-display: "Playfair Display", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  --font-body: var(--font-display);
 
   --fs-sm: 0.9rem;
   --fs-base: 1rem;
@@ -107,6 +109,14 @@ body {
 
 h1, h2, h3, h4, p, ul, ol {
   margin: 0;
+}
+
+/* Forms and buttons do not inherit the page font by default. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 ul, ol {
