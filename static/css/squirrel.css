@@ -66,6 +66,10 @@
   cursor: pointer;
   pointer-events: auto;
   -webkit-tap-highlight-color: transparent;
+  /* Soft shadow on the wall behind it. Direction and length follow the light
+     (hero-lighting.css). Falls back to a small shadow on other pages. */
+  filter: var(--sq-tint, brightness(1) saturate(1) sepia(0) hue-rotate(0deg)) drop-shadow(var(--cast-x, 0.4px) var(--cast-y, 1px) var(--cast-b, 1.5px) rgba(24, 8, 0, var(--cast-a, 0.3)));
+  transition: filter 0.9s ease;
 }
 
 .sq-svg {
@@ -100,10 +104,28 @@
 }
 
 /* Head and eyes are moved by squirrel.js through these variables. */
+.sq-head,
+.sq-nod,
+.sq-ear {
+  transform-box: view-box;
+}
+
 .sq-head {
-  transform-origin: 68% 92%;
+  transform-origin: 78px 64px;
   transform: translate(var(--hx, 0px), 0px) rotate(var(--tilt, 0deg));
   transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.sq-nod {
+  transform-origin: 78px 64px;
+}
+
+.sq-ear-l {
+  transform-origin: 70px 46px;
+}
+
+.sq-ear-r {
+  transform-origin: 85px 47px;
 }
 
 .sq-eye-look {
@@ -120,17 +142,39 @@
 }
 
 .sq-anim .sq-tail {
-  animation: sq-sway 5.2s ease-in-out infinite alternate;
+  animation: sq-sway 3.8s ease-in-out infinite alternate;
 }
 
 .sq-anim .sq-eye {
-  animation: sq-blink 7s infinite;
+  animation: sq-blink 6s infinite;
+}
+
+/* Nibbles the acorn: two quick nods every few seconds. */
+.sq-anim .sq-nod {
+  animation: sq-nod 8s ease-in-out 2.5s infinite;
+}
+
+/* Ears twitch, out of step with each other. */
+.sq-anim .sq-ear-r {
+  animation: sq-ear-r 6.5s ease-in-out 1.5s infinite;
+}
+
+.sq-anim .sq-ear-l {
+  animation: sq-ear-l 10s ease-in-out 4s infinite;
+}
+
+/* The gold rim catches the light: a slow shimmer that keeps it noticeable. */
+.sq-anim .sq-rim {
+  animation: sq-shimmer 3.4s ease-in-out infinite alternate;
 }
 
 /* Pause everything when the hero is not on screen. */
 .sq-anim:not(.is-live) .sq-breath,
 .sq-anim:not(.is-live) .sq-tail,
-.sq-anim:not(.is-live) .sq-eye {
+.sq-anim:not(.is-live) .sq-eye,
+.sq-anim:not(.is-live) .sq-nod,
+.sq-anim:not(.is-live) .sq-ear,
+.sq-anim:not(.is-live) .sq-rim {
   animation-play-state: paused;
 }
 
@@ -275,8 +319,32 @@
 }
 
 @keyframes sq-sway {
-  from { transform: rotate(-2.4deg); }
-  to   { transform: rotate(2.4deg); }
+  from { transform: rotate(-4deg); }
+  to   { transform: rotate(5.5deg); }
+}
+
+@keyframes sq-nod {
+  0%, 60%, 100% { transform: none; }
+  66%           { transform: translateY(1.4px) rotate(4deg); }
+  71%           { transform: translateY(0) rotate(-0.5deg); }
+  77%           { transform: translateY(1.4px) rotate(4deg); }
+  84%           { transform: none; }
+}
+
+@keyframes sq-ear-r {
+  0%, 88%, 100% { transform: none; }
+  92%           { transform: rotate(-9deg); }
+  96%           { transform: rotate(3deg); }
+}
+
+@keyframes sq-ear-l {
+  0%, 90%, 100% { transform: none; }
+  94%           { transform: rotate(8deg); }
+}
+
+@keyframes sq-shimmer {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
 }
 
 @keyframes sq-blink {
