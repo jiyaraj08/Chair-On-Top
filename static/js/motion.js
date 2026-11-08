@@ -255,10 +255,11 @@
 
   // ---------------------------------------------------------
   // 6. The light selector: a small arched window with a sun in it.
-  //    Tap it to open a four-option menu (Morning, Midday, Afternoon, Golden
-  //    Hour). The choice sets data-light on <html>, which hero-lighting.css
-  //    turns into the hero's light, warmth, brightness and shadows. The
-  //    choice is saved in localStorage under cot.light.v1.
+  //    Each tap switches straight to the next mode, in a loop: Morning,
+  //    Midday, Afternoon, Golden Hour, then Morning again. There is no menu.
+  //    The mode sets data-light on <html>, which hero-lighting.css turns into
+  //    the hero's light, warmth, brightness and shadows. The choice is saved
+  //    in localStorage under cot.light.v1.
   // ---------------------------------------------------------
   safely("light selector", function () {
     var host = document.querySelector(".hero-media");
@@ -277,18 +278,9 @@
 
     var ARCH = "M12 140V60A48 48 0 0 1 108 60V140Z";
 
-    var optionHtml = "";
-    MODES.forEach(function (mode) {
-      optionHtml +=
-        '<button class="lp-opt" type="button" role="radio" aria-checked="false" tabindex="-1" data-mode="' + mode.id + '">' +
-          '<span class="lp-dot" style="--dot:' + mode.color + '" aria-hidden="true"></span>' +
-          '<span class="lp-name">' + mode.name + '</span>' +
-        '</button>';
-    });
-
     var html =
       '<div class="motif is-fresh">' +
-        '<button class="motif-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="light-menu" aria-label="Lighting. Open the time-of-day menu">' +
+        '<button class="motif-btn" type="button" aria-label="Lighting. Tap to change the time of day">' +
           '<svg class="motif-svg" viewBox="0 0 120 150" aria-hidden="true" focusable="false">' +
             '<defs><clipPath id="motif-clip"><path d="' + ARCH + '"/></clipPath></defs>' +
             '<path class="motif-fill" d="' + ARCH + '"/>' +
@@ -319,14 +311,6 @@
     var caption = motif.querySelector(".motif-caption");
     var status = motif.querySelector("[role=status]");
 
-    // The menu lives in the hero (not inside the window), so the light tint
-    // never covers it. It is placed above the window each time it opens.
-    var menuHolder = document.createElement("div");
-    menuHolder.innerHTML =
-      '<div class="light-menu" id="light-menu" role="radiogroup" aria-label="Time of day" hidden>' + optionHtml + '</div>';
-    var menu = menuHolder.firstChild;
-    var options = Array.prototype.slice.call(menu.querySelectorAll(".lp-opt"));
-
     var index = 0;
     var nudgeX = 0;
     var nudgeY = 0;
@@ -356,12 +340,10 @@
       var mode = MODES[i];
       root.setAttribute("data-light", mode.id);
       caption.textContent = mode.name;
-      button.setAttribute("aria-label", "Lighting: " + mode.name + ". Open the time-of-day menu");
-      options.forEach(function (opt, n) {
-        var on = n === i;
-        opt.setAttribute("aria-checked", on ? "true" : "false");
-        opt.tabIndex = on ? 0 : -1;
-      });
+      button.setAttribute(
+        "aria-label",
+        "Lighting: " + mode.name + ". Tap to switch to " + MODES[(i + 1) % MODES.length].name
+      );
       render();
 
       if (fromUser) {
@@ -382,117 +364,16 @@
 
     // Place the window BEFORE adding it to the page, so it does not slide in from the corner.
     host.appendChild(motif);
-    hero.appendChild(menu);
 
-    // ---- the menu ----
-    function placeMenu() {
-      var heroBox = hero.getBoundingClientRect();
-      var motifBox = motif.getBoundingClientRect();
-      menu.style.right = Math.max(0, heroBox.right - motifBox.right) + "px";
-      menu.style.bottom = Math.max(0, heroBox.bottom - motifBox.top + 8) + "px";
-    }
-
-    function isOpen() {
-      return !menu.hidden;
-    }
-
-    function openMenu() {
-      placeMenu();
-      menu.hidden = false;
-      // Next frame, so the open animation can start from the hidden state.
-      window.requestAnimationFrame(function () {
-        menu.classList.add("is-open");
-      });
-      button.setAttribute("aria-expanded", "true");
-      document.dispatchEvent(new CustomEvent("cot:lightmenu-open"));
-      options[index].focus({ preventScroll: true });
-    }
-
-    function closeMenu(returnFocus) {
-      if (!isOpen()) {
-        return;
-      }
-      menu.classList.remove("is-open");
-      button.setAttribute("aria-expanded", "false");
-      var done = function () {
-        if (!menu.classList.contains("is-open")) {
-          menu.hidden = true;
-        }
-      };
-      if (reduceMotion) {
-        done();
-      } else {
-        window.setTimeout(done, 220);
-      }
-      if (returnFocus) {
-        button.focus({ preventScroll: true });
-      }
-    }
-
+    // ---- one tap = next mode ----
     // Tap, click, Enter and Space on the window all end up here.
     button.addEventListener("click", function () {
-      if (isOpen()) {
-        closeMenu(false);
-      } else {
-        openMenu();
-      }
+      setMode((index + 1) % MODES.length, true);
     });
 
     // The caption under the window is part of the control, so it is easy to hit on a phone.
     caption.addEventListener("click", function () {
       button.click();
-    });
-
-    options.forEach(function (opt, n) {
-      opt.addEventListener("click", function () {
-        setMode(n, true);
-        closeMenu(true);
-      });
-    });
-
-    menu.addEventListener("keydown", function (event) {
-      var current = options.indexOf(document.activeElement);
-      if (current < 0) {
-        current = index;
-      }
-      var next = null;
-      if (event.key === "ArrowDown" || event.key === "ArrowRight") {
-        next = (current + 1) % options.length;
-      } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
-        next = (current - 1 + options.length) % options.length;
-      } else if (event.key === "Home") {
-        next = 0;
-      } else if (event.key === "End") {
-        next = options.length - 1;
-      } else if (event.key === "Escape") {
-        event.preventDefault();
-        closeMenu(true);
-        return;
-      } else if (event.key === "Tab") {
-        closeMenu(false);
-        return;
-      }
-      if (next !== null) {
-        event.preventDefault();
-        options[next].focus({ preventScroll: true });
-      }
-    });
-
-    // Tap outside, or open the squirrel's speech bubble: close the menu.
-    document.addEventListener("pointerdown", function (event) {
-      if (isOpen() && !menu.contains(event.target) && !motif.contains(event.target)) {
-        closeMenu(false);
-      }
-    });
-
-    document.addEventListener("cot:bubble-open", function () {
-      closeMenu(false);
-    });
-
-    window.addEventListener("resize", function () {
-      if (isOpen()) {
-        placeMenu();
-      }
     });
 
     // Another tab changed the saved light: follow it.
