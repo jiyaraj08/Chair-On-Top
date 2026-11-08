@@ -1061,18 +1061,33 @@
       return;
     }
     toast("Preparing your moodboard image\u2026");
-    // The exported picture uses Playfair Display for every piece of text.
-    var face = "'Playfair Display', Georgia, serif";
+    // The exported picture uses Playfair Display for every piece of text. The font
+    // is self-hosted (static/css/fonts.css), so this is the same file the page uses.
+    var face = "'Playfair Display', serif";
     var serif = face;
     var sans = face;
     // A canvas cannot wait for a font by itself, so load the weights it draws first.
+    // The text passed to load() matters: the font is split into character ranges and
+    // the browser only fetches the ranges the given text needs, so give it every
+    // string that will be drawn (title, description, labels and the date).
+    var drawnText = [board.name, board.description || "", "MOODBOARD Chair on Top 0123456789 \u00b7"];
+    try {
+      drawnText.push(new Date().toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" }));
+    } catch (error) { /* the date line is optional */ }
+    drawnText = drawnText.join(" ");
     var fontsReady = Promise.resolve();
     if (document.fonts && document.fonts.load) {
       fontsReady = Promise.all([
-        document.fonts.load("400 34px 'Playfair Display'"),
-        document.fonts.load("500 92px 'Playfair Display'"),
-        document.fonts.load("600 24px 'Playfair Display'")
-      ]).catch(function () { /* fall back to the stand-in serif */ });
+        document.fonts.load("400 34px 'Playfair Display'", drawnText),
+        document.fonts.load("400 24px 'Playfair Display'", drawnText),
+        document.fonts.load("500 92px 'Playfair Display'", drawnText),
+        document.fonts.load("500 36px 'Playfair Display'", drawnText),
+        document.fonts.load("600 24px 'Playfair Display'", drawnText)
+      ]).then(function () {
+        if (document.fonts.check && !document.fonts.check("500 92px 'Playfair Display'", drawnText)) {
+          console.warn("Playfair Display is not available; the exported image will use the browser's default serif.");
+        }
+      }).catch(function () { /* fall back to the browser's default serif */ });
     }
     fontsReady.then(function () {
     var W = 1800;
