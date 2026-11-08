@@ -18,11 +18,12 @@
   </script>
   <title>{% block title %}Chair on Top{% endblock %}</title>
   <meta name="description" content="Discover an interior-design aesthetic you love and map out how to achieve it within your budget.">
-  {# Playfair Display (the site font). preconnect opens the connection early;
-     display=swap shows the fallback serif at once, then swaps the font in. #}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap">
+  {# Playfair Display (the site font) is self-hosted: static/fonts/ holds the files and
+     static/css/fonts.css declares them. fonts.css comes first, before every other
+     stylesheet, so the font is known before any rule asks for it. The preload starts
+     the main file downloading at once. crossorigin is required for font preloads. #}
+  <link rel="preload" href="{{ url_for('static', path='fonts/playfair-display-latin-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/fonts.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/motion.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/squirrel.css') }}">
