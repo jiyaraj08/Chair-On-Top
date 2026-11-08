@@ -5,6 +5,19 @@
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/hero-redesign.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/hero-lighting.css') }}">
+  <script>
+    /* Applies the saved hero lighting before the first paint, so a refresh never flashes the wrong light.
+       Saved under the key cot.light.v1. Anything unknown falls back to morning. */
+    (function () {
+      var mode = "morning";
+      try {
+        var saved = localStorage.getItem("cot.light.v1");
+        if (saved === "morning" || saved === "midday" || saved === "afternoon" || saved === "golden") { mode = saved; }
+      } catch (e) {}
+      document.documentElement.setAttribute("data-light", mode);
+    })();
+  </script>
 {% endblock %}
 
 {% block body %}
@@ -165,6 +178,12 @@
     </div>
 
     <p class="hero-caption">A curated world of interiors, styles and ideas</p>
+
+    {# Lighting layers. hero-lighting.css cross-fades them when the visitor picks Morning, Midday, Afternoon or Golden Hour. Decoration only. #}
+    <div class="hero-light" aria-hidden="true">
+      <div class="hl-shade"><span data-m="morning"></span><span data-m="midday"></span><span data-m="afternoon"></span><span data-m="golden"></span></div>
+      <div class="hl-glow"><span data-m="morning"></span><span data-m="midday"></span><span data-m="afternoon"></span><span data-m="golden"></span></div>
+    </div>
   </section>
 
   <!-- ============ STYLES ============ -->
