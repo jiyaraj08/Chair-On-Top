@@ -1,0 +1,335 @@
+/* Chair on Top - hero-lighting.css
+   Homepage hero only. Loaded by templates/index.html after hero-redesign.css.
+
+   What it does
+   - The visitor picks Morning, Midday, Afternoon or Golden Hour in the small
+     arched window (built by motion.js). motion.js sets data-light on <html>
+     and saves it in localStorage (cot.light.v1). index.html sets the same
+     attribute before first paint, so a refresh never flashes the wrong light.
+   - Each mode changes four things together, all with a smooth fade:
+       1. Brightness and warmth of the ornamental picture (a filter).
+       2. A multiply layer (.hl-shade): tints the whole hero and darkens the
+          side away from the sun.
+       3. A screen layer (.hl-glow): sunlight glow and soft light shafts.
+       4. Shadows: the squirrel's wall shadow and ground shadow, the window
+          and the caption pill. They lengthen, shorten and swap sides with
+          the sun.
+   - With no data-light attribute, the Morning values below apply.
+
+   To revert: remove the hero-lighting.css <link>, the inline script and the
+   .hero-light block from index.html. */
+
+/* =========================================================
+   1. MORNING (default values)
+      Low sun on the left, soft and a little cool. Shadows fall right.
+   ========================================================= */
+.hero--collage {
+  --img-filter: brightness(1.02) saturate(0.94) sepia(0.04) hue-rotate(0deg) contrast(1);
+  --sq-tint: brightness(1.03) saturate(0.97) sepia(0.02) hue-rotate(0deg);
+
+  /* squirrel shadow on the wall */
+  --cast-x: calc(var(--u) * 0.55);
+  --cast-y: calc(var(--u) * 0.15);
+  --cast-b: calc(var(--u) * 0.5);
+  --cast-a: 0.34;
+
+  /* squirrel shadow on the shelf (SVG units) */
+  --g-x: 10px;
+  --g-sx: 1.15;
+  --g-o: 0.2;
+
+  /* window and caption shadows */
+  --m-sx: 14px;
+  --m-sa: 0.5;
+  --c-sx: 6px;
+  --c-sa: 0.6;
+}
+
+/* =========================================================
+   2. MIDDAY: sun overhead, brightest, short crisp shadows straight down.
+   ========================================================= */
+html[data-light="midday"] .hero--collage {
+  --img-filter: brightness(1.12) saturate(1.06) sepia(0) hue-rotate(0deg) contrast(1.05);
+  --sq-tint: brightness(1.1) saturate(1.04) sepia(0) hue-rotate(0deg);
+  --cast-x: 0px;
+  --cast-y: calc(var(--u) * 0.45);
+  --cast-b: calc(var(--u) * 0.3);
+  --cast-a: 0.5;
+  --g-x: 0px;
+  --g-sx: 0.8;
+  --g-o: 0.34;
+  --m-sx: 0px;
+  --m-sa: 0.62;
+  --c-sx: 0px;
+  --c-sa: 0.72;
+}
+
+/* =========================================================
+   3. AFTERNOON: warm sun on the right. Shadows fall left, medium length.
+   ========================================================= */
+html[data-light="afternoon"] .hero--collage {
+  --img-filter: brightness(1) saturate(1.06) sepia(0.2) hue-rotate(-3deg) contrast(1.02);
+  --sq-tint: brightness(1.02) saturate(1.05) sepia(0.14) hue-rotate(-3deg);
+  --cast-x: calc(var(--u) * -0.55);
+  --cast-y: calc(var(--u) * 0.25);
+  --cast-b: calc(var(--u) * 0.5);
+  --cast-a: 0.42;
+  --g-x: -13px;
+  --g-sx: 1.25;
+  --g-o: 0.25;
+  --m-sx: -14px;
+  --m-sa: 0.6;
+  --c-sx: -7px;
+  --c-sa: 0.7;
+}
+
+/* =========================================================
+   4. GOLDEN HOUR: low, deep orange sun on the right. Long, soft shadows
+      stretch far to the left. Darker overall, richest colour.
+   ========================================================= */
+html[data-light="golden"] .hero--collage {
+  --img-filter: brightness(0.94) saturate(1.12) sepia(0.2) hue-rotate(-7deg) contrast(1.05);
+  --sq-tint: brightness(0.93) saturate(1.12) sepia(0.22) hue-rotate(-6deg);
+  --cast-x: calc(var(--u) * -1.3);
+  --cast-y: calc(var(--u) * 0.15);
+  --cast-b: calc(var(--u) * 0.9);
+  --cast-a: 0.5;
+  --g-x: -30px;
+  --g-sx: 1.75;
+  --g-o: 0.32;
+  --m-sx: -28px;
+  --m-sa: 0.7;
+  --c-sx: -12px;
+  --c-sa: 0.75;
+}
+
+/* =========================================================
+   5. THE PICTURE: brightness and warmth
+   ========================================================= */
+.hero--collage .hc-bg {
+  filter: var(--img-filter);
+  transition: filter 1s ease;
+}
+
+.hero--collage .sq-furniture > ellipse {
+  opacity: var(--g-o);
+  fill: #2a1208;
+}
+
+/* The squirrel and its speech bubble sit above the light layers, so the bubble
+   text always stays crisp. The squirrel is lit by its own filter instead
+   (--sq-tint above). */
+.hero--collage > .sq {
+  z-index: 7;
+}
+
+/* =========================================================
+   6. THE LIGHT LAYERS (above the whole scene, below the menu)
+   ========================================================= */
+/* .hero-light has no box of its own (display: contents). If it had one with a
+   z-index it would become a separate layer group and the blend modes below
+   would have nothing to blend with. The hero clips the layers to its corners. */
+.hero-light {
+  display: contents;
+}
+
+.hl-shade,
+.hl-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.hl-shade {
+  mix-blend-mode: multiply;
+}
+
+.hl-glow {
+  mix-blend-mode: screen;
+}
+
+.hl-shade > span,
+.hl-glow > span {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+/* Show the layer that matches the chosen mode. Morning also shows when
+   nothing is chosen yet. */
+html:not([data-light]) [data-m="morning"],
+html[data-light="morning"] [data-m="morning"],
+html[data-light="midday"] [data-m="midday"],
+html[data-light="afternoon"] [data-m="afternoon"],
+html[data-light="golden"] [data-m="golden"] {
+  opacity: 1;
+}
+
+/* ---- shade (multiply): tint, plus a darker side away from the sun ---- */
+.hl-shade > [data-m="morning"] {
+  background:
+    radial-gradient(120% 95% at 22% 28%, rgba(255, 255, 255, 0) 52%, rgba(52, 44, 84, 0.2) 100%),
+    linear-gradient(90deg, #fff1de 0%, #f4eee8 38%, #d6d9e6 100%);
+}
+
+.hl-shade > [data-m="midday"] {
+  background:
+    radial-gradient(130% 100% at 50% 8%, rgba(255, 255, 255, 0) 60%, rgba(60, 40, 20, 0.12) 100%),
+    linear-gradient(180deg, #ffffff 0%, #fdf8ee 55%, #ece1cf 100%);
+}
+
+.hl-shade > [data-m="afternoon"] {
+  background:
+    radial-gradient(120% 95% at 82% 30%, rgba(255, 255, 255, 0) 50%, rgba(80, 36, 12, 0.22) 100%),
+    linear-gradient(270deg, #ffe4b6 0%, #f4d1a0 42%, #d3a97f 100%);
+}
+
+.hl-shade > [data-m="golden"] {
+  background:
+    radial-gradient(100% 90% at 88% 72%, rgba(255, 255, 255, 0) 34%, rgba(58, 16, 6, 0.4) 100%),
+    linear-gradient(270deg, #ffc283 0%, #f4a468 40%, #c98258 100%);
+}
+
+/* ---- glow (screen): the sun itself and light shafts ---- */
+.hl-glow > [data-m="morning"] {
+  background:
+    radial-gradient(58% 72% at 6% 80%, rgba(255, 214, 150, 0.5), rgba(255, 214, 150, 0) 70%),
+    linear-gradient(104deg, rgba(255, 237, 208, 0) 16%, rgba(255, 237, 208, 0.15) 23%, rgba(255, 237, 208, 0) 31%, rgba(255, 237, 208, 0.1) 47%, rgba(255, 237, 208, 0) 57%);
+}
+
+.hl-glow > [data-m="midday"] {
+  background:
+    radial-gradient(75% 58% at 50% -6%, rgba(255, 250, 226, 0.6), rgba(255, 250, 226, 0) 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+}
+
+.hl-glow > [data-m="afternoon"] {
+  background:
+    radial-gradient(58% 72% at 94% 28%, rgba(255, 205, 130, 0.5), rgba(255, 205, 130, 0) 70%),
+    linear-gradient(256deg, rgba(255, 224, 170, 0) 16%, rgba(255, 224, 170, 0.14) 23%, rgba(255, 224, 170, 0) 31%, rgba(255, 224, 170, 0.09) 47%, rgba(255, 224, 170, 0) 57%);
+}
+
+.hl-glow > [data-m="golden"] {
+  background:
+    radial-gradient(56% 68% at 98% 84%, rgba(255, 150, 58, 0.62), rgba(255, 150, 58, 0) 70%),
+    linear-gradient(258deg, rgba(255, 168, 80, 0.2), rgba(255, 168, 80, 0) 62%);
+}
+
+/* =========================================================
+   7. THE COMPACT LIGHT MENU (opens above the window)
+   ========================================================= */
+.light-menu {
+  position: absolute;
+  z-index: 8;                               /* above the light layers */
+  width: 9.4rem;
+  max-width: calc(100% - 1rem);
+  padding: 0.3rem;
+  border: 1px solid rgba(233, 196, 142, 0.5);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #5b361b 0%, #3d2314 100%);
+  box-shadow: 0 18px 34px -12px rgba(15, 6, 0, 0.7), inset 0 1px 0 rgba(255, 228, 180, 0.12);
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+  transform-origin: 85% 100%;
+  transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.light-menu[hidden] {
+  display: none;
+}
+
+.light-menu.is-open {
+  opacity: 1;
+  transform: none;
+}
+
+.lp-opt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 2.65rem;                      /* comfortable tap target */
+  padding: 0.35rem 0.6rem;
+  border: 0;
+  border-radius: 0.7rem;
+  background: transparent;
+  color: #f6ecdc;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  line-height: 1.1;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.18s ease;
+}
+
+.lp-opt:hover {
+  background: rgba(233, 196, 142, 0.14);
+}
+
+.lp-opt[aria-checked="true"] {
+  background: rgba(233, 196, 142, 0.22);
+}
+
+.lp-opt:focus-visible {
+  outline: 2px solid #e9c48e;
+  outline-offset: -2px;
+}
+
+.lp-dot {
+  flex: none;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  background: var(--dot, #f6d9a0);
+  box-shadow: 0 0 0 2px rgba(246, 236, 220, 0.25);
+}
+
+.lp-opt[aria-checked="true"] .lp-dot {
+  box-shadow: 0 0 0 2px #e9c48e;
+}
+
+.lp-name {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
+/* A small gold tick on the chosen option. */
+.lp-opt[aria-checked="true"]::after {
+  content: "";
+  flex: none;
+  width: 0.35rem;
+  height: 0.65rem;
+  margin-right: 0.15rem;
+  border: solid #e9c48e;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-1px);
+}
+
+/* The window and its caption show they are tappable. */
+.hero--collage .motif-btn:focus-visible {
+  outline: 2px solid #e9c48e;
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   8. REDUCED MOTION: the light still changes, just without the fade
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .hero--collage .hc-bg,
+  .hl-shade > span,
+  .hl-glow > span,
+  .light-menu,
+  .hero--collage .sq-furniture > ellipse,
+  .hero--collage .motif,
+  .hero--collage .hero-caption,
+  .sq-btn {
+    transition-duration: 0.01s;
+  }
+
+  .light-menu {
+    transform: none;
+  }
+}
