@@ -126,7 +126,7 @@
    4. SQUIRREL, BOOKS AND SPEECH BUBBLE (squirrel.js builds them)
    ========================================================= */
 .hero--collage > .sq {
-  --sq-size: calc(var(--u) * 21.5);        /* squirrel + books + tail */
+  --sq-size: calc(var(--u) * 23);          /* squirrel + books + tail */
   top: auto;
   right: auto;
   left: calc(var(--u) * 4.6);
@@ -163,7 +163,10 @@
 
 /* The soft shadow under the squirrel now sits on the shelf, not below it. */
 .hero--collage .sq-furniture > ellipse {
-  transform: translateY(-14px);
+  transform: translate(var(--g-x, 0px), -14px) scaleX(var(--g-sx, 1));
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.9s ease, opacity 0.9s ease;
 }
 
 /* Speech bubble: opens above the squirrel on every screen size. */
@@ -254,7 +257,7 @@
       An arched chocolate panel with a gold-framed window and a caption.
    ========================================================= */
 .hero--collage .motif {
-  --mw: calc(var(--u) * 16.9);
+  --mw: 135px;                             /* whole selector, desktop */
   right: calc(var(--u) * 5.8);
   bottom: calc(var(--shelf-h) * 0.58);
   width: var(--mw);
@@ -264,7 +267,8 @@
   background: linear-gradient(180deg, #5b361b 0%, #4a2a17 55%, #3d2314 100%);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  box-shadow: 0 24px 40px -14px rgba(15, 6, 0, 0.6), inset 0 0 0 1px rgba(255, 228, 180, 0.06);
+  box-shadow: var(--m-sx, 0px) 24px 40px -14px rgba(15, 6, 0, var(--m-sa, 0.6)), inset 0 0 0 1px rgba(255, 228, 180, 0.06);
+  transition: background-color var(--m-fast, 0.25s), border-color var(--m-fast, 0.25s), box-shadow 0.9s ease;
 }
 
 .hero--collage .motif:hover {
@@ -318,11 +322,13 @@
   margin-top: calc(var(--mw) * 0.065);
   padding-bottom: calc(var(--mw) * 0.07);
   font-family: var(--font-display);
-  font-size: max(0.78rem, calc(var(--mw) * 0.12));
+  font-size: max(0.72rem, calc(var(--mw) * 0.105));
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1.2;
+  white-space: nowrap;
   color: var(--hr-ivory-text);
+  cursor: pointer;
 }
 
 .hero--collage .motif-caption::after {
@@ -350,7 +356,8 @@
   padding: 0.55em 1.7em;
   border-radius: 999px;
   background: linear-gradient(180deg, #5b3924 0%, var(--hr-chocolate-2) 100%);
-  box-shadow: 0 12px 24px -10px rgba(15, 6, 0, 0.7), inset 0 1px 0 rgba(255, 225, 180, 0.12);
+  box-shadow: var(--c-sx, 0px) 12px 24px -10px rgba(15, 6, 0, var(--c-sa, 0.7)), inset 0 1px 0 rgba(255, 225, 180, 0.12);
+  transition: box-shadow 0.9s ease;
   font-family: var(--font-display);
   font-size: calc(var(--u) * 2.05);
   line-height: 1.25;
@@ -397,7 +404,7 @@
   }
 
   .hero--collage > .sq {
-    --sq-size: calc(var(--u) * 38);
+    --sq-size: calc(var(--u) * 40);
     left: calc(var(--u) * 2);
     bottom: calc(var(--shelf-h) * 0.72 - var(--sq-size) * 0.1857);
   }
@@ -405,7 +412,9 @@
   .hero--collage .sq-bubble {
     bottom: calc(100% - var(--sq-size) * 0.1);
     left: calc(var(--sq-size) * 0.12);
-    width: calc(var(--sq-size) * 1.6);
+    /* Never wider than the gap between the squirrel and the light selector
+       (selector is 110px wide, plus margins), so the two cannot overlap. */
+    width: min(calc(var(--sq-size) * 1.6), calc(100vw - 142px - var(--u) * 9));
     padding-right: calc(var(--sq-size) * 0.12);
   }
 
@@ -423,7 +432,7 @@
   }
 
   .hero--collage .motif {
-    --mw: calc(var(--u) * 23);
+    --mw: 110px;                            /* whole selector, phones and tablets */
     right: calc(var(--u) * 2.2);
     bottom: calc(var(--shelf-h) * 0.55);
   }
@@ -432,6 +441,19 @@
     bottom: calc(var(--shelf-h) * 0.1);
     padding: 0.5em 1.3em;
     font-size: max(0.85rem, calc(var(--u) * 3.5));
+  }
+}
+
+/* Narrow phones: the bubble is narrower (see above), so its text is a little
+   smaller and the link may wrap onto two lines. */
+@media (max-width: 440px) {
+  .hero--collage .sq-bubble-text {
+    font-size: max(1.05rem, calc(var(--sq-size) * 0.135));
+  }
+
+  .hero--collage .sq-bubble-link {
+    font-size: max(0.84rem, calc(var(--sq-size) * 0.1));
+    white-space: normal;
   }
 }
 
