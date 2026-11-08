@@ -33,10 +33,10 @@
   --focus: #7c5636;
   --focus-on-dark: #e9c48e;
 
-  /* Typography */
-  /* Playfair Display is loaded in templates/base.html. The fallbacks are
-     close-looking serifs, so the page stays readable while it loads. */
-  --font-display: "Playfair Display", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  /* Typography: Playfair Display is the only typeface on the site.
+     It is loaded in templates/base.html. Georgia and the generic serif are
+     emergency fallbacks only, used if Google Fonts cannot be reached. */
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-body: var(--font-display);
 
   --fs-sm: 0.9rem;
@@ -111,12 +111,21 @@ h1, h2, h3, h4, p, ul, ol {
   margin: 0;
 }
 
-/* Forms and buttons do not inherit the page font by default. */
-button,
-input,
-select,
-textarea {
-  font-family: inherit;
+/* TYPOGRAPHY LOCK. One rule so that nothing on the site can show another
+   font: every element and every ::before/::after, including form controls,
+   placeholders, buttons, dialogs, code-like tags and JavaScript-built UI.
+   Browsers give form controls and <code>/<pre>/<kbd> their own fonts, and this
+   rule overrides those. Component rules below use the same variable. */
+*,
+*::before,
+*::after {
+  font-family: var(--font-display);
+}
+
+input::placeholder,
+textarea::placeholder,
+::file-selector-button {
+  font-family: var(--font-display);
 }
 
 ul, ol {
