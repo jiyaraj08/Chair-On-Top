@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% from "journal/_macros.html" import cover, article_card with context %}
 
-{% block title %}{{ article.title }} - The Journal - Chair on Top{% endblock %}
+{% block title %}{{ article.title }} - Anatomy of Design - Chair on Top{% endblock %}
+
+{% block meta_description %}{{ article.description }}{% endblock %}
 
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/journal.css') }}">
@@ -16,7 +18,7 @@
 
     <header class="jn-article-head">
       <nav class="jn-crumbs" aria-label="Breadcrumb">
-        <a href="/journal">The Journal</a>
+        <a href="/journal">Anatomy of Design</a>
         <span aria-hidden="true">/</span>
         <a href="/journal?category={{ article.category_slug }}#journal-articles">{{ article.category }}</a>
       </nav>
@@ -62,7 +64,7 @@
     </div>
 
     <div class="jn-article-actions wrap">
-      <a class="btn btn-outline" href="/journal#journal-articles">Back to the Journal</a>
+      <a class="btn btn-outline" href="/journal#journal-articles">Back to Anatomy of Design</a>
       <a class="btn btn-dark" href="/#styles">Browse all eight styles</a>
     </div>
   </article>
@@ -72,7 +74,7 @@
     <div class="wrap">
       <div class="section-head">
         <p class="kicker">Keep reading</p>
-        <h2 class="section-title" id="jn-related-title">More from the Journal</h2>
+        <h2 class="section-title" id="jn-related-title">More from Anatomy of Design</h2>
       </div>
       <ul class="jn-grid">
         {% for a in related %}{{ article_card(a) }}{% endfor %}
