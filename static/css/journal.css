@@ -1,5 +1,5 @@
 /* Chair on Top - journal.css
-   Styles for the Journal & Listen pages (/journal and /journal/<article>).
+   Styles for the Anatomy of Design pages (/journal and /journal/<article>).
    Every class starts with jn- so nothing here can change the homepage.
    It reuses the colour, font and spacing tokens defined in style.css.
    It is only loaded by the Journal templates. */
