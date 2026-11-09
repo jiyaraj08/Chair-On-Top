@@ -1,0 +1,172 @@
+/* Chair on Top - floral.css
+   The hand-painted lotus-leaf background for four places only:
+     Explore (/explore), Saved (/saved), "How it works" (#how) and
+     "Budget planner" (#budget) on the home page.
+
+   It is BACKGROUND ONLY. It loads after pattern.css (see templates/base.html)
+   and uses the existing theme switch, <html data-theme="light|dark">. No
+   JavaScript, no extra toggle: when the theme changes, the variables below
+   change and the browser repaints the right artwork by itself.
+
+   How it is applied: an element opts in with the class "floral-bg". Nothing
+   else on the site gets it (the home hero, Moodboards, Journal ... keep
+   the wave texture they already had).
+
+   Readability: a veil of the page colour sits on top of the artwork, so the
+   flowers stay a quiet backdrop. Photographs, cards and buttons have their
+   own backgrounds and are not touched.
+
+   Artwork: static/images/floral/
+     floral-light.webp / floral-light-sm.webp   ivory, dusty rose, terracotta, sage, cream
+     floral-dark.webp  / floral-dark-sm.webp    espresso, muted burgundy, dark sage, antique ivory
+   The "-sm" files are used on screens up to 700px wide. Only the file for the
+   current theme and screen size is downloaded. Each file repeats seamlessly. */
+
+/* =========================================================
+   1. TOKENS
+   ========================================================= */
+:root {
+  --fl-ground: 243 235 221;                                 /* warm ivory, as r g b */
+  --fl-img: url("../images/floral/floral-light.webp");
+  --fl-size: clamp(780px, 82vw, 1200px);                    /* one tile on screen */
+  --fl-pos: 50% 0;
+  --fl-veil: 0.8;                                           /* how much page colour covers the art */
+  --fl-shade: linear-gradient(rgb(var(--fl-ground) / var(--fl-veil)), rgb(var(--fl-ground) / var(--fl-veil)));
+}
+
+html[data-theme="dark"] {
+  --fl-ground: 27 21 17;                                    /* deep espresso */
+  --fl-img: url("../images/floral/floral-dark.webp");
+  --fl-veil: 0.7;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --fl-img: url("../images/floral/floral-light-sm.webp");
+    --fl-size: max(560px, 150vw);
+  }
+  html[data-theme="dark"] {
+    --fl-img: url("../images/floral/floral-dark-sm.webp");
+  }
+}
+
+/* =========================================================
+   2. THE SHARED RULE
+   ========================================================= */
+.floral-bg {
+  background-color: rgb(var(--fl-ground));
+  background-image: var(--fl-shade), var(--fl-img);
+  background-size: 100% 100%, var(--fl-size) auto;
+  background-position: 0 0, var(--fl-pos);
+  background-repeat: no-repeat, repeat;
+}
+
+/* =========================================================
+   3. WHOLE PAGES: Explore and Saved
+   The top (title, search, collections) is veiled more so the text stays
+   crisp; further down the veil eases a little so the flowers show between
+   the photograph cards.
+   ========================================================= */
+.floral-page {
+  --fl-shade: linear-gradient(180deg,
+    rgb(var(--fl-ground) / var(--fl-top, 0.88)) 0,
+    rgb(var(--fl-ground) / var(--fl-mid, 0.82)) 560px,
+    rgb(var(--fl-ground) / var(--fl-veil)) 1100px,
+    rgb(var(--fl-ground) / var(--fl-veil)) 100%);
+}
+
+/* Explore: leaves enter from the upper right. */
+.floral-explore {
+  --fl-pos: 70% 0;
+}
+
+/* Saved: a closer crop (bigger leaves), flowers drifting in from the left. */
+.floral-saved {
+  --fl-size: clamp(980px, 108vw, 1500px);
+  --fl-pos: 8% 24%;
+  --fl-veil: 0.82;
+}
+html[data-theme="dark"] .floral-saved {
+  --fl-veil: 0.72;
+}
+@media (max-width: 700px) {
+  .floral-saved { --fl-size: max(680px, 190vw); }
+  /* phones: a little less veil so the flowers still read on a small screen */
+  .floral-page { --fl-top: 0.84; --fl-mid: 0.78; --fl-veil: 0.74; }
+  html[data-theme="dark"] .floral-page { --fl-top: 0.8; --fl-mid: 0.72; --fl-veil: 0.66; }
+}
+
+/* =========================================================
+   4. HOME PAGE BANDS: How it works, Budget planner
+   (selectors include the id so they beat style.css and pattern.css)
+   ========================================================= */
+#how.section-sand.floral-bg {
+  --fl-size: clamp(700px, 72vw, 1020px);
+  --fl-pos: 82% 18%;
+  --fl-veil: 0.78;
+  background-color: rgb(var(--fl-ground));
+  background-image: var(--fl-shade), var(--fl-img);
+  background-size: 100% 100%, var(--fl-size) auto;
+  background-position: 0 0, var(--fl-pos);
+  background-repeat: no-repeat, repeat;
+}
+html[data-theme="dark"] #how.section-sand.floral-bg {
+  --fl-veil: 0.66;
+}
+
+/* The band was always Chocolate with light text. In the light theme it now
+   sits on ivory artwork, so it takes the normal dark text. In the dark theme
+   the existing light text is kept as it is. */
+html:not([data-theme="dark"]) #how.section-sand.floral-bg {
+  --text: #2a2622;
+  --text-soft: #4d463e;
+  --wood: #7c5636;
+  --line: rgba(34, 30, 26, 0.16);
+  color: var(--text);
+}
+html:not([data-theme="dark"]) #how.section-sand.floral-bg .step-live {
+  border-top-color: var(--charcoal);
+}
+
+#budget.floral-bg {
+  --fl-size: clamp(740px, 76vw, 1100px);
+  --fl-pos: 6% 70%;
+  --fl-veil: 0.8;
+  /* stronger veil behind the copy on the left, lighter around the plan card */
+  --fl-shade: linear-gradient(90deg,
+    rgb(var(--fl-ground) / 0.9) 0,
+    rgb(var(--fl-ground) / 0.8) 45%,
+    rgb(var(--fl-ground) / 0.66) 100%);
+}
+html[data-theme="dark"] #budget.floral-bg {
+  --fl-shade: linear-gradient(90deg,
+    rgb(var(--fl-ground) / 0.9) 0,
+    rgb(var(--fl-ground) / 0.82) 45%,
+    rgb(var(--fl-ground) / 0.6) 100%);
+}
+@media (max-width: 860px) {
+  /* stacked layout on phones and tablets: even veil, no left/right ramp */
+  #budget.floral-bg {
+    --fl-shade: linear-gradient(rgb(var(--fl-ground) / 0.82), rgb(var(--fl-ground) / 0.8));
+  }
+  html[data-theme="dark"] #budget.floral-bg {
+    --fl-shade: linear-gradient(rgb(var(--fl-ground) / 0.82), rgb(var(--fl-ground) / 0.78));
+  }
+}
+
+/* =========================================================
+   5. SAFETY NETS
+   ========================================================= */
+@media print {
+  .floral-bg,
+  #how.section-sand.floral-bg {
+    background-image: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .floral-bg,
+  #how.section-sand.floral-bg {
+    background-image: none;
+  }
+}
