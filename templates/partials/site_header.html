@@ -1,6 +1,6 @@
 {# Shared site header (used by every page).
    on_home = true      -> links stay in-page (#styles) on the homepage.
-   current_nav = "journal" -> marks the Journal & Listen link as the current page.
+   current_nav = "journal" -> marks the Anatomy of Design link as the current page.
    The search button and its panel live here, so every page has them. #}
 {% set _h = "" if on_home else "/" %}
 <header class="site-header">
@@ -17,7 +17,7 @@
       <li><a href="{{ _h }}#quiz">Find My Aesthetic</a></li>
       <li><a href="{{ _h }}#budget">Budget Planner</a></li>
       <li><a href="/moodboards"{% if current_nav == "moodboards" %} aria-current="page"{% endif %}>Moodboards</a></li>
-      <li><a href="/journal"{% if current_nav == "journal" %} aria-current="page"{% endif %}>Journal &amp; Listen</a></li>
+      <li><a href="/journal"{% if current_nav == "journal" %} aria-current="page"{% endif %}>Anatomy of Design</a></li>
       {# Only shown below 360px (search.css), where the round theme button leaves the bar. #}
       <li class="nav-theme-item">
         <button class="nav-theme-btn" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Switch to dark theme">
