@@ -17,7 +17,7 @@
     })();
   </script>
   <title>{% block title %}Chair on Top{% endblock %}</title>
-  <meta name="description" content="Discover an interior-design aesthetic you love and map out how to achieve it within your budget.">
+  <meta name="description" content="{% block meta_description %}Discover an interior-design aesthetic you love and map out how to achieve it within your budget.{% endblock %}">
   {# Playfair Display (the site font) is self-hosted: static/fonts/ holds the files and
      static/css/fonts.css declares them. fonts.css comes first, before every other
      stylesheet, so the font is known before any rule asks for it. The preload starts
@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="{{ url_for('static', path='css/squirrel.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/theme.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/pattern.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/floral.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/search.css') }}">
   <style>
     /* The nav now has five links. Between 861px and 1060px, tighten them a
