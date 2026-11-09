@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% from "journal/_macros.html" import article_card, featured_card, chips, video_card, podcast_card with context %}
 
-{% block title %}The Journal - Chair on Top{% endblock %}
+{% block title %}Anatomy of Design - Chair on Top{% endblock %}
+
+{% block meta_description %}Anatomy of Design: watch and listen your way through interior styles, read design articles, and browse Design Stories and the Listening Room.{% endblock %}
 
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/journal.css') }}">
@@ -18,12 +20,12 @@
   <section class="jn-hero" aria-labelledby="jn-hero-title">
     <div class="wrap jn-hero-grid">
       <div class="jn-hero-copy">
-        <p class="kicker">Journal &amp; Listen</p>
+        <p class="kicker">Anatomy of Design</p>
         <h1 id="jn-hero-title">A library of design inspiration.</h1>
-        <p class="jn-hero-text">Watch and listen your way through {{ library_stats.styles }} interior styles, then keep reading in the Journal. Every card opens on YouTube or Spotify in a new tab.</p>
+        <p class="jn-hero-text">Watch and listen your way through {{ library_stats.styles }} interior styles, then keep reading the articles. Every card opens on YouTube or Spotify in a new tab.</p>
         <div class="jn-hero-actions">
           <a class="btn btn-dark" href="#design-library">Explore the library</a>
-          <a class="btn btn-outline" href="#journal-articles">Read the Journal</a>
+          <a class="btn btn-outline" href="#journal-articles">Read the articles</a>
         </div>
         {% if library %}
         <ul class="lib-stats" aria-label="Library at a glance">
@@ -56,7 +58,7 @@
           <svg class="jn-search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M10.5 3a7.5 7.5 0 1 0 4.6 13.4l4.2 4.2 1.4-1.4-4.2-4.2A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z" fill="currentColor"/></svg>
           <input id="jn-search" type="search" placeholder="Search articles, videos and podcasts" autocomplete="off" spellcheck="false">
         </div>
-        <nav class="jn-jump" aria-label="Journal sections">
+        <nav class="jn-jump" aria-label="Anatomy of Design sections">
           <ul>
             {% if library %}<li><a href="#design-library">Design Library</a></li>{% endif %}
             <li><a href="#journal-articles">Articles</a></li>
@@ -79,7 +81,7 @@
   <section class="section jn-section" id="journal-articles" aria-labelledby="jn-articles-title">
     <div class="wrap">
       <div class="section-head">
-        <p class="kicker">The Journal</p>
+        <p class="kicker">Articles</p>
         <h2 class="section-title" id="jn-articles-title">Practical guides for real rooms</h2>
         <p class="section-lead">Original, plain-language guides to small spaces, colour, lighting and getting the look on a budget.</p>
       </div>
@@ -218,7 +220,7 @@
         <p class="cta-text">Preview all eight aesthetics, then keep reading whenever you want more ideas.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="/#styles">Explore Aesthetics</a>
-          <a class="btn btn-ghost" href="#journal-articles">Back to the Journal</a>
+          <a class="btn btn-ghost" href="#journal-articles">Back to the articles</a>
         </div>
       </div>
     </div>
