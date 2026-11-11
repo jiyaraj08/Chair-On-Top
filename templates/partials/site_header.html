@@ -14,7 +14,7 @@
     </button>
     <ul class="nav-links" id="nav-links">
       <li><a href="/explore"{% if current_nav == "explore" %} aria-current="page"{% endif %}>Explore</a></li>
-      <li><a href="{{ _h }}#quiz">Find My Aesthetic</a></li>
+      <li><a href="/quiz"{% if current_nav == "quiz" %} aria-current="page"{% endif %}>Find My Aesthetic</a></li>
       <li><a href="{{ _h }}#budget">Budget Planner</a></li>
       <li><a href="/moodboards"{% if current_nav == "moodboards" %} aria-current="page"{% endif %}>Moodboards</a></li>
       <li><a href="/journal"{% if current_nav == "journal" %} aria-current="page"{% endif %}>Anatomy of Design</a></li>
