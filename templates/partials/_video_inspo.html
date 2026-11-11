@@ -1,0 +1,40 @@
+{# "Watch <Style> in Motion" on a gallery page. Include it with a `vi` variable
+   (see get_style_videos in content/library.py):
+   {% with vi = video_inspo %}{% include "partials/_video_inspo.html" %}{% endwith %}
+   The videos are the Anatomy of Design cards, so nothing is listed twice.
+   Each card is one plain link to the original YouTube address (new tab). #}
+{% if vi and vi["complete"] %}
+<section class="section vi-section" id="gallery-video-inspo" aria-labelledby="gallery-video-inspo-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Video inspiration</p>
+      <h2 class="section-title" id="gallery-video-inspo-title">Watch {{ vi["name"] }} in Motion</h2>
+      {% if vi["blurb"] %}<p class="section-lead">{{ vi["blurb"] }}</p>{% endif %}
+    </div>
+
+    <ul class="vi-grid">
+      {% for v in vi["videos"] %}
+      <li class="vi-card">
+        <a class="vi-link" href="{{ v["url"] }}" target="_blank" rel="noopener noreferrer"
+           aria-label="{{ v["title"] }}, {{ vi["name"] }}, on YouTube (opens in a new tab)">
+          <span class="vi-thumb">
+            <img src="{{ v["thumb"] }}" width="480" height="360" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+            <span class="vi-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+            <span class="vi-badge">YouTube</span>
+          </span>
+          <span class="vi-body">
+            <span class="vi-meta">{{ vi["name"] }}</span>
+            <span class="vi-title">{{ v["title"] }}</span>
+            <span class="vi-cta">Watch on YouTube<span aria-hidden="true"> &nearr;</span></span>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="vi-more">
+      <a class="btn btn-dark" href="{{ vi["explore_url"] }}">Explore More {{ vi["name"] }} Videos<span aria-hidden="true"> &rarr;</span></a>
+    </div>
+  </div>
+</section>
+{% endif %}
