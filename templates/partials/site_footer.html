@@ -3,7 +3,10 @@
 <footer class="site-footer on-dark">
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <p class="footer-name">Chair on Top</p>
+      <a class="footer-brand-link" href="{{ '#top' if on_home else '/' }}">
+        <img class="footer-logo" src="{{ url_for('static', path='images/branding/chair-on-top-logo.jpg') }}" width="910" height="1124" alt="" loading="lazy" decoding="async">
+        <span class="footer-name">Chair on Top</span>
+      </a>
       <p class="footer-tag">Discover an aesthetic you love and map out how to achieve it within your budget.</p>
     </div>
     <nav class="footer-nav" aria-label="Footer">
