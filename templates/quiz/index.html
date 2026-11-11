@@ -1,1 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Find My Aesthetic - Chair on Top{% endblock %}
+{% block meta_description %}Twelve visual questions to find which of our eight interior styles matches your taste, with a personal result and photographs from the gallery.{% endblock %}
+
+{% block head_extra %}
+  {# gallery.css supplies the like / save / share / download button styles used on the result photos. #}
+  <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/quiz.css') }}">
+{% endblock %}
+
+{% block body %}
+{% import "gallery/_actions.html" as act %}
+{% include "partials/site_header.html" %}
+
+<main id="main" class="qz" data-qz-root>
+
+  <noscript>
+    <div class="wrap qz-noscript">
+      <p><strong>The quiz needs JavaScript.</strong> Please switch it on and reload this page, or <a href="/gallery">browse the eight style collections</a> instead.</p>
+    </div>
+  </noscript>
+
+  <p class="visually-hidden" id="qz-live" role="status" aria-live="polite"></p>
+
+  <!-- ============ INTRO ============ -->
+  <section class="qz-intro" id="qz-intro" aria-labelledby="qz-intro-title">
+    <div class="wrap qz-intro-grid">
+      <div class="qz-intro-copy">
+        <p class="kicker">Find my aesthetic</p>
+        <h1 id="qz-intro-title">Which interior style is really yours?</h1>
+        <p class="qz-lead">Twelve visual questions. Eight styles from our gallery. One personal match, and a close second.</p>
+        <ul class="qz-facts">
+          <li>12 questions</li>
+          <li>About 3 minutes</li>
+          <li>No sign-up</li>
+        </ul>
+        <div class="qz-intro-actions">
+          <button class="qz-btn qz-btn-primary" type="button" id="qz-begin">Begin the quiz</button>
+          <a class="qz-btn qz-btn-quiet" href="/gallery">Browse the gallery instead</a>
+        </div>
+        <div class="qz-resume" id="qz-resume" hidden>
+          <p id="qz-resume-text"></p>
+          <div class="qz-resume-actions">
+            <button class="qz-btn qz-btn-primary" type="button" id="qz-continue">Continue</button>
+            <button class="qz-btn qz-btn-quiet" type="button" id="qz-restart">Start over</button>
+          </div>
+        </div>
+        <p class="qz-privacy">Your answers stay in this browser. Nothing is sent to a server.</p>
+      </div>
+      <div class="qz-intro-art" aria-hidden="true">
+        {% for img in quiz.intro %}
+        <img class="qz-art qz-art-{{ loop.index }}" src="{{ img.src }}"{% if img.width and img.height %} width="{{ img.width }}" height="{{ img.height }}"{% endif %} alt="" decoding="async"{% if loop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %}>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUESTIONS ============ -->
+  <section class="qz-stage" id="qz-stage" aria-label="Style quiz" hidden>
+    <div class="wrap">
+      <div class="qz-top">
+        <p class="qz-count" id="qz-count"></p>
+        <div class="qz-bar" id="qz-bar" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0">
+          <span class="qz-bar-fill" id="qz-bar-fill"></span>
+        </div>
+      </div>
+
+      <div class="qz-card" id="qz-card">
+        <h2 class="qz-heading" id="qz-heading" tabindex="-1"></h2>
+        <p class="qz-support" id="qz-support"></p>
+        <div class="qz-options" id="qz-options" role="radiogroup" aria-labelledby="qz-heading"></div>
+      </div>
+
+      <div class="qz-nav">
+        <button class="qz-btn qz-btn-quiet" type="button" id="qz-prev">&larr; Previous</button>
+        <p class="qz-hint" id="qz-hint">Choose an answer to continue.</p>
+        <button class="qz-btn qz-btn-primary" type="button" id="qz-next" disabled>Next &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <div class="qz-result" id="qz-result" hidden>
+
+    <section class="qz-res-hero" aria-labelledby="qz-res-title">
+      <div class="wrap qz-res-grid">
+        <figure class="qz-res-figure">
+          <img id="qz-res-img" src="" alt="" decoding="async">
+        </figure>
+        <div class="qz-res-copy">
+          <p class="kicker">Your design personality</p>
+          <h2 class="qz-res-title" id="qz-res-title" tabindex="-1"></h2>
+          <p class="qz-res-style">Your aesthetic: <strong id="qz-res-name"></strong></p>
+          <p class="qz-res-summary" id="qz-res-summary"></p>
+          <div class="qz-res-actions">
+            <a class="qz-btn qz-btn-primary" id="qz-res-explore" href="/gallery">Explore the collection</a>
+            <button class="qz-btn qz-btn-quiet" type="button" data-qz-retake>Retake the quiz</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="qz-block" aria-labelledby="qz-cmp-title">
+      <div class="wrap">
+        <h2 class="qz-h2" id="qz-cmp-title">How your top two compare</h2>
+        <p class="qz-note">Each bar shows the points a style earned from your answers, on one shared scale, out of the most any style could earn in this quiz.</p>
+        <div class="qz-cmp" id="qz-cmp"></div>
+        <details class="qz-all">
+          <summary>See all eight scores</summary>
+          <div class="qz-cmp qz-cmp-all" id="qz-cmp-all"></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="qz-block qz-block-tint" aria-labelledby="qz-traits-title">
+      <div class="wrap qz-traits-grid">
+        <div>
+          <p class="kicker">Key characteristics</p>
+          <h2 class="qz-h2" id="qz-traits-title"></h2>
+          <p class="qz-note" id="qz-traits-desc"></p>
+        </div>
+        <dl class="qz-traits" id="qz-traits"></dl>
+      </div>
+    </section>
+
+    <section class="qz-block" aria-labelledby="qz-gal-title">
+      <div class="wrap">
+        <p class="kicker">From the gallery</p>
+        <h2 class="qz-h2" id="qz-gal-title"></h2>
+        <ul class="qz-gallery" id="qz-gallery"></ul>
+        <p class="qz-gal-more"><a class="qz-btn qz-btn-primary" id="qz-gal-link" href="/gallery">Explore the full collection</a></p>
+      </div>
+    </section>
+
+    <section class="qz-block qz-block-tint" aria-labelledby="qz-second-title">
+      <div class="wrap qz-second">
+        <figure class="qz-second-figure"><img id="qz-second-img" src="" alt="" loading="lazy" decoding="async"></figure>
+        <div>
+          <p class="kicker">Your second match</p>
+          <h2 class="qz-h2" id="qz-second-title"></h2>
+          <p class="qz-note" id="qz-second-desc"></p>
+          <p class="qz-second-links">
+            <a class="qz-btn qz-btn-quiet" id="qz-second-link" href="/gallery">View the collection</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="qz-block qz-retake">
+      <div class="wrap">
+        <h2 class="qz-h2">Not quite you?</h2>
+        <p class="qz-note">Answer again to see how a different mood changes your match.</p>
+        <p><button class="qz-btn qz-btn-quiet" type="button" data-qz-retake>Retake the quiz</button></p>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+{# Result photographs. These are real gallery images, kept inside <template> elements
+   so the browser downloads none of them until quiz.js shows the matching result. #}
+{% for slug, g in galleries.items() %}
+<template id="qz-gal-{{ slug }}">
+  {% for img in g.images %}
+  <li class="qz-tile" data-id="{{ img.id }}">
+    <a class="qz-tile-link" href="/gallery/{{ slug }}?image={{ img.key }}" aria-label="Open {{ g.name }} image {{ img.number }} in the gallery"
+       {% if img.width and img.height %}style="--ratio: {{ img.width }} / {{ img.height }};"{% endif %}>
+      <img src="/static/{{ img.path }}"{% if img.width and img.height %} width="{{ img.width }}" height="{{ img.height }}"{% endif %} alt="{{ img.alt }}" loading="lazy" decoding="async">
+    </a>
+    {{ act.row(img, g.name) }}
+  </li>
+  {% endfor %}
+</template>
+{% endfor %}
+
+<script type="application/json" id="qz-data">{{ quiz|tojson }}</script>
+
+{% include "partials/site_footer.html" %}
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
+  <script src="{{ url_for('static', path='js/quiz.js') }}" defer></script>
+{% endblock %}
 
