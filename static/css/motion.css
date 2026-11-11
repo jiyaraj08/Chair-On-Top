@@ -57,11 +57,11 @@
   animation: m-pop 0.4s var(--m-ease);
 }
 
-.brand-mark {
+.brand-logo {
   transition: scale var(--m-fast) var(--m-ease);
 }
 
-.brand:hover .brand-mark {
+.brand:hover .brand-logo {
   scale: 1.18;
 }
 
@@ -184,7 +184,7 @@
   animation: m-nav-in 0.8s var(--m-ease) backwards;
 }
 
-.motion-on .brand-mark {
+.motion-on .brand-logo {
   animation: m-mark 0.9s var(--m-ease) 0.25s backwards;
 }
 
