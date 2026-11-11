@@ -6,7 +6,8 @@
 <header class="site-header">
   <nav class="pill-nav" aria-label="Main">
     <a class="brand" href="{{ '#top' if on_home else '/' }}">
-      <span class="brand-mark" aria-hidden="true"></span>
+      {# Official logo. alt is empty on purpose: the wordmark beside it already names the link. #}
+      <img class="brand-logo" src="{{ url_for('static', path='images/branding/chair-on-top-logo.jpg') }}" width="910" height="1124" alt="" decoding="async">
       <span class="brand-name">Chair on Top</span>
     </a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
