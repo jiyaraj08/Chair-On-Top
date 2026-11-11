@@ -175,6 +175,17 @@
   flex: 1;
 }
 
+/* A badge that is also a link (the quiz card) keeps the plain badge look;
+   the underline only appears on hover or keyboard focus. */
+.jn-link-body a.chip {
+  text-decoration: none;
+}
+
+.jn-link-body a.chip:hover,
+.jn-link-body a.chip:focus-visible {
+  text-decoration: underline;
+}
+
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .jn-link-card:hover,
   .jn-link-card:focus-within {
