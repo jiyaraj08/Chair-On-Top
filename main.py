@@ -10,6 +10,7 @@ from routes import gallery as gallery_routes
 from routes import explore as explore_routes
 from routes import journal as journal_routes
 from routes import search as search_routes
+from routes import quiz as quiz_routes
 
 # BASE_DIR is the folder that contains this file.
 # Using it means the app works no matter which folder you start it from.
@@ -34,6 +35,9 @@ app.include_router(search_routes.router)
 
 # Explore: /explore and the /api/explore and /api/related endpoints. Registered exactly once.
 app.include_router(explore_routes.router)
+
+# Find My Aesthetic quiz: /quiz. Registered exactly once.
+app.include_router(quiz_routes.router)
 
 
 @app.get("/", response_class=HTMLResponse)
