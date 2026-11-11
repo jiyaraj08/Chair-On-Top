@@ -251,3 +251,63 @@ def get_stats():
         "videos": sum(len(s["videos"]) for s in _SECTIONS),
         "episodes": sum(len(s["episodes"]) for s in _SECTIONS),
     }
+
+
+# ---------------------------------------------------------------------------
+# "Watch <Style> in Motion" on the gallery pages (/gallery/<slug>)
+#
+# The gallery pages do NOT keep a second list of videos. They read the very same
+# cards that Anatomy of Design (/journal) shows, so a video added, removed or
+# given a verified title in LIBRARY / VERIFIED_TITLES above changes both pages.
+# Only the short editorial sentences below are written for the gallery pages.
+# ---------------------------------------------------------------------------
+GALLERY_VIDEO_COUNT = 3
+
+GALLERY_VIDEO_BLURBS = {
+    "japandi": "Calm, crafted rooms where Japanese restraint meets Scandinavian warmth. See how the look settles into real homes.",
+    "mid-century-modern": "Sculpted wood, tapered legs and confident colour. Watch how the 1950s and 60s keep finding new rooms to live in.",
+    "scandinavian": "Pale woods, soft textiles and daylight doing the heavy lifting. See the quiet, practical side of Nordic living.",
+    "minimalism": "Fewer things, chosen with care. Watch how space itself becomes the main piece of furniture.",
+    "industrial": "Raw brick, steel and honest materials with a lived-in edge. See how warehouse character becomes a home.",
+    "indian-deco": "Rich colour, carved detail and handcrafted pattern. Watch the look move from tradition into modern interiors.",
+    "bohemian": "Layered textiles, plants and well-travelled finds. See how personality turns a room into a story.",
+    "transitional": "A middle path between classic and contemporary. Watch how balance and restraint tie a room together.",
+}
+
+
+def get_style_videos(slug, limit=GALLERY_VIDEO_COUNT):
+    """The videos for the "Watch <Style> in Motion" section of one gallery page.
+
+    Returns None when Anatomy of Design has no section for the style. Otherwise a
+    dict whose "videos" are the SAME cards Anatomy of Design shows (same links,
+    same thumbnails, same titles), taken in the order they appear there. Regular
+    videos come first; YouTube Shorts (tall, vertical clips) are only used if a
+    style has fewer than `limit` regular videos.
+
+    "complete" is True only when `limit` videos were found. The template shows
+    the section only then, and a warning is printed in the CMD window otherwise:
+    the site never invents a video to fill a gap.
+    """
+    section = next((s for s in _SECTIONS if s["slug"] == slug), None)
+    if section is None:
+        logger.warning("Gallery videos: no Anatomy of Design section for %r", slug)
+        return None
+    regular = [v for v in section["videos"] if not v["short"]]
+    shorts = [v for v in section["videos"] if v["short"]]
+    picked = (regular + shorts)[:limit]
+    complete = len(picked) == limit
+    if not complete:
+        logger.warning(
+            "Gallery videos (%s): only %d verified video(s), %d needed. Section hidden.",
+            section["name"], len(picked), limit,
+        )
+    return {
+        "slug": slug,
+        "name": section["name"],
+        "blurb": GALLERY_VIDEO_BLURBS.get(slug, ""),
+        "videos": [dict(v) for v in picked],
+        "available": len(section["videos"]),
+        "complete": complete,
+        # Opens the style's own section on Anatomy of Design, not its top of page.
+        "explore_url": "/journal#style-" + slug,
+    }
