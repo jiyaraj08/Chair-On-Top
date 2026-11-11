@@ -1,0 +1,742 @@
+/* Chair on Top - quiz.css
+   Styles for the Find My Aesthetic quiz (/quiz).
+   Every class starts with qz- so nothing here can change other pages.
+   Colours, fonts and spacing come from the shared tokens in style.css and
+   theme.css (--bg, --surface, --text, --text-soft, --line, --wood, --sand, --focus),
+   so the dark and light themes work without separate rules. */
+
+.qz {
+  min-height: 70vh;
+  overflow-x: clip;
+}
+
+.qz [hidden] {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------
+   Buttons
+   --------------------------------------------------------- */
+.qz-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.9rem;
+  padding: 0.75rem 1.6rem;
+  border: 1px solid var(--text);
+  border-radius: var(--r-pill);
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease), background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast), opacity var(--t-fast);
+}
+
+.qz-btn-primary {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.qz-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.qz-btn-quiet {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.qz-btn-quiet:hover {
+  border-color: var(--text);
+  transform: translateY(-2px);
+}
+
+.qz-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.qz-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.qz-btn:focus-visible,
+.qz-opt-input:focus-visible + .qz-opt-media,
+.qz-tile-link:focus-visible,
+.qz-all summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------
+   Intro
+   --------------------------------------------------------- */
+.qz-intro {
+  padding: clamp(7rem, 13vw, 9.5rem) 0 var(--section-pad);
+}
+
+.qz-intro-grid {
+  display: grid;
+  gap: clamp(2rem, 6vw, 4rem);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .qz-intro-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+}
+
+.qz-intro h1 {
+  max-width: 14ch;
+  margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 6.4vw, 4.9rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+}
+
+.qz-lead {
+  max-width: 34rem;
+  font-size: var(--fs-lead);
+  color: var(--text-soft);
+}
+
+.qz-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: var(--space-5) 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--wood);
+}
+
+.qz-intro-actions,
+.qz-res-actions,
+.qz-resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.qz-resume {
+  max-width: 34rem;
+  margin-top: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+}
+
+.qz-resume p {
+  margin-bottom: var(--space-3);
+}
+
+.qz-privacy {
+  margin-top: var(--space-5);
+  font-size: 0.88rem;
+  color: var(--text-soft);
+}
+
+.qz-noscript {
+  padding-top: 7rem;
+}
+
+/* Three real gallery photographs, overlapped like prints on a table. */
+.qz-intro-art {
+  position: relative;
+  min-height: clamp(20rem, 52vw, 34rem);
+}
+
+.qz-art {
+  position: absolute;
+  display: block;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: var(--shadow-lift);
+}
+
+.qz-art-1 { width: 52%; aspect-ratio: 3 / 4; left: 4%; top: 0; }
+.qz-art-2 { width: 46%; aspect-ratio: 4 / 5; right: 2%; top: 14%; }
+.qz-art-3 { width: 48%; aspect-ratio: 4 / 5; left: 24%; bottom: 0; }
+
+@media (max-width: 899px) {
+  .qz-intro-art {
+    min-height: clamp(18rem, 70vw, 26rem);
+  }
+}
+
+/* ---------------------------------------------------------
+   Question stage
+   --------------------------------------------------------- */
+.qz-stage {
+  padding: clamp(6.5rem, 12vw, 8.5rem) 0 var(--section-pad);
+}
+
+.qz-top {
+  margin-bottom: var(--space-6);
+}
+
+.qz-count {
+  margin-bottom: var(--space-3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wood);
+}
+
+.qz-bar {
+  height: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.qz-bar-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--wood);
+  transition: width 0.5s var(--ease);
+}
+
+.qz-card {
+  transition: opacity 0.17s ease, transform 0.17s ease;
+}
+
+.qz-card.qz-leave {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.qz-card.qz-enter {
+  animation: qz-in 0.38s var(--ease) both;
+}
+
+@keyframes qz-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.qz-heading {
+  max-width: 24ch;
+  margin-bottom: var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.9rem, 4.6vw, 3.2rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+}
+
+.qz-heading:focus {
+  outline: none;
+}
+
+.qz-support {
+  max-width: 38rem;
+  margin-bottom: var(--space-6);
+  font-size: var(--fs-lead);
+  color: var(--text-soft);
+}
+
+/* Answer cards: two across on phones and tablets, four across on wide screens. */
+.qz-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+@media (min-width: 1000px) {
+  .qz-options {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  .qz-options.qz-options-plain {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 479px) {
+  .qz-options.qz-options-plain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.qz-opt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.35s var(--ease), transform 0.35s var(--ease);
+}
+
+.qz-opt:hover {
+  border-color: var(--wood);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.qz-opt-input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.qz-opt-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.qz-opt-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.9s var(--ease);
+}
+
+.qz-opt:hover .qz-opt-media img {
+  scale: 1.04;
+}
+
+.qz-opt-plain .qz-opt-media {
+  aspect-ratio: auto;
+  min-height: 4.5rem;
+  display: flex;
+  align-items: center;
+  padding: var(--space-4) var(--space-5) 0;
+  background: transparent;
+}
+
+.qz-opt-letter {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--wood);
+}
+
+.qz-opt-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: var(--space-4);
+}
+
+.qz-opt-title {
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.qz-opt-text {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-soft);
+}
+
+.qz-swatches {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.qz-swatch {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+}
+
+/* Selected: border, a check mark and a tint. Never colour alone. */
+.qz-opt-check {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s ease, transform 0.3s var(--ease);
+}
+
+.qz-opt-check svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.qz-opt:has(.qz-opt-input:checked) {
+  border-color: var(--text);
+  box-shadow: 0 0 0 1px var(--text), var(--shadow-card);
+}
+
+.qz-opt:has(.qz-opt-input:checked) .qz-opt-check {
+  opacity: 1;
+  transform: none;
+}
+
+.qz-opt:has(.qz-opt-input:checked) .qz-opt-title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+/* Browsers without :has() still get the check mark through this fallback class-free rule. */
+.qz-opt-input:checked ~ .qz-opt-check {
+  opacity: 1;
+  transform: none;
+}
+
+.qz-opt-input:checked ~ .qz-opt-body .qz-opt-title {
+  color: var(--text);
+}
+
+.qz-nav {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.qz-hint {
+  margin: 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-soft);
+}
+
+@media (max-width: 600px) {
+  .qz-nav {
+    grid-template-columns: 1fr 1fr;
+  }
+  .qz-hint {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    text-align: left;
+  }
+  .qz-btn {
+    padding-inline: 1.1rem;
+  }
+}
+
+/* ---------------------------------------------------------
+   Result
+   --------------------------------------------------------- */
+.qz-res-hero {
+  padding: clamp(6.5rem, 12vw, 8.5rem) 0 var(--section-pad);
+}
+
+.qz-res-grid {
+  display: grid;
+  gap: clamp(1.75rem, 5vw, 4rem);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .qz-res-grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+}
+
+.qz-res-figure,
+.qz-second-figure {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--sand);
+  box-shadow: var(--shadow-lift);
+}
+
+.qz-res-figure {
+  aspect-ratio: 4 / 5;
+  max-height: 80vh;
+}
+
+.qz-res-figure img,
+.qz-second-figure img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qz-res-title {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+}
+
+.qz-res-title:focus {
+  outline: none;
+}
+
+.qz-res-style {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-lead);
+  color: var(--wood);
+}
+
+.qz-res-summary {
+  max-width: 36rem;
+  margin-bottom: var(--space-5);
+  font-size: var(--fs-lead);
+  color: var(--text-soft);
+}
+
+.qz-block {
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+}
+
+.qz-block-tint {
+  background: var(--sand);
+}
+
+.qz-h2 {
+  max-width: 22ch;
+  margin-bottom: var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 4vw, 2.9rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+}
+
+.qz-note {
+  max-width: 38rem;
+  margin-bottom: var(--space-5);
+  color: var(--text-soft);
+}
+
+/* Score comparison */
+.qz-cmp {
+  display: grid;
+  gap: var(--space-5);
+  max-width: 44rem;
+}
+
+.qz-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem var(--space-4);
+  margin-bottom: 0.5rem;
+}
+
+.qz-row-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+
+.qz-row-score {
+  font-size: 0.88rem;
+  color: var(--text-soft);
+}
+
+.qz-track {
+  height: 0.65rem;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.qz-track-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--wood);
+  opacity: 0.55;
+  transition: width 1s var(--ease);
+}
+
+.qz-row-strong .qz-track-fill {
+  opacity: 1;
+}
+
+.qz-all {
+  max-width: 44rem;
+  margin-top: var(--space-6);
+}
+
+.qz-all summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.5rem 0;
+}
+
+.qz-cmp-all {
+  margin-top: var(--space-4);
+  gap: var(--space-4);
+}
+
+/* Characteristics */
+.qz-traits-grid {
+  display: grid;
+  gap: clamp(1.5rem, 5vw, 4rem);
+}
+
+@media (min-width: 900px) {
+  .qz-traits-grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+  }
+}
+
+.qz-traits {
+  margin: 0;
+}
+
+.qz-trait {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--line);
+}
+
+.qz-trait:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.qz-trait dt {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wood);
+  padding-top: 0.2rem;
+}
+
+.qz-trait dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+}
+
+/* Result photographs */
+.qz-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-5) 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 700px) {
+  .qz-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+}
+
+.qz-tile-link {
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--sand);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.4s var(--ease);
+}
+
+.qz-tile-link:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+.qz-tile-link img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.9s var(--ease);
+}
+
+.qz-tile-link:hover img {
+  scale: 1.04;
+}
+
+.qz-gal-more {
+  margin: 0;
+}
+
+/* Second match */
+.qz-second {
+  display: grid;
+  gap: clamp(1.5rem, 5vw, 3.5rem);
+  align-items: center;
+}
+
+@media (min-width: 800px) {
+  .qz-second {
+    grid-template-columns: minmax(0, 0.55fr) minmax(0, 1fr);
+  }
+}
+
+.qz-second-figure {
+  aspect-ratio: 4 / 3;
+  max-width: 28rem;
+}
+
+.qz-retake {
+  text-align: center;
+}
+
+.qz-retake .qz-h2,
+.qz-retake .qz-note {
+  margin-inline: auto;
+}
+
+/* ---------------------------------------------------------
+   Motion preferences
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .qz *,
+  .qz *::before,
+  .qz *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
