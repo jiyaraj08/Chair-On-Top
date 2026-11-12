@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="{{ url_for('static', path='css/gallery.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/hero-redesign.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/hero-lighting.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/video-bg.css') }}">
   <script>
     /* Applies the saved hero lighting before the first paint, so a refresh never flashes the wrong light.
        Saved under the key cot.light.v1. Anything unknown falls back to morning. */
@@ -158,6 +159,8 @@
           <img class="hc-bg" src="{{ url_for('static', path='images/hero/hero-collage-1920.jpg') }}" width="1920" height="1080" alt="" decoding="async" fetchpriority="high">
         </picture>
       </div>
+      {# Video slideshow layer: above the collage, below the shelf, window, squirrel and light layers. #}
+      {% set vbg_mode = "hero" %}{% include "partials/_video_bg.html" %}
     </div>
 
     <div class="hero-content">
@@ -409,4 +412,8 @@
 
 <!-- ============ FOOTER ============ -->
 {% include "partials/site_footer.html" %}
+{% endblock %}
+
+{% block scripts_extra %}
+  <script src="{{ url_for('static', path='js/video-bg.js') }}" defer></script>
 {% endblock %}
