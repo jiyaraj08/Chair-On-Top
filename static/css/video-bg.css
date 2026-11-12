@@ -1,0 +1,91 @@
+/* Chair on Top - video-bg.css
+   Styles for the silent video slideshow (templates/partials/_video_bg.html,
+   static/js/video-bg.js). Nothing here changes any existing rule: every selector
+   starts with .vbg or is scoped to a page class that only the video pages use.
+   To remove the feature: delete the include, the <link> and the <script> from the
+   four templates (see MANIFEST). */
+
+.vbg {
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+
+.vbg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 1.2s ease;       /* keep equal to FADE in video-bg.js */
+  background: transparent;
+  pointer-events: none;
+}
+
+.vbg-video.is-on { opacity: 1; }
+.vbg-video.is-cur { z-index: 1; }
+.vbg-video.is-top { z-index: 2; }       /* the incoming video fades in on top of the current one */
+
+/* No browser controls, ever. */
+.vbg-video::-webkit-media-controls,
+.vbg-video::-webkit-media-controls-panel,
+.vbg-video::-webkit-media-controls-start-button,
+.vbg-video::-webkit-media-controls-overlay-play-button,
+.vbg-video::-webkit-media-controls-enclosure {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+/* ---------- Homepage: a layer inside the hero background ---------- */
+/* Sits above the ornamental collage and below the shelf, window, squirrel,
+   lighting layers and text. The same lighting filter as the collage is applied. */
+.hero--collage .hero-media > .vbg {
+  position: absolute;
+  inset: -2.5rem 0 0 0;                  /* same extra height as the collage, for the scroll parallax */
+}
+
+.hero--collage .hero-media > .vbg .vbg-video {
+  filter: var(--img-filter, none);
+  transition: opacity 1.2s ease, filter 1s ease;
+}
+
+html.m-parallax .hero--collage .hero-media > .vbg {
+  translate: 0 calc(var(--py, 0) * 1px);
+}
+
+@media (max-width: 900px) {
+  .hero--collage .hero-media > .vbg { inset: 0; }
+}
+
+/* ---------- Other pages: fixed behind the whole page ---------- */
+.vbg--page {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.vbg--page .vbg-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  /* Dark theme: the subtle dark overlay. The site's text is already light there. */
+  background:
+    linear-gradient(180deg, rgba(20, 14, 10, 0.62) 0%, rgba(20, 14, 10, 0.58) 45%, rgba(20, 14, 10, 0.68) 100%);
+}
+
+/* Light theme: the site's text and cards are dark-on-light, so a dark overlay would make
+   them unreadable. A soft warm-ivory veil keeps every existing colour exactly as it is
+   and still lets the video show through. */
+html[data-theme="light"] .vbg--page .vbg-shade {
+  background:
+    linear-gradient(180deg, rgba(242, 237, 232, 0.74) 0%, rgba(242, 237, 232, 0.7) 45%, rgba(242, 237, 232, 0.8) 100%);
+}
+
+/* ---------- Reduced motion: no video at all, normal backgrounds stay ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .vbg--hero { display: none; }
+  .vbg--page { display: none; }
+}
