@@ -9,13 +9,9 @@
   <link rel="stylesheet" href="{{ url_for('static', path='css/journal.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/library.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', path='css/journal-photos.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', path='css/video-bg.css') }}">
 {% endblock %}
 
-{% block body_class %}has-vbg{% endblock %}
-
 {% block body %}
-{% set vbg_mode = "page" %}{% include "partials/_video_bg.html" %}
 {% include "partials/site_header.html" %}
 
 <main id="main">
@@ -236,6 +232,5 @@
 {% endblock %}
 
 {% block scripts_extra %}
-  <script src="{{ url_for('static', path='js/video-bg.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/journal.js') }}" defer></script>
 {% endblock %}
