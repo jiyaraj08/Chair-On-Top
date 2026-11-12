@@ -4,13 +4,9 @@
 
 {% block head_extra %}
   <link rel="stylesheet" href="{{ url_for('static', path='css/moodboards.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', path='css/video-bg.css') }}">
 {% endblock %}
 
-{% block body_class %}has-vbg{% endblock %}
-
 {% block body %}
-{% set vbg_mode = "page" %}{% include "partials/_video_bg.html" %}
 {% include "partials/site_header.html" %}
 
 <main id="main">
@@ -120,7 +116,6 @@
 {% endblock %}
 
 {% block scripts_extra %}
-  <script src="{{ url_for('static', path='js/video-bg.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/actions.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/mb-core.js') }}" defer></script>
   <script src="{{ url_for('static', path='js/moodboards.js') }}" defer></script>
