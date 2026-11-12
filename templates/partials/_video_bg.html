@@ -1,0 +1,13 @@
+{# Chair on Top - shared silent video background (four videos, one slideshow).
+   Usage:  {% set vbg_mode = "hero" %}{% include "partials/_video_bg.html" %}
+           vbg_mode is "hero" (inside the homepage hero) or "page" (fixed behind a whole page).
+   Styles: static/css/video-bg.css   Script: static/js/video-bg.js
+   The files are silent copies (no audio track at all). The player also forces
+   every video to stay muted. Decoration only, hidden from screen readers. #}
+{% set vbg_mode = vbg_mode | default("page") %}
+<div class="vbg vbg--{{ vbg_mode }}" data-vbg aria-hidden="true"
+     data-sources="{{ [url_for('static', path='videos/bg/bg-1.mp4'), url_for('static', path='videos/bg/bg-2.mp4'), url_for('static', path='videos/bg/bg-3.mp4'), url_for('static', path='videos/bg/bg-4.mp4')] | join(' ') }}">
+  <video class="vbg-video" muted playsinline preload="none" tabindex="-1" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny"></video>
+  <video class="vbg-video" muted playsinline preload="none" tabindex="-1" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny"></video>
+  {% if vbg_mode == "page" %}<div class="vbg-shade"></div>{% endif %}
+</div>
